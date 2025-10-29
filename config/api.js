@@ -5,8 +5,8 @@
 // 开发环境
 const dev = {
   im: "https://im-api.pickmall.cn",
-  common: "https://common-api.pickmall.cn",
-  buyer: "https://buyer-api.pickmall.cn",
+  common: "https://common-api.maollar.com",
+  buyer: "https://api.maollar.com",
   // common: "http://192.168.0.113:8890",
   // buyer: "http://192.168.0.113:8888",
   // im: "http://192.168.0.113:8885",
@@ -14,8 +14,8 @@ const dev = {
 // 生产环境
 const prod = {
   im: "https://im-api.pickmall.cn",
-  common: "https://common-api.pickmall.cn",
-  buyer: "https://buyer-api.pickmall.cn",
+  common: "https://common-api.maollar.com",
+  buyer: "https://api.maollar.com",
 };
 
 //默认生产环境
