@@ -120,12 +120,12 @@
 <style lang="scss" scoped>
 	@import url("@/pages/passport/login.scss");
 
-	/deep/ .u-form-item {
+	::v-deep  .u-form-item {
 		margin: 40rpx 0;
 	}
 
 	.sendCode {
-		/deep/ .u-form-item--right__content__slot {
+		::v-deep  .u-form-item--right__content__slot {
 			display: flex;
 		}
 	}

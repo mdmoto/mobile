@@ -16,7 +16,7 @@
           <view class="goods-title u-line-2">{{ item.goodsName }}</view>
           <view class="goods-price">
             ￥{{ item.goodsPrice | unitPrice }}
-            <!-- <span>+{{ '1' }}积分</span> -->
+            <!-- <span>+{{ '1' }}喵币</span> -->
           </view>
         </view>
         <view class="goods-num">
@@ -162,7 +162,7 @@ export default {
   font-size: 24rpx;
   color: #999;
 }
-/deep/ .seller-name {
+::v-deep  .seller-name {
   width: auto !important;
 }
 .complain-btn {

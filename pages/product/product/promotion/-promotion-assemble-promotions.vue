@@ -46,7 +46,7 @@
                         $options.filters.goodsFormatPrice(promotion.groupbuy_goods_vo.price)[1]
                       }}</span
                     >
-                    <!-- <span v-if="promotion.point">+{{promotion.point}}积分</span> -->
+                    <!-- <span v-if="promotion.point">+{{promotion.point}}喵币</span> -->
                   </span>
                   <view class="u-group-flex">
                     <span

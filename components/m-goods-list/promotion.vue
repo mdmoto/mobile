@@ -162,7 +162,7 @@
 			color: $main-color;
 			font-weight: bold;
 
-			/deep/ span:nth-of-type(1) {
+			::v-deep  span:nth-of-type(1) {
 				font-size: 48rpx;
 			}
 		}

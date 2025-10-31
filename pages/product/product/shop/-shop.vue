@@ -87,14 +87,14 @@ export default {
   overflow: hidden;
   border-radius: 12rpx;
 
-  /deep/ .u-image__image {
+  ::v-deep  .u-image__image {
     height: 218rpx;
     border-radius: 12rpx !important;
   }
 }
 
 .recommend-item-img {
-  /deep/ .u-image__image {
+  ::v-deep  .u-image__image {
     width: 100% !important;
   }
 }
@@ -190,7 +190,7 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
 
-  /deep/ .u-row {
+  ::v-deep  .u-row {
     width: 100%;
   }
 

@@ -1,11 +1,11 @@
 <template>
   <div class="user-point">
-    <!-- <div class="point-rule">积分规则</div> -->
+    <!-- <div class="point-rule">喵币规则</div> -->
     <div class="point-wrapper">
       <u-image shape="circle" :lazy-load="true" width="100" height="100"
         :src="userInfo.face || '/static/missing-face.png'"></u-image>
       <div class="whether-point">
-        <div>你的可用积分：<span class="point">{{userInfo.point || 0}}</span></div>
+        <div>你的可用喵币：<span class="point">{{userInfo.point || 0}}</span></div>
       </div>
     </div>
   </div>

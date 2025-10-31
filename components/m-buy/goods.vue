@@ -17,7 +17,7 @@
 							</span>
 							<span v-if="pointDetail.points">
 								<span class="goods-price-promotionShow goods-price-bigshow">{{ pointDetail.points }}</span>
-								积分
+								喵币
 							</span>
 							<div class="promotion-box">
 								￥
@@ -437,7 +437,7 @@ export default {
 	box-shadow: 0 2px 6px 0 rgba(255, 65, 66, 0.2);
 }
 
-/deep/.u-icon-plus,
+::v-deep .u-icon-plus,
 .u-icon-minus,
 .u-icon-disabled {
 	height: 30rpx !important;
@@ -457,7 +457,7 @@ export default {
 	}
 }
 
-/deep/ .uni-scroll-view {
+::v-deep  .uni-scroll-view {
 	overflow: hidden !important;
 }
 
@@ -546,7 +546,7 @@ export default {
 	color: #999;
 	margin-left: 10rpx;
 
-	/deep/ span {
+	::v-deep  span {
 		font-size: 30rpx;
 	}
 }

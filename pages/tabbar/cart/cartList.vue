@@ -570,7 +570,7 @@ page {
   font-weight: bold;
   display: flex;
   align-items: center;
-  /deep/ .tips {
+  ::v-deep  .tips {
     margin: 0 8rpx 0 0;
     background: $main-color;
     border-radius: 100px;
@@ -604,14 +604,14 @@ page {
 }
 
 /* 空白页 */
-/deep/ .u-number-input {
+::v-deep  .u-number-input {
   background: #fff !important;
   border: 1px solid #ededed;
   margin: 0 !important;
 }
 
-/deep/ .u-icon-minus,
-/deep/ .u-icon-plus {
+::v-deep  .u-icon-minus,
+::v-deep  .u-icon-plus {
   background: #ffffff !important;
   border: 1px solid #ededed;
   color: #333 !important;
@@ -665,7 +665,7 @@ page {
   display: flex;
   align-items: center;
 
-  /deep/ .number {
+  ::v-deep  .number {
     line-height: 1;
     font-size: 30rpx;
     > span {
@@ -691,7 +691,7 @@ page {
   height: 100%;
 }
 
-/deep/ .u-col {
+::v-deep  .u-col {
   padding: 24rpx 0 !important;
 }
 
@@ -735,7 +735,7 @@ page {
 .goods-config {
   display: flex;
   align-items: center;
-  /deep/ .invalid {
+  ::v-deep  .invalid {
     display: block;
     width: 80rpx !important;
   }
@@ -765,7 +765,7 @@ page {
   height: 40rpx;
   border-left: 1px solid #eeeeee;
 
-  /deep/ span {
+  ::v-deep  span {
     margin-left: 20rpx;
   }
 }
@@ -814,10 +814,10 @@ page {
   display: flex;
   justify-content: space-between;
   > .sp-price {
-    /deep/ span:nth-of-type(1) {
+    ::v-deep  span:nth-of-type(1) {
       font-size: 38rpx;
     }
-    /deep/ span:nth-of-type(2) {
+    ::v-deep  span:nth-of-type(2) {
       font-size: 24rpx;
     }
   }

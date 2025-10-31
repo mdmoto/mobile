@@ -14,7 +14,7 @@
         <text class="pcolor">{{ pointData.totalPoint || 0 }}</text>
       </u-col>
       <u-col span="6" class="portrait-box2-col">
-        <text>剩余积分：</text>
+        <text>剩余喵币：</text>
         <text class="pcolor">{{ pointData.point || 0 }}</text>
       </u-col>
     </u-row>
@@ -41,7 +41,7 @@ export default {
       count: {
         loadStatus: "more",
       },
-      pointList: [], //积分数据集合
+      pointList: [], //喵币数据集合
       params: {
         pageNumber: 1,
         pageSize: 10,
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     /**
-     * 获取积分数据
+     * 获取喵币数据
      */
     getList() {
       let params = this.params;
@@ -87,7 +87,7 @@ export default {
     },
 
     /**
-     * 获得累计积分使用
+     * 获得累计喵币使用
      */
     initPointData() {
       getMemberPointSum().then((res) => {
@@ -151,10 +151,10 @@ export default {
   border-radius: 0 0 20rpx 20rpx;
   margin: 0 20rpx;
   font-size: 26rpx;
-  /deep/ .u-col {
+  ::v-deep  .u-col {
     text-align: center !important;
   }
-  /deep/ .u-col:first-child {
+  ::v-deep  .u-col:first-child {
     border-right: 1px solid $border-color-light;
   }
   .pcolor {

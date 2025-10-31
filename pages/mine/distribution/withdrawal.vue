@@ -82,13 +82,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-/deep/ .u-input__input,
+::v-deep  .u-input__input,
 .u-input {
   font-size: 80rpx !important;
   height: 102rpx !important;
  
 }
-/deep/ .u-input__input{
+::v-deep  .u-input__input{
   height: 100%;
    font-size: 80rpx;
 }

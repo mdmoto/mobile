@@ -16,7 +16,7 @@
       </view>
       <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
     </view>
-    <!-- 积分，优惠券，关注， -->
+    <!-- 喵币，优惠券，关注， -->
     <div class="pointBox box">
       <u-row text-align="center" gutter="16" class="point">
         <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/deposit/operation')">
@@ -219,7 +219,7 @@ body {
       line-height: 1;
     }
 
-    /deep/ .u-icon,
+    ::v-deep  .u-icon,
     .u-icon {
       margin-top: 106rpx;
     }

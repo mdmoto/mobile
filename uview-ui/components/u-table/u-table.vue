@@ -88,7 +88,7 @@
 	}
 
 	/* #ifdef MP */
-	.u-table /deep/ t-tr {
+	.u-table ::v-deep  t-tr {
 		display: flex;
 	}
 	/* #endif */

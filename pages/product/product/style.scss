@@ -101,7 +101,7 @@ page {
     color: $price-color;
     font-size: 32rpx;
     line-height: 1;
-    /deep/ .price {
+    ::v-deep  .price {
         font-size: 60rpx;
     }
 }
@@ -124,7 +124,7 @@ page {
     overflow: hidden;
     border-radius: 12rpx;
 
-    /deep/ .u-image__image {
+    ::v-deep  .u-image__image {
         // width: 228rpx;
         height: 228rpx;
         border-radius: 12rpx !important;
@@ -200,7 +200,7 @@ page {
     font-size: 30rpx;
     transition: all 0.5s;
 }
-/deep/ .u-navbar {
+::v-deep  .u-navbar {
     padding-left: 10rpx;
 }
 .nav-item {
@@ -356,7 +356,7 @@ page {
     z-index: 8;
     width: 100%;
 
-    /deep/ .u-row {
+    ::v-deep  .u-row {
         width: 100%;
     }
 }
@@ -368,7 +368,7 @@ page {
     color: #fff;
     padding: 0 20rpx;
 
-    /deep/ .price {
+    ::v-deep  .price {
         font-size: 36rpx;
         font-weight: 400;
         text-align: left;

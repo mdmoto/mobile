@@ -164,7 +164,7 @@ export default {
   width: 100%;
   //border-bottom: 1px #f5f5f5 solid; //HM修改 去掉边框
   box-sizing: border-box;
-  font-size: $uni-font-size-base;
+  font-size: 28rpx;
 
   .left-box {
     display: flex;

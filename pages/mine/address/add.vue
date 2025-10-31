@@ -292,7 +292,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .detailAddress {
-  /deep/ .u-form-item--left {
+  ::v-deep  .u-form-item--left {
     display: flex;
     align-items: flex-start;
   }
@@ -332,7 +332,7 @@ export default {
   width: 100%;
   padding-top: 3%;
 
-  /deep/ .u-form-item {
+  ::v-deep  .u-form-item {
     background-color: #fff;
     padding: 24rpx 30rpx;
   }
@@ -341,7 +341,7 @@ export default {
     background-color: $main-color;
   }
 
-  /deep/.u-checkbox {
+  ::v-deep .u-checkbox {
     margin: 30rpx 30rpx 0 30rpx;
 
     .u-label-class.u-checkbox__label {
@@ -350,7 +350,7 @@ export default {
     }
   }
 }
-/deep/ .u-checkbox__label {
+::v-deep  .u-checkbox__label {
   font-size: 28rpx;
 }
 </style>

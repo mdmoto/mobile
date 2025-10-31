@@ -35,7 +35,7 @@
 	background: #ffe7e6 !important;
 	text-align: center !important;
 }
-/deep/ .u-mode-light-error {
+::v-deep  .u-mode-light-error {
 	border: none;
 }
 

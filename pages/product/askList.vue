@@ -121,7 +121,7 @@ export default {
   padding: 32rpx;
 }
 
-/deep/ .u-col {
+::v-deep  .u-col {
   text-align: center;
   padding: 16rpx 0 !important;
 }

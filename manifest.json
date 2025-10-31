@@ -1,8 +1,8 @@
 {
-    "name" : "lilishop",
-    "appid" : "__UNI__ED807EA",
+    "name" : "猫乐商城",
+    "appid" : "__UNI__GCA92B21",
     "description" : "",
-    "versionName" : "4.5.3",
+    "versionName" : "0.9",
     "versionCode" : 4000503,
     "transformPx" : false,
     "app-plus" : {
@@ -63,7 +63,7 @@
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ],
-                "schemes" : "lilishop",
+                "schemes" : "maollar",
                 //安卓自添加 权限  应用市场 过度索取权限
                 "permissionExternalStorage" : {
                     "request" : "none",
@@ -86,7 +86,7 @@
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "位置信息将用于高德地图的效果展示",
                     "NSMicrophoneUsageDescription" : "用户上传视频时需使用音频信息"
                 },
-                "urltypes" : "lilishop",
+                "urltypes" : "maollar",
                 "dSYMs" : false
             },
             /* ios打包配置 */
@@ -222,8 +222,8 @@
             "disableHostCheck" : true
         },
         "router" : {
-            "mode" : "history",
-            "base" : ""
+            "mode" : "hash",
+            "base" : "/"
         },
         "sdkConfigs" : {
             "maps" : {}
@@ -233,7 +233,8 @@
                 "enable" : true
             }
         },
-        "title" : "lilishop",
+        "title" : "Maollar",
         "template" : ""
-    }
+    },
+    "locale" : "auto"
 }

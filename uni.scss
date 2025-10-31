@@ -65,7 +65,7 @@ $font-weight: 400;
 }
 .bg-light-color {
 	background-color: $light-color !important;
-	/deep/ * {
+	::v-deep  * {
 		background-color: $light-color !important;
 	}
 }

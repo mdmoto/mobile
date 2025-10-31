@@ -38,7 +38,7 @@ export function getAssembleList(params) {
 }
 
 /**
- * 获取积分商城分类
+ * 获取喵币商城分类
  */
 export function getPointsCategory() {
   return http.request({
@@ -48,7 +48,7 @@ export function getPointsCategory() {
 }
 
 /**
- * 获取积分商城商品
+ * 获取喵币商城商品
  * @param params
  */
  export function getPointsGoods(params) {
@@ -59,7 +59,7 @@ export function getPointsCategory() {
   });
 }
 /**
- * 获取积分商城商品详情
+ * 获取喵币商城商品详情
  * @param params
  */
 export function getPointsGoodsDetail(id) {

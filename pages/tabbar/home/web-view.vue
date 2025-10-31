@@ -45,7 +45,7 @@ export default {
 
 <style lang="scss" scoped>
 .web-view {
-  /deep/ .web-view {
+  ::v-deep  .web-view {
     padding: 0;
     margin: 0;
   }

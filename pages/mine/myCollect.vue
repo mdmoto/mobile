@@ -300,7 +300,7 @@
 		width: 100%;
 	}
 
-	/deep/ .u-swipe-content {
+	::v-deep  .u-swipe-content {
 		overflow: hidden;
 	}
 

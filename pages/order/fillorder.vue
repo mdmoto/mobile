@@ -371,7 +371,7 @@
           ><span style="margin-right: 10rpx">{{
             orderMessage.priceDetailDTO.payPoint | unitPrice
           }}</span
-          >积分</span
+          >喵币</span
         >
       </div>
       <div class="navRiv" @click="createTradeFun()">
@@ -881,7 +881,7 @@ page {
 }
 
 .uinput {
-  /deep/ input {
+  ::v-deep  input {
     text-align: right;
   }
 }
@@ -976,7 +976,7 @@ page {
   text-align: left;
 }
 
-/deep/ .u-col-3 {
+::v-deep  .u-col-3 {
   text-align: right;
 }
 
@@ -1011,7 +1011,7 @@ page {
   }
 }
 
-/deep/ .u-notice-bar-wrap {
+::v-deep  .u-notice-bar-wrap {
   width: 100% !important;
 }
 
@@ -1128,11 +1128,11 @@ page {
   color: #333333;
 }
 
-/deep/ .u-col {
+::v-deep  .u-col {
   padding: 36rpx 0 !important;
 }
 
-/deep/ .u-col-3,
+::v-deep  .u-col-3,
 .tipsColor {
   color: #333;
 }

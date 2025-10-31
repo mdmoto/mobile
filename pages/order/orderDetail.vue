@@ -82,7 +82,7 @@
                 <view class="goods-title u-line-2">{{ sku.goodsName }}</view>
                 <view class="goods-price">
                   ￥{{ sku.goodsPrice | unitPrice }}
-                  <!-- <span v-if="sku.point">+{{ sku.point }}积分</span> -->
+                  <!-- <span v-if="sku.point">+{{ sku.point }}喵币</span> -->
 				  <span style="font-size: 24rpx;margin-left: 14rpx;color: #ff9900;" v-if="sku.isRefund && sku.isRefund !== 'NO_REFUND'">
 				  {{refundPriceList(sku.isRefund)}} ({{ sku.refundPrice | unitPrice("￥") }})
 				   </span>
@@ -121,7 +121,7 @@
           <view class="value main-color">-￥{{ order.discountPrice | unitPrice }}</view>
         </view>
         <!-- <view class="order-info-view" v-if="order.use_point">
-					<view class="title">使用积分：</view>
+					<view class="title">使用喵币：</view>
 					<view class="value">{{ order.use_point }}</view>
 				</view> -->
       </view>

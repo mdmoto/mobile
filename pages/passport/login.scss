@@ -11,7 +11,7 @@
 	position: relative;
 }
 
-/deep/ .u-form-item--right__content__slot {
+::v-deep  .u-form-item--right__content__slot {
 	width: 100%;
 	display: block;
 }

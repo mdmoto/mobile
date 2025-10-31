@@ -447,7 +447,7 @@
   width: 100%;
 }
 
-/deep/ .u-row {
+::v-deep  .u-row {
   width: 100% !important;
   display: flex;
   justify-content: space-between !important;

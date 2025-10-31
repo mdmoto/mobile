@@ -24,7 +24,7 @@
                 </u-image>
                 <view class="index-item-title">{{ item.goodsName }}</view>
                 <view class="index-item-price flex flex-a-c flex-j-sb">
-                  <div class="point"><span>{{ item.points }}</span>积分</div> 
+                  <div class="point"><span>{{ item.points }}</span>喵币</div> 
                   <span class="tipsMkt">¥{{ item.originalPrice | unitPrice }}</span>
                 </view>
               </view>
@@ -290,7 +290,7 @@ page {
 }
 
 .index-item-img {
-  /deep/ .u-image {
+  ::v-deep  .u-image {
     width: 346rpx !important;
     height: 320rpx !important;
     border-radius: 10rpx !important;

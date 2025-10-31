@@ -32,7 +32,7 @@ export function getCartNum() {
 
 /**
  * 获取购物车可用优惠券数量
- * @param way 购物车购买：CART/立即购买：BUY_NOW/拼团购买：PINTUAN / 积分购买：POINT
+ * @param way 购物车购买：CART/立即购买：BUY_NOW/拼团购买：PINTUAN / 喵币购买：POINT
  */
 export function getCartCouponNum(way) {
   return http.request({

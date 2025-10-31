@@ -86,7 +86,7 @@
 		background: #f9f9f9;
 	}
 
-	/deep/ .u-col-2 {
+	::v-deep  .u-col-2 {
 		height: 60px;
 		line-height: 60px;
 		text-align: center !important;

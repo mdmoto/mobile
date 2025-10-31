@@ -17,7 +17,7 @@
 				<view class="nowrap">{{item.name}}</view>
 				<view>
 					<text>￥{{item.price | unitPrice}}
-					<!-- <text v-if="item.point">+{{item.point || 0}}积分</text> -->
+					<!-- <text v-if="item.point">+{{item.point || 0}}喵币</text> -->
 					</text>
 					<text>￥{{item.mktprice}}</text>
 				</view>

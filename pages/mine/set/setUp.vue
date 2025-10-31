@@ -202,11 +202,11 @@ export default {
   color: #333333;
 }
 
-/deep/ .u-cell__value {
+::v-deep  .u-cell__value {
   color: #cccccc !important;
 }
 
-/deep/ .u-cell__right-icon-wrap {
+::v-deep  .u-cell__right-icon-wrap {
   color: #cccccc !important;
 }
 </style>

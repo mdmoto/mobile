@@ -104,7 +104,7 @@ export default {
   }
 }
 
-/deep/ .image-wrapper image {
+::v-deep  .image-wrapper image {
   opacity: 1 !important;
 }
 

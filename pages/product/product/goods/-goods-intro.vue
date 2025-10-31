@@ -120,18 +120,18 @@ export default {
 .empty {
   margin: 40rpx 0;
 }
-.goods-detail /deep/ .vhtml {
+.goods-detail ::v-deep  .vhtml {
   overflow: hidden;
 
   width: 100%;
 }
 .vhtml {
-  /deep/ img {
+  ::v-deep  img {
     display: block !important;
   }
 }
 
-/deep/ img {
+::v-deep  img {
   width: 100%;
 }
 .goods-detail-box {

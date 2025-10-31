@@ -33,7 +33,7 @@ export function modelNavigateTo(item) {
 			// 活动
 		case "marketing":
 			switch (val.___promotion) {
-				// 积分商品
+				// 喵币商品
 				case "POINTS_GOODS":
 					uni.navigateTo({
 						url: `/pages/promotion/point/detail?id=${val.promotionId}`,
@@ -127,7 +127,7 @@ export function modelNavigateTo(item) {
 						url: `/pages/promotion/bargain/list`,
 					});
 					break;
-				case "积分商城":
+				case "喵币商城":
 					uni.navigateTo({
 						url: `/pages/promotion/point/pointList`,
 					});

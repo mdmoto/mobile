@@ -217,7 +217,7 @@ export default {
   }
 }
 
-/deep/ .u-input__textarea {
+::v-deep  .u-input__textarea {
   padding: 0;
 }
 .cell-title {

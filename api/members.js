@@ -97,7 +97,7 @@ export function receiveCoupons(couponId) {
 }
 
 /**
- * 获取积分明细数据
+ * 获取喵币明细数据
  * @param params
  * @returns {AxiosPromise}
  */
@@ -438,7 +438,7 @@ export function getCouponsNum() {
 }
 
 /**
- * 获取会员积分VO
+ * 获取会员喵币VO
  * @param
  */
 export function getMemberPointSum() {
@@ -449,7 +449,7 @@ export function getMemberPointSum() {
 }
 
 /**
- * 获取会员积分VO
+ * 获取会员喵币VO
  * @param
  */
 export function withdrawalSettingVO() {

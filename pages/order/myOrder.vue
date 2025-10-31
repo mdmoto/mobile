@@ -294,7 +294,7 @@
 						return "赠品订单";
 						break;
 					case "POINTS":
-						return "积分订单";
+						return "喵币订单";
 						break;
 					case "KANJIA":
 						return "砍价订单";

@@ -211,7 +211,7 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
       border-radius: 8px;
       margin-bottom: 20rpx;
     }
-    /deep/ .u-image {
+    ::v-deep  .u-image {
       width: 140rpx !important;
       height: 140rpx !important;
       border-radius: 8px !important;

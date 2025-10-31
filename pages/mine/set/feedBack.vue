@@ -143,7 +143,7 @@ export default {
   padding: 32rpx;
   margin-bottom: 40rpx;
 }
-/deep/ .u-input__textarea {
+::v-deep  .u-input__textarea {
   padding: 12px;
 }
 .feedBack-box:nth-of-type(1) {

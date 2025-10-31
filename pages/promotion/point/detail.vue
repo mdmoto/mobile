@@ -1,9 +1,9 @@
 <template>
   <div class="page">
-    <u-navbar :border-bottom="false" title="积分商品"></u-navbar>
+    <u-navbar :border-bottom="false" title="喵币商品"></u-navbar>
 
     <div class="wrapper">
-      <!-- 积分商品列表 -->
+      <!-- 喵币商品列表 -->
       <div class="box box1">
         <div class="bargain">
           <div class="row-title">商品信息</div>
@@ -16,7 +16,7 @@
                 {{goodsData.goodsName}}
               </div>
               <div class="flex price-box">
-                <div class="purchase-price">积分:<span>{{ pointDetail.points | unitPrice }}</span>
+                <div class="purchase-price">喵币:<span>{{ pointDetail.points | unitPrice }}</span>
                 </div>
                 <div class="max-price">原价:<span>￥{{ goodsData.price | unitPrice}}</span>
 
@@ -64,8 +64,8 @@ export default {
       },
       maskFlag: false, //商品弹框
       lightColor: this.$lightColor,
-      goodsData: {}, //积分商品中商品详情
-      pointDetail: {}, //积分商品详情
+      goodsData: {}, //喵币商品中商品详情
+      pointDetail: {}, //喵币商品详情
       goodsDetail: {}, //商品详情
       goodsSpec: {}, //商品规格
       selectedGoods: {},
@@ -79,7 +79,7 @@ export default {
   },
   watch: {},
   methods: {
-    // 购买积分商品
+    // 购买喵币商品
     getGoodsDetail() {
       uni.showLoading({
         title: "加载中",

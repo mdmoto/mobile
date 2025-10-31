@@ -11,10 +11,10 @@
             <img class="item-img" src="https://picsum.photos/id/268/200/200" alt />
           </div>
           <div class="item-price">
-            <span>20积分</span>
+            <span>20喵币</span>
           </div>
           <div class="item-line-through">
-            <span>30积分</span>
+            <span>30喵币</span>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
 <script>
 // TODO 后续版本开发此功能 尽情期待
 export default {
-  title:"积分商品",
+  title:"喵币商品",
   props: ["res"],
 };
 </script>

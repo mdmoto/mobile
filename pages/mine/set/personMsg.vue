@@ -217,7 +217,7 @@ page{
     border-radius: 50%;
   }
 }
-/deep/ .u-form {
+::v-deep  .u-form {
   background-color: #ffffff;
   padding: 0;
   margin-top: 30rpx;

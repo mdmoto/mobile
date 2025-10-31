@@ -34,7 +34,7 @@
 			
 			<view class="interact-item" @click="navigateTo('/pages/mine/point/myPoint')">
 			  <image src="/static/mine/mypoint.png" mode=""></image>
-			  <view>我的积分</view>
+			  <view>我的喵币</view>
 			</view>
 			
 			<view class="interact-item" @click="distribution">

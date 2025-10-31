@@ -17,7 +17,7 @@
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'POINTS_GOODS'">
-					<!-- 积分活动 -->
+					<!-- 喵币活动 -->
 					<div class="flex">
 						<view class="deg_tag">{{ promotionItem.title }}</view>
 						<div class="text proText">{{ res[item].promotionName }}</div>
@@ -126,7 +126,7 @@ export default {
 	color: #333333;
 	margin-left: 20rpx;
 }
-/deep/ .u-mode-light-error {
+::v-deep  .u-mode-light-error {
 	border: none;
 }
 .coupon{

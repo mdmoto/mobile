@@ -10,7 +10,7 @@
               >满{{ res[prom].fullMoney }}元 立减现金
               <span class="price">{{ res[prom].fullMinus }}元</span>
               <span v-if="res[prom].couponFlag"> 赠送<span>优惠券</span></span>
-              <span v-if="res[prom].pointFlag"> 赠送{{ res[prom].point }}积分</span>
+              <span v-if="res[prom].pointFlag"> 赠送{{ res[prom].point }}喵币</span>
               <span v-if="res[prom].giftFlag"> 赠送商品</span>
               <span v-if="res[prom].freeFreightFlag">赠送包邮服务</span>
             </span>
@@ -45,8 +45,8 @@
 
         <view v-if="prom.split('-')[0] == 'POINTS_GOODS'">
           <div class="res_prom_item">
-            <u-tag text="积分活动" type="error"></u-tag>
-            <span class="pro-text">当前商品参与积分活动。<span @click="handClickToJoinPromotion(prom)" class="href">点击此处参与活动</span></span>
+            <u-tag text="喵币活动" type="error"></u-tag>
+            <span class="pro-text">当前商品参与喵币活动。<span @click="handClickToJoinPromotion(prom)" class="href">点击此处参与活动</span></span>
           </div>
         </view>
 
@@ -125,7 +125,7 @@ export default {
   display: block;
 }
 
-/deep/ .u-mode-light-error {
+::v-deep  .u-mode-light-error {
   border: none;
 }
 

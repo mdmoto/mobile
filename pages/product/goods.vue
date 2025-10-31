@@ -81,7 +81,7 @@
               <!-- 没有拼团，秒杀等活动的情况下 -->
               <view>
                 <view class="-goods-flex">
-                  <!-- 如果有积分显示积分 -->
+                  <!-- 如果有喵币显示喵币 -->
                   <view class="-goods-price" v-if="goodsDetail.price != undefined">
 
                     <span>
@@ -365,7 +365,7 @@ export default {
       selectedGoods: "", //选择的商品规格昵称
       isGroup: false, // 是否是拼团活动
       isSeckill: false, // 是否秒杀活动
-      pointDetail: "", // 是否是积分商品
+      pointDetail: "", // 是否是喵币商品
       assemble: "", //拼团的sku
       navbarOnlyBack: {
         background: "transparent",
@@ -580,7 +580,7 @@ export default {
       this.PromotionList = response.data.result.promotionMap;
       this.goodsParams = response.data.result.goodsParamsDTOList || [];
 
-      // 判断是否拼团活动或者积分商品 如果有则显示拼团活动信息
+      // 判断是否拼团活动或者喵币商品 如果有则显示拼团活动信息
       this.PromotionList &&
         Object.keys(this.PromotionList).forEach((item) => {
           // 拼团商品
