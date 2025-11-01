@@ -50,10 +50,13 @@
 					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
 				</u-checkbox-group>
 				<div class="tips">
-					未注册的手机号验证后将自动创建用户账号，登录即代表您已同意<span @click="navigateToPrivacy('PRIVACY_POLICY')">《隐私协议》</span>
+					目前内测阶段，仅限已有账号登录。登录即代表您已同意<span @click="navigateToPrivacy('PRIVACY_POLICY')">《隐私协议》</span>
 					<span @click="navigateToPrivacy('USER_AGREEMENT')">
 						《用户协议》
 					</span>
+					<div style="color: #999; font-size: 24rpx; margin-top: 10rpx;">
+						如需注册请联系：ss@maollar.com
+					</div>
 				</div>
 			</div>
 
