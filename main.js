@@ -6,6 +6,7 @@ import store from "./store";
 import config from '@/config/config';
 import airBtn from "@/components/m-airbtn/index.vue";
 import socketIO from './pages/mine/im/socket';
+import i18n from './lang'; // 引入多语言
 /**
  * 仅在h5中显示唤醒app功能
  * 在h5页面手动挂载
@@ -54,6 +55,8 @@ Vue.prototype.$aiderLightColor = config.aiderLightColor;
 App.mpType = "app";
 
 const app = new Vue({
+  store,
+  i18n,
   ...App,
 });
 app.$mount();
