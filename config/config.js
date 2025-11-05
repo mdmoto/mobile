@@ -3,7 +3,7 @@ const schemeName = "maollar"; //唤醒app需要的schemeName
 export default {
   name: name,
   schemeLink: `${schemeName}://`, //唤起app地址
-  downloadLink: "https://about.maollar.com/download", //下载地址，下载app的地址
+  downloadLink: "https://download.maollar.com", //下载地址，下载app的地址
   shareLink: "https://m.maollar.com", //分享地址，也就是在h5中默认的复制地址
   appid: "wx6f10f29075dc1b0b", //小程序唯一凭证，即 AppID，可在「微信公众平台 - 设置 - 开发设置」页中获得。（需要已经成为开发者，且帐号没有异常状态）
   aMapKey: "1f78544934b66c9fbc0104117f663973", //在高德中申请Web服务key
