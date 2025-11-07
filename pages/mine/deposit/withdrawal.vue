@@ -1,49 +1,51 @@
 <template>
   <view>
+    <u-navbar :title="$t('deposit.withdraw')" :is-back="true"></u-navbar>
+    
     <view class="-list">
-      <view class="title">提现类型</view>
+      <view class="title">{{ $t('deposit.withdrawType') }}</view>
       <view class="content">
         <view class="price">
-          <u-input disabled :value="type === 'ALI' ? '支付宝' : '微信'" placeholder="" />
+          <u-input disabled :value="type === 'ALI' ? $t('deposit.withdrawTypeAlipay') : $t('deposit.withdrawTypeWechat')" placeholder="" />
         </view>
 	  </view>
     </view>
 	<view class="-list">
-	  <view class="title">提现金额</view>
+	  <view class="title">{{ $t('deposit.withdrawAmount') }}</view>
 	  <view class="content">
 		<view class="price">
 	      <span> ￥</span>
-	      <u-input v-model="price" placeholder="" type="number" />
+	      <u-input v-model="price" :placeholder="$t('deposit.withdrawAmount')" type="number" />
 	    </view>
 	
 	    <view class="all">
-	      <view @click="handleAll" :style="{ color: $mainColor }">全部</view>
-	      <view style="font-size: 24rpx; color: #999">可提现金额<span>{{ walletNum | unitPrice }}</span>元</view>
+	      <view @click="handleAll" :style="{ color: $mainColor }">{{ $t('deposit.all') }}</view>
+	      <view style="font-size: 24rpx; color: #999">{{ $t('deposit.availableAmount') }}<span>{{ walletNum | unitPrice }}</span>元</view>
 	    </view>
 	
 	  </view>
 	  <view class="tips">
-	    最低提现金额为 {{ minPrice }} 元
+	    {{ $t('deposit.minWithdraw') }} {{ minPrice }} 元
 	  </view>
 	</view>
 	<view class="-list" v-if="type === 'ALI'">
-	  <view class="title">真实姓名</view>
+	  <view class="title">{{ $t('deposit.realName') }}</view>
 	  <view class="content">
 		<view class="price">
-		  <u-input v-model="realName" placeholder="" />
+		  <u-input v-model="realName" :placeholder="$t('deposit.realName')" />
 		</view>
 	  </view>
 	</view>
 	<view class="-list" v-if="type === 'ALI'">
-	  <view class="title">第三方登录账号</view>
+	  <view class="title">{{ $t('deposit.account') }}</view>
 	  <view class="content">
 		<view class="price">
-		  <u-input v-model="connectNumber" placeholder="" />
+		  <u-input v-model="connectNumber" :placeholder="$t('deposit.account')" />
 		</view>
 	  </view>
 	</view>
 
-    <view class="submit" @click="cashd">提现</view>
+    <view class="submit" @click="cashd">{{ $t('deposit.confirmWithdraw') }}</view>
   </view>
 </template>
 <script>

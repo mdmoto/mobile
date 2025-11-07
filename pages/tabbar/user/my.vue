@@ -12,26 +12,26 @@
         <view class="user-name">{{ userInfo.nickName }}</view>
       </view>
       <view class="head-2" v-else>
-        <view class="user-name">登录/注册</view>
+        <view class="user-name">{{ $t('user.login') }}/{{ $t('user.register') }}</view>
       </view>
       <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
     </view>
-    <!-- 喵币，优惠券，关注， -->
+    <!-- 喵币，预存款，优惠券 -->
     <div class="pointBox box">
       <u-row text-align="center" gutter="16" class="point">
+        <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/point/myPoint')">
+          <view>{{ $t('user.points') }}</view>
+          <view class="value-text">{{ userInfo.point || 0 }}</view>
+        </u-col>
+
         <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/deposit/operation')">
-          <view>预存款</view>
+          <view>{{ $t('user.wallet') }}</view>
           <view class="money">{{ walletNum | unitPrice }}</view>
         </u-col>
 
         <u-col text-align="center" span="4" @click="navigateTo('/pages/cart/coupon/myCoupon')">
-          <view>优惠券</view>
-          <view>{{ couponNum || 0 }}</view>
-        </u-col>
-
-        <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/myTracks')">
-          <view>足迹</view>
-          <view>{{ footNum || 0 }}</view>
+          <view>{{ $t('user.coupon') }}</view>
+          <view class="value-text">{{ couponNum || 0 }}</view>
         </u-col>
       </u-row>
       <!-- 我的订单，代付款 -->
@@ -40,31 +40,31 @@
           <div class="bag bag2">
             <u-icon name="bag-fill" size="35" color="#fff"></u-icon>
           </div>
-          <view>待付款</view>
+          <view>{{ $t('order.waitPay') }}</view>
         </view>
         <view class="order-item" @click="navigateTo('/pages/order/myOrder?status=3')">
           <div class="bag bag3">
             <u-icon name="car-fill" size="35" color="#fff"></u-icon>
           </div>
-          <view>待收货</view>
+          <view>{{ $t('order.waitReceive') }}</view>
         </view>
         <view class="order-item" @click="navigateTo('/pages/order/evaluate/myEvaluate')">
           <div class="bag bag4">
             <u-icon name="star-fill" size="35" color="#fff"></u-icon>
           </div>
-          <view>待评价</view>
+          <view>{{ $t('order.waitComment') }}</view>
         </view>
         <view class="order-item" @click="navigateTo('/pages/order/afterSales/afterSales')">
           <div class="bag bag5">
             <u-icon name="server-fill" size="35" color="#fff"></u-icon>
           </div>
-          <view>售后</view>
+          <view>{{ $t('order.afterSale') }}</view>
         </view>
         <view class="order-item" @click="navigateTo('/pages/order/myOrder?status=0')">
           <div class="bag bag1">
             <u-icon name="order" size="35" color="#fff"></u-icon>
           </div>
-          <view>我的订单</view>
+          <view>{{ $t('order.myOrder') }}</view>
         </view>
       </view>
     </div>
@@ -236,12 +236,9 @@ body {
   .point {
     text-align: center;
     height: 160rpx;
-
     font-size: $font-sm;
-    // #ifdef MP-WEIXIN
     padding: 24rpx;
-
-    // #endif
+    
     .u-col {
       view {
         color: $u-main-color;
@@ -249,6 +246,12 @@ body {
       }
 
       view:last-child {
+        margin-top: 8rpx;
+        color: $main-color;
+        font-size: $font-lg;
+      }
+      
+      .value-text {
         margin-top: 8rpx;
         color: $main-color;
         font-size: $font-lg;

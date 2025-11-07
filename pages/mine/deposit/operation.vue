@@ -1,16 +1,16 @@
 <template>
   <div class="wrapper">
-    <u-navbar :custom-back="back" title="余额"></u-navbar>
+    <u-navbar :custom-back="back" :title="$t('deposit.title')"></u-navbar>
     <div class="box">
-      <div class="deposit">预存款金额</div>
+      <div class="deposit">{{ $t('deposit.balance') }}</div>
       <div class="money">￥{{walletNum | unitPrice }}</div>
       <div class="operation-btns">
-        <div class="operation-btn light" @click="navigateTo('/pages/mine/deposit/withdrawal')">提现</div>
-        <div class="operation-btn" @click="navigateTo('/pages/mine/deposit/recharge')">充值</div>
+        <div class="operation-btn light" @click="navigateTo('/pages/mine/deposit/withdrawal')">{{ $t('deposit.withdraw') }}</div>
+        <div class="operation-btn" @click="navigateTo('/pages/mine/deposit/recharge')">{{ $t('deposit.recharge') }}</div>
       </div>
     </div>
     <div class="box list" @click="navigateTo('/pages/mine/deposit/index')">
-      <div class="list-left">预存款明细</div>
+      <div class="list-left">{{ $t('deposit.detail') }}</div>
       <div class="list-right">
         <u-icon name="arrow-right"></u-icon>
       </div>

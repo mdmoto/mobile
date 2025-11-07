@@ -1,10 +1,9 @@
 <template>
   <view class="wap">
-    <u-navbar  title="预存款列表">
-    </u-navbar>
+    <u-navbar :title="$t('deposit.detail')"></u-navbar>
     <view class="wrapper-show-money">
       <view class="money-view">
-        <h3>预存款金额 </h3>
+        <h3>{{ $t('deposit.balance') }}</h3>
         <view class="money">￥{{walletNum | unitPrice }}</view>
 
       </view>

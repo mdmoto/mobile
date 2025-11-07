@@ -5,54 +5,54 @@
 
       <div class="paddingBox">
         <view class="interact-container">
-			<view class="interact-item" @click="navigateTo('/pages/mine/address/addressManage')">
-			  <image src="/static/mine/myaddress.png" mode=""></image>
-			  <view>地址管理</view>
-			</view>
-			
-			<view class="interact-item" @click="navigateTo('/pages/mine/myTracks')">
-			  <image src="/static/mine/logistics.png" mode=""></image>
-			  <view>我的足迹</view>
-			</view>
+		<view class="interact-item" @click="navigateTo('/pages/mine/address/addressManage')">
+		  <image src="/static/mine/myaddress.png" mode=""></image>
+		  <view>{{ $t('address.title') }}</view>
+		</view>
 		
-			<view class="interact-item" @click="navigateTo('/pages/order/evaluate/myEvaluate')">
-			  <image src="/static/mine/feedback.png" mode=""></image>
-			  <view>我的评价</view>
-			</view>
+		<view class="interact-item" @click="navigateTo('/pages/mine/myTracks')">
+		  <image src="/static/mine/logistics.png" mode=""></image>
+		  <view>{{ $t('user.footprint') }}</view>
+		</view>
+	
+		<view class="interact-item" @click="navigateTo('/pages/order/evaluate/myEvaluate')">
+		  <image src="/static/mine/feedback.png" mode=""></image>
+		  <view>{{ $t('review.myReview') }}</view>
+		</view>
 			<!-- <view class="interact-item" @click="linkMsgDetail()">
 			  <image src="/static/mine/mycommit.png" mode=""></image>
 			  <view>我的消息</view>
 			</view> -->
 		
 		
-			<view class="interact-item" @click="navigateTo('/pages/mine/myCollect')">
-			  <image src="/static/mine/myfavorite.png" mode=""></image>
-			  <view>我的关注</view>
-			</view>
-			
-			
-			
-			<view class="interact-item" @click="navigateTo('/pages/mine/point/myPoint')">
-			  <image src="/static/mine/mypoint.png" mode=""></image>
-			  <view>我的喵币</view>
-			</view>
-			
-			<view class="interact-item" @click="distribution">
-			  <image src="/static/mine/distribution.png" mode=""></image>
-			  <view>我的分销</view>
-			</view>
-			
-			
-			
-			<view class="interact-item" @click="navigateTo('/pages/order/complain/complainList')">
-			  <image src="/static/mine/shensu.png" mode=""></image>
-			  <view>我的投诉</view>
-			</view>
-				   
-			<view class="interact-item" @click="navigateTo('/pages/cart/coupon/myCoupon')">
-			  <image src="/static/mine/mycoupon.png" mode=""></image>
-			  <view>优惠券</view>
-			</view>
+		<view class="interact-item" @click="navigateTo('/pages/mine/myCollect')">
+		  <image src="/static/mine/myfavorite.png" mode=""></image>
+		  <view>{{ $t('user.collection') }}</view>
+		</view>
+		
+		
+		
+		<view class="interact-item" @click="navigateTo('/pages/mine/point/myPoint')">
+		  <image src="/static/mine/mypoint.png" mode=""></image>
+		  <view>{{ $t('points.myPoints') }}</view>
+		</view>
+		
+		<view class="interact-item" @click="distribution">
+		  <image src="/static/mine/distribution.png" mode=""></image>
+		  <view>{{ $t('common.distribution') }}</view>
+		</view>
+		
+		
+		
+		<view class="interact-item" @click="navigateTo('/pages/order/complain/complainList')">
+		  <image src="/static/mine/shensu.png" mode=""></image>
+		  <view>{{ $t('common.complaint') }}</view>
+		</view>
+			   
+		<view class="interact-item" @click="navigateTo('/pages/cart/coupon/myCoupon')">
+		  <image src="/static/mine/mycoupon.png" mode=""></image>
+		  <view>{{ $t('user.coupon') }}</view>
+		</view>
 			
 		
 			        

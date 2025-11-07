@@ -1,12 +1,12 @@
 <template>
   <div class="page">
-    <u-navbar :border-bottom="false" title="喵币商品"></u-navbar>
+    <u-navbar :border-bottom="false" :title="$t('points.pointsGoods')"></u-navbar>
 
     <div class="wrapper">
       <!-- 喵币商品列表 -->
       <div class="box box1">
         <div class="bargain">
-          <div class="row-title">商品信息</div>
+          <div class="row-title">{{ $t('goods.detail') }}</div>
           <div class="flex row-item">
             <div class="goods-img">
               <u-image width="200" height="200" :src="goodsData.thumbnail"></u-image>
@@ -16,9 +16,9 @@
                 {{goodsData.goodsName}}
               </div>
               <div class="flex price-box">
-                <div class="purchase-price">喵币:<span>{{ pointDetail.points | unitPrice }}</span>
+                <div class="purchase-price">{{ $t('points.myPoints') }}:<span>{{ pointDetail.points | unitPrice }}</span>
                 </div>
-                <div class="max-price">原价:<span>￥{{ goodsData.price | unitPrice}}</span>
+                <div class="max-price">{{ $t('goods.originalPrice') }}:<span>￥{{ goodsData.price | unitPrice}}</span>
 
                 </div>
               </div>
@@ -27,7 +27,7 @@
           </div>
 
           <div class="buy" @click="getGoodsDetail">
-            立即购买
+            {{ $t('points.buyWithPoints') }}
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@
       <!-- 产品详情 -->
       <div class="box box3">
         <div class="bargain">
-          <div class="row-title">商品详情</div>
+          <div class="row-title">{{ $t('goods.description') }}</div>
           <view class="u-content">
             <u-parse :html="goodsData.mobileIntro" :tag-style="style"></u-parse>
           </view>

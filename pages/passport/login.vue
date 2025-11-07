@@ -9,13 +9,28 @@
           }}<span v-if="current == 1">{{ mobile | secrecyMobile }}</span>
 				</div>
 			</div>
+			
+			<!-- 邀请码输入（手机号登录时需要） -->
+			<div v-if="!enableUserPwdBox && current == 0" class="invite-code-section-top">
+				<u-input 
+					:custom-style="inviteCodeInputStyle" 
+					:placeholder-style="placeholderStyle" 
+					placeholder="🔐 输入邀请码"
+					class="invite-code-input" 
+					v-model="inviteCode" 
+					maxlength="20"
+					@input="checkInviteCode" />
+				<div v-if="inviteCodeError" class="invite-code-error">{{ inviteCodeError }}</div>
+				<div v-if="inviteCodeValid" class="invite-code-success">✓ 验证成功</div>
+			</div>
+			
 			<!-- 手机号 -->
 			<div v-show="!enableUserPwdBox">
 				<div v-show="current == 0">
 					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入手机号 (11位)"
-						class="mobile" focus v-model="mobile" type="number" maxlength="11" />
-					<div :class="!enableFetchCode ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
-						获取验证码
+						class="mobile" v-model="mobile" type="number" maxlength="11" />
+					<div :class="!enableFetchCode || !inviteCodeValid ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
+						{{ inviteCodeValid ? '获取验证码' : '请先输入邀请码' }}
 					</div>
 				</div>
 				<!-- 输入验证码 -->
@@ -45,34 +60,78 @@
 				</div>
 			</div>
 
-			<div class="flex" v-show="current != 1">
-				<u-checkbox-group :icon-size="24" width="45rpx">
-					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
-				</u-checkbox-group>
-				<div class="tips">
-					目前内测阶段，仅限已有账号登录。登录即代表您已同意<span @click="navigateToPrivacy('PRIVACY_POLICY')">《隐私协议》</span>
-					<span @click="navigateToPrivacy('USER_AGREEMENT')">
-						《用户协议》
-					</span>
-					<div style="color: #999; font-size: 24rpx; margin-top: 10rpx;">
-						如需注册请联系：ss@maollar.com
+			<!-- 第三方登录区域（需要邀请码） -->
+			<div v-if="current != 1 && !enableUserPwdBox" class="third-party-section">
+				<div class="section-divider">
+					<div class="divider-line"></div>
+					<div class="divider-text">第三方账号登录</div>
+					<div class="divider-line"></div>
+				</div>
+				
+				<!-- 邀请码输入 -->
+				<div class="invite-code-section">
+					<u-input 
+						:custom-style="inviteCodeInputStyle" 
+						:placeholder-style="placeholderStyle" 
+						placeholder="🔐 输入邀请码"
+						class="invite-code-input" 
+						v-model="inviteCode" 
+						maxlength="20"
+						@input="checkInviteCode" />
+					<div v-if="inviteCodeError" class="invite-code-error">{{ inviteCodeError }}</div>
+					<div v-if="inviteCodeValid" class="invite-code-success">✓ 验证成功</div>
+				</div>
+
+				<!-- Google/Apple 按钮 -->
+				<div class="flex login-list">
+					<div 
+						v-if="item.code" 
+						:style="{ background: inviteCodeValid ? item.color : '#cccccc', opacity: inviteCodeValid ? 1 : 0.5 }" 
+						class="login-item"
+						v-for="(item, index) in loginList" 
+						:key="index">
+						<u-icon 
+							v-if="item.title != 'Apple'" 
+							color="#fff" 
+							size="36" 
+							:name="item.icon"
+							@click="navigateLogin(item)">
+						</u-icon>
+						<u-image 
+							v-else 
+							src="/static/appleidButton@2x.png" 
+							:lazy-load="false" 
+							@click="navigateLogin(item)"
+							width="70" 
+							height="70" />
 					</div>
+				</div>
+				<div v-if="!inviteCodeValid" class="login-list-tip">
+					输入邀请码后可使用 Google/Apple 登录
 				</div>
 			</div>
 
-			<div v-if="current != 1" class="user-password-tips" @click="enableUserPwdBox = !enableUserPwdBox">
-				{{ !enableUserPwdBox ? "帐号密码" : "手机号" }}登录
+			<!-- 底部分隔线 + 账号密码登录 -->
+			<div v-if="current != 1" class="bottom-section">
+				<div class="section-divider">
+					<div class="divider-line"></div>
+					<div class="divider-text">其他登录方式</div>
+					<div class="divider-line"></div>
+				</div>
+				
+				<div class="user-password-tips" @click="enableUserPwdBox = !enableUserPwdBox">
+					<u-icon name="lock-fill" size="16" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
+					{{ !enableUserPwdBox ? "使用账号密码登录" : "返回手机号登录" }}
+				</div>
 			</div>
 
-			<!-- 循环出当前可使用的第三方登录模式 -->
-			<div class="flex login-list">
-				<div v-if="item.code" :style="{ background: item.color }" class="login-item"
-					v-for="(item, index) in loginList" :key="index">
-					<u-icon v-if="item.title != 'APPLE'" color="#fff" size="42" :name="item.icon"
-						@click="navigateLogin(item)">
-					</u-icon>
-					<u-image v-else src="/static/appleidButton@2x.png" :lazy-load="false" @click="navigateLogin(item)"
-						width="80" height="80" />
+			<!-- 隐私协议（移到最底部） -->
+			<div class="flex privacy-section" v-show="current != 1">
+				<u-checkbox-group :icon-size="20" width="40rpx">
+					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
+				</u-checkbox-group>
+				<div class="tips">
+					登录即代表您已同意<span @click="navigateToPrivacy('PRIVACY_POLICY')">《隐私协议》</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">《用户协议》</span>
 				</div>
 			</div>
 			<myVerification v-if="codeFlag" @send="verification" class="verification" ref="verification"
@@ -160,19 +219,30 @@
 					color: "#333",
 				},
 				placeholderStyle: "font-size: 32rpx;line-height: 32rpx;color: #999999;",
+				
+				// 邀请码相关
+				inviteCode: "",
+				inviteCodeValid: false,
+				inviteCodeError: "",
+				correctInviteCode: "OK4moto",
+				inviteCodeInputStyle: {
+					height: "70rpx",
+					"border": "2rpx solid #E0E0E0",
+					"border-radius": "8rpx",
+					"padding": "0 15rpx",
+					"letter-spacing": "1rpx",
+					"font-size": "28rpx",
+					"line-height": "28rpx",
+					color: "#333",
+				},
+				
 				loginList: [
-					//第三方登录集合
+					//第三方登录集合 - Google OAuth 2.0 + Apple（预留）
 					{
-						icon: "weixin-fill",
-						color: "#00a327",
-						title: "微信",
-						code: "WECHAT",
-					},
-					{
-						icon: "qq-fill",
-						color: "#38ace9",
-						title: "QQ",
-						code: "QQ",
+						icon: "google",
+						color: "#4285F4",
+						title: "Google",
+						code: "GOOGLE",
 					},
 					{
 						icon: "apple-fill",
@@ -192,30 +262,11 @@
 			storage.setUserInfo({});
 			// #endif
 
-
-			//#ifdef H5
-			let isWXBrowser = /micromessenger/i.test(navigator.userAgent);
-			if (isWXBrowser) {
-				webConnect("WECHAT").then((res) => {
-					let data = res.data;
-					if (data.success) {
-						window.location = data.result;
-					}
-				});
-			}
-			//#endif
+			// Google OAuth 将在点击登录按钮时触发
+			// 不需要自动检测浏览器类型
 		},
 
 		mounted() {
-
-			// #ifndef APP-PLUS
-			//判断是否微信浏览器
-			var ua = window.navigator.userAgent.toLowerCase();
-			if (ua.match(/MicroMessenger/i) == "micromessenger") {
-				this.wechatLogin = true;
-				return;
-			}
-			// #endif
 			/**
 			 * 条件编译判断当前客户端类型
 			 */
@@ -225,70 +276,13 @@
 
 			//#ifdef APP-PLUS
 			this.clientType = "APP";
-			/**如果是app 加载支持的登录方式*/
-			let _this = this;
-			uni.getProvider({
-				service: "oauth",
-				success: (result) => {
-					_this.loginList = result.provider.map((value) => {
-						//展示title
-						let title = "";
-						//系统code
-						let code = "";
-						//颜色
-						let color = "#8b8b8b";
-						//图标
-						let icon = "";
-						//uni 联合登录 code
-						let appcode = "";
-						switch (value) {
-							case "weixin":
-								icon = "weixin-circle-fill";
-								color = "#00a327";
-								title = "微信";
-								code = "WECHAT";
-								break;
-							case "qq":
-								icon = "qq-circle-fill";
-								color = "#38ace9";
-								title = "QQ";
-								code = "QQ";
-								break;
-							case "apple":
-								icon = "apple-fill";
-								color = "#000000";
-								title = "Apple";
-								code = "APPLE";
-								break;
-						}
-						return {
-							title: title,
-							code: code,
-							color: color,
-							icon: icon,
-							appcode: value,
-						};
-					});
-				},
-				fail: (error) => {
-					uni.showToast({
-						title: "获取登录通道失败" + error,
-						duration: 2000,
-						icon: "none",
-					});
-				},
-			});
+			// Google OAuth 统一使用 Web OAuth 流程
+			// 不依赖 uni.getProvider，保持 loginList 为 Google
 			//#endif
 
-			//特殊平台，登录方式需要过滤
-			// #ifdef H5
-			this.methodFilter(["QQ"]);
-			// #endif
-
-			//微信小程序，只支持微信登录
-			// #ifdef MP-WEIXIN
-			this.methodFilter(["WECHAT"]);
-			// #endif
+			// Google OAuth 和 Apple 适用于所有平台（H5, APP, 小程序）
+			// 使用统一的 Web OAuth 2.0 流程
+			this.methodFilter(["GOOGLE", "APPLE"]);
 		},
 		watch: {
 			current(val) {
@@ -542,8 +536,54 @@
 					uni.setStorageSync("openid", res.data);
 				});
 			},
-			/**跳转到登录页面 */
+			/**检查邀请码 */
+			checkInviteCode() {
+				// 实时验证邀请码
+				if (this.inviteCode === this.correctInviteCode) {
+					this.inviteCodeValid = true;
+					this.inviteCodeError = "";
+				} else if (this.inviteCode.length > 0) {
+					this.inviteCodeValid = false;
+					this.inviteCodeError = "邀请码错误，请重新输入";
+				} else {
+					this.inviteCodeValid = false;
+					this.inviteCodeError = "";
+				}
+			},
+			
+			/**跳转到登录页面 - Google OAuth 2.0 + Apple（预留）*/
 			navigateLogin(connectLogin) {
+				// 1. 检查邀请码
+				if (!this.inviteCodeValid) {
+					uni.showToast({
+						title: "请先输入正确的邀请码",
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+				
+				// 2. 检查隐私协议
+				if (!this.enablePrivacy) {
+					uni.showToast({
+						title: "请先同意用户隐私协议",
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+				
+				// 3. 如果是 Apple 登录，提示暂未开放
+				if (connectLogin.code === 'APPLE') {
+					uni.showToast({
+						title: "Apple 登录即将开放，敬请期待",
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+
+				// Google OAuth 统一使用 Web OAuth 流程
 				// #ifdef H5
 				let code = connectLogin.code;
 				let buyer = api.buyer;
@@ -552,8 +592,32 @@
 					"_self"
 				);
 				// #endif
+				
 				// #ifdef APP-PLUS
-				this.nonH5OpenId(connectLogin);
+				// APP 端也使用 Web OAuth 流程，通过 WebView 打开
+				let code = connectLogin.code;
+				let buyer = api.buyer;
+				let url = buyer + `/passport/connect/connect/login/web/` + code;
+				
+				// 使用内置浏览器打开 OAuth 授权页面
+				plus.runtime.openURL(url, function(res) {
+					console.log('OAuth opened:', res);
+				}, function(e) {
+					uni.showToast({
+						title: "无法打开登录页面",
+						duration: 2000,
+						icon: "none",
+					});
+				});
+				// #endif
+
+				// #ifdef MP
+				// 小程序端使用 Web View 组件或提示用户在浏览器中登录
+				uni.showToast({
+					title: "请在浏览器中使用Google登录",
+					duration: 3000,
+					icon: "none",
+				});
 				// #endif
 			},
 
@@ -709,6 +773,17 @@
 
 			// 发送验证码
 			fetchCode() {
+				// 1. 检查邀请码（手机号登录需要邀请码）
+				if (!this.inviteCodeValid) {
+					uni.showToast({
+						title: "请先输入正确的邀请码",
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+				
+				// 2. 检查隐私协议
 				if (!this.enablePrivacy) {
 					uni.showToast({
 						title: "请同意用户隐私",
@@ -718,6 +793,7 @@
 					return false;
 				}
 
+				// 3. 检查手机号格式
 				if (!this.$u.test.mobile(this.mobile)) {
 					uni.showToast({
 						title: "请填写正确手机号",
@@ -760,24 +836,24 @@
 	}
 
 	.title {
-		padding-top: calc(104rpx);
+		padding-top: calc(40rpx);
 		font-style: normal;
 		line-height: 1;
 		font-weight: 500;
-		font-size: 56rpx;
+		font-size: 48rpx;
 		color: #333;
 	}
 
 	.box-code {
-		margin-top: 78rpx;
+		margin-top: 40rpx;
 	}
 
 	.desc,
 	.desc-light {
-		font-size: 32rpx;
-		line-height: 32rpx;
+		font-size: 28rpx;
+		line-height: 28rpx;
 		color: #333333;
-		margin-top: 40rpx;
+		margin-top: 20rpx;
 	}
 
 	.desc {
@@ -794,7 +870,7 @@
 	}
 
 	.mobile {
-		margin-top: 80rpx;
+		margin-top: 20rpx;
 	}
 
 	.disable {
@@ -808,7 +884,7 @@
 	.btn {
 		border-radius: 100px;
 		width: 590rpx;
-		margin-top: 97rpx;
+		margin-top: 30rpx;
 		height: 80rpx;
 		font-size: 30rpx;
 		line-height: 80rpx;
@@ -817,9 +893,9 @@
 	}
 
 	.tips {
-		font-size: 12px;
-		line-height: 20px;
-		margin-top: 32rpx;
+		font-size: 11px;
+		line-height: 18px;
+		margin-top: 20rpx;
 		width: 546rpx;
 
 		>span {
@@ -836,33 +912,141 @@
 		border-radius: 100rpx;
 		font-size: 28rpx;
 		color: #999;
+		margin: 40rpx auto 0 auto;
+	}
 
-		margin: 71rpx auto 0 auto;
+	/* 邀请码相关样式 - 紧凑版 */
+	.invite-code-section-top {
+		width: 590rpx;
+		margin: 30rpx auto 20rpx;
+		padding: 15rpx;
+		background: #f8f9fa;
+		border-radius: 8rpx;
+		border: 2rpx dashed #ff8a19;
+	}
+
+	.invite-code-title-small {
+		font-size: 24rpx;
+		color: #ff8a19;
+		font-weight: 500;
+		margin-bottom: 10rpx;
+		text-align: center;
+	}
+	
+	.invite-code-section {
+		width: 590rpx;
+		margin: 20rpx auto 15rpx;
+		padding: 15rpx;
+		background: #f8f9fa;
+		border-radius: 8rpx;
+		border: 2rpx dashed #ff8a19;
+	}
+
+	.invite-code-title {
+		font-size: 26rpx;
+		color: #333;
+		font-weight: 500;
+		margin-bottom: 10rpx;
+		text-align: center;
+	}
+
+	.invite-code-input {
+		width: 100%;
+	}
+
+	.invite-code-error {
+		color: #ff5e00;
+		font-size: 22rpx;
+		margin-top: 8rpx;
+		text-align: center;
+	}
+
+	.invite-code-success {
+		color: #4caf50;
+		font-size: 22rpx;
+		margin-top: 8rpx;
+		text-align: center;
+		font-weight: 500;
 	}
 
 	.login-list {
 		display: flex;
 		width: 590rpx;
-		position: absolute;
-		top: 1200rpx;
+		margin: 15rpx auto;
 		align-items: center;
 		justify-content: center;
+		gap: 40rpx;
+	}
+	
+	.login-list-tip {
+		width: 590rpx;
+		margin: 10rpx auto;
+		text-align: center;
+		font-size: 22rpx;
+		color: #999;
 	}
 
 	.login-item {
-		width: 80rpx;
+		width: 70rpx;
 		border-radius: 10rpx;
-		height: 80rpx;
+		height: 70rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		margin: 0 15rpx;
+	}
 
-		margin: 0 20rpx;
+	/* 分隔线样式 */
+	.section-divider {
+		display: flex;
+		align-items: center;
+		width: 590rpx;
+		margin: 20rpx auto 15rpx;
+	}
+
+	.divider-line {
+		flex: 1;
+		height: 1rpx;
+		background: #e0e0e0;
+	}
+
+	.divider-text {
+		padding: 0 15rpx;
+		font-size: 24rpx;
+		color: #999;
+	}
+
+	/* 第三方登录区域 */
+	.third-party-section {
+		margin: 15rpx 0;
+	}
+
+	/* 底部区域 */
+	.bottom-section {
+		margin: 15rpx 0;
+		text-align: center;
+	}
+
+	/* 隐私协议区域 */
+	.privacy-section {
+		margin-top: 20rpx;
+		padding-top: 15rpx;
+		border-top: 1rpx solid #f0f0f0;
+		width: 590rpx;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.user-password-tips {
 		text-align: center;
 		color: $main-color;
-		margin: 20px 0;
+		padding: 15rpx 30rpx;
+		margin: 0 auto;
+		font-size: 28rpx;
+		border: 1rpx solid #ff5e00;
+		border-radius: 50rpx;
+		width: fit-content;
+		display: inline-flex;
+		align-items: center;
 	}
 </style>

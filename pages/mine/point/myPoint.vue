@@ -1,31 +1,55 @@
 <template>
   <view class="content">
+    <u-navbar :title="$t('points.title')" :is-back="true"></u-navbar>
+    
     <view class="portrait-box">
       <image src="/static/pointTrade/point_bg_1.png" mode=""></image>
       <image class="point-img" src="/static/pointTrade/tradehall.png" />
       <view class="position-point">
-       
-
+        <view class="balance-display">
+          <text class="balance-label">{{ $t('points.available') }}</text>
+          <text class="balance-amount">{{ pointData.point || 0 }}</text>
+        </view>
       </view>
     </view>
+    
     <u-row class="portrait-box2">
       <u-col span="6" class="portrait-box2-col" :gutter="16">
-        <text>累计获得：</text>
+        <text>{{ $t('points.total') }}：</text>
         <text class="pcolor">{{ pointData.totalPoint || 0 }}</text>
       </u-col>
       <u-col span="6" class="portrait-box2-col">
-        <text>剩余喵币：</text>
-        <text class="pcolor">{{ pointData.point || 0 }}</text>
+        <text>{{ $t('points.used') }}：</text>
+        <text class="pcolor">{{ (pointData.totalPoint || 0) - (pointData.point || 0) }}</text>
       </u-col>
     </u-row>
 
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn" @click="navigateTo('/pages/promotion/point/pointList')">
+        <u-icon name="shopping-cart" size="36"></u-icon>
+        <text>{{ $t('points.pointsMall') }}</text>
+      </button>
+      <button class="action-btn" @click="showPointsRule">
+        <u-icon name="info-circle" size="36"></u-icon>
+        <text>{{ $t('points.pointsRule') }}</text>
+      </button>
+    </view>
+
+    <!-- 喵币明细 -->
+    <view class="section-title">{{ $t('points.pointsDetail') }}</view>
     <div class="point-list">
+      <view v-if="pointList.length === 0" class="empty-state">
+        <u-empty mode="list" :text="$t('points.noRecord')"></u-empty>
+      </view>
       <view class="point-item" v-for="(item, index) in pointList" :key="index">
         <view>
           <view class="point-label">{{ item.content }}</view>
-          <view>{{ item.createTime}}</view>
+          <view class="point-time">{{ item.createTime}}</view>
         </view>
-        <view :class="[item.pointType == 'INCREASE' ? 'plus' : 'reduce']"><span>{{item.pointType == "INCREASE" ? '+' : '-'}}</span>{{ item.variablePoint }}</view>
+        <view :class="[item.pointType == 'INCREASE' ? 'plus' : 'reduce']">
+          <span>{{item.pointType == "INCREASE" ? '+' : '-'}}</span>{{ item.variablePoint }}
+        </view>
       </view>
       <uni-load-more :status="count.loadStatus"></uni-load-more>
     </div>
@@ -69,7 +93,7 @@ export default {
     getList() {
       let params = this.params;
       uni.showLoading({
-        title: "加载中",
+        title: this.$t('common.loading'),
       });
       getPointsData(params).then((res) => {
          if (this.$store.state.isShowToast){ uni.hideLoading() };
@@ -94,6 +118,25 @@ export default {
         this.pointData = res.data.result;
       });
     },
+    
+    /**
+     * 页面跳转
+     */
+    navigateTo(url) {
+      uni.navigateTo({ url });
+    },
+    
+    /**
+     * 显示喵币规则
+     */
+    showPointsRule() {
+      uni.showModal({
+        title: this.$t('points.pointsRule'),
+        content: '1. 购物即可获得喵币奖励\n2. 签到、评价、邀请好友也可获得喵币\n3. 喵币可兑换商品或提现\n4. 喵币永久有效，不会过期',
+        showCancel: false,
+        confirmText: this.$t('common.confirm')
+      });
+    }
   },
 };
 </script>
@@ -175,8 +218,8 @@ export default {
 
 .portrait-box {
   background-color: $main-color;
-  height: 250rpx;
-   background: linear-gradient(91deg, $light-color 1%, $aider-light-color 99%);
+  height: 280rpx;
+  background: linear-gradient(135deg, $light-color 0%, $aider-light-color 100%);
   border-radius: 20rpx 20rpx 0 0;
   margin: 20rpx 20rpx 0;
   position: relative;
@@ -193,37 +236,96 @@ export default {
     left: 0;
     bottom: 0;
     transform: rotateY(180deg);
+    opacity: 0.3;
   }
 
   .position-point {
-    position: absolute;
-    right: -2rpx;
-    top: 0;
-
-    .apply-point {
-      margin-top: 30rpx;
+    position: relative;
+    z-index: 10;
+    
+    .balance-display {
       text-align: center;
-      line-height: 40rpx;
-      font-size: $font-sm;
-      color: #ffffff;
-      width: 142rpx;
-      height: 40rpx;
-      background: rgba(#ffffff, 0.2);
-      border-radius: 20rpx 0px 0px 20rpx;
+      
+      .balance-label {
+        display: block;
+        font-size: 28rpx;
+        color: #fff;
+        opacity: 0.9;
+        margin-bottom: 10rpx;
+      }
+      
+      .balance-amount {
+        display: block;
+        font-size: 64rpx;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 4rpx 8rpx rgba(0,0,0,0.1);
+      }
     }
   }
+  
   .point-img {
     height: 108rpx;
     width: 108rpx;
-    margin-bottom: 30rpx;
-  }
-  .point {
-    font-size: 56rpx;
+    margin-bottom: 20rpx;
   }
   
 }
 .point-label{
     font-weight: bold;
     margin-bottom: 10rpx;
+}
+
+.point-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 5rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx 20rpx;
+  background: #fff;
+  margin: 0 20rpx;
+  border-radius: 0 0 20rpx 20rpx;
+  
+  .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25rpx 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15rpx;
+    border: none;
+    
+    &::after {
+      border: none;
+    }
+    
+    text {
+      margin-top: 10rpx;
+      font-size: 26rpx;
+      color: #333;
+    }
+  }
+}
+
+/* 区块标题 */
+.section-title {
+  padding: 30rpx 20rpx 20rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  background: #f9f9f9;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 80rpx 0;
+  background: #fff;
 }
 </style>

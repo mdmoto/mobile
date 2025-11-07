@@ -1,5 +1,5 @@
 /**
- * 信任登录相关API
+ * 信任登录相关API - Google OAuth 2.0
  */
 
 import {
@@ -10,12 +10,27 @@ const request = http.request;
 
 
 /**
- * web 第三方登录
+ * web 第三方登录 - Google OAuth 2.0
  * @param {Object} code
  */
 export function webConnect(code) {
 	return http.request({
 		url: `passport/connect/connect/login/web/${code}`,
+		method: Method.GET,
+		needToken: true,
+		header: {
+			"clientType": "H5"
+		}
+	});
+}
+
+/**
+ * Google OAuth 登录
+ * @param {String} provider - 登录提供商（GOOGLE）
+ */
+export function googleLogin() {
+	return http.request({
+		url: `passport/connect/connect/login/web/GOOGLE`,
 		method: Method.GET,
 		needToken: true,
 		header: {

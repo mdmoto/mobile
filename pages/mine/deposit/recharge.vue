@@ -1,19 +1,21 @@
 
 <template>
   <view>
+    <u-navbar :title="$t('deposit.recharge')" :is-back="true"></u-navbar>
+    
     <view class="-list">
-      <view class="title">充值金额</view>
+      <view class="title">{{ $t('deposit.rechargeAmount') }}</view>
       <view class="content">
         <view class="price">
           <span> ￥</span>
-          <u-input v-model="price" placeholder='金额' type="number" />
+          <u-input v-model="price" :placeholder="$t('deposit.rechargeAmount')" type="number" />
 					
         </view>
 
       </view>
     </view>
 
-    <view class="submit" :class="{'light':flag}" @click="handlerRecharge">充值</view>
+    <view class="submit" :class="{'light':flag}" @click="handlerRecharge">{{ $t('deposit.confirmRecharge') }}</view>
   </view>
 </template>
 <script>

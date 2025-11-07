@@ -4,19 +4,19 @@
       <div class="box">
         <div class="circle-box">
           <div class="cricle" @click="signIn()">
-            <span v-if="!ifSign" :class="{ active: signFlag || ifSign }">签到</span>
+            <span v-if="!ifSign" :class="{ active: signFlag || ifSign }">{{ $t('common.signIn') }}</span>
             <span v-else :class="{ active: signFlag || ifSign }"
-              :style="ifSign ? 'transform: rotateY(0deg);' : ''">已签</span>
+              :style="ifSign ? 'transform: rotateY(0deg);' : ''">{{ $t('points.signed') }}</span>
           </div>
         </div>
-        <text class="tips">坚持每天连续签到可以获多重奖励哦</text>
+        <text class="tips">{{ $t('points.signInTips') }}</text>
       </div>
     </view>
     <div class="date-card">
       <view class="date-con">
         <view class="date-tit">
           <div class="current-month">
-            <div class="day">每日记录<span> ({{ currentMonth }})</span></div>
+            <div class="day">{{ $t('points.dailyRecord') }}<span> ({{ currentMonth }})</span></div>
           </div>
         </view>
         <view class="week">
@@ -50,12 +50,12 @@
     <view class="mask" :class="{ show: maskFlag, trans: transFlag }" ref="mask">
       <view class="mask-header">
         <text class="close"></text>
-        <text>签到成功</text>
+        <text>{{ $t('points.signInSuccess') }}</text>
         <text class="close" @click="close">×</text>
       </view>
       <view class="mask-con">
         <u-icon size="120" style="margin: 50rpx 0" :color="aiderLightColor" name="checkmark"></u-icon>
-        <text class="text">连续签到可获得额外奖励哦！</text>
+        <text class="text">{{ $t('points.signInTips') }}</text>
       </view>
     </view>
   </view>

@@ -1,12 +1,12 @@
 <template>
   <view class="category-wrap">
     <u-navbar class="navbar" :is-back="false">
-      <div class="title">商品分类</div>
+      <div class="title">{{ $t('category.title') }}</div>
       <!-- #ifdef H5 -->
-      <u-search class="nav-search"  @click.native="search" placeholder="搜索商品" :show-action="false"></u-search>
+      <u-search class="nav-search"  @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
       <!-- #endif -->
       <!-- #ifndef H5 -->
-      <u-search class="nav-search" disabled @click.native="search" placeholder="搜索商品" :show-action="false"></u-search>
+      <u-search class="nav-search" disabled @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
       <!-- #endif -->
     </u-navbar>
     <view class="content">

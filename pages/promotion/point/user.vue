@@ -1,11 +1,14 @@
 <template>
   <div class="user-point">
-    <!-- <div class="point-rule">喵币规则</div> -->
     <div class="point-wrapper">
       <u-image shape="circle" :lazy-load="true" width="100" height="100"
         :src="userInfo.face || '/static/missing-face.png'"></u-image>
       <div class="whether-point">
-        <div>你的可用喵币：<span class="point">{{userInfo.point || 0}}</span></div>
+        <div class="point-label">{{ $t('points.available') }}</div>
+        <div class="point-value">
+          <span class="point">{{userInfo.point || 0}}</span>
+          <text class="point-unit">{{ $t('points.myPoints') }}</text>
+        </div>
       </div>
     </div>
   </div>
@@ -33,28 +36,45 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-point {
-  padding: 0 20rpx;
-  height: 300rpx;
-  background: url("/static/point-bg.png") no-repeat;
+  padding: 20rpx;
+  height: 180rpx;
+  background: linear-gradient(135deg, rgba(#667eea, 0.8) 0%, rgba(#764ba2, 0.8) 100%), url("/static/point-bg.png") no-repeat;
   background-size: 100%;
+  border-radius: 20rpx;
+  margin: 20rpx;
 }
-.point {
-  font-size: 40rpx;
-}
-.point-rule {
-  color: #fff;
-  display: flex;
-  justify-content: flex-end;
-  padding: 20rpx 0;
-}
+
 .point-wrapper {
-  padding-top: 80rpx;
   display: flex;
+  align-items: center;
+  padding-top: 20rpx;
 }
+
 .whether-point {
   color: #fff;
   margin-left: 30rpx;
-  font-size: 36rpx;
-  font-weight: bold;
+  flex: 1;
+  
+  .point-label {
+    font-size: 26rpx;
+    opacity: 0.9;
+    margin-bottom: 8rpx;
+  }
+  
+  .point-value {
+    display: flex;
+    align-items: baseline;
+    
+    .point {
+      font-size: 48rpx;
+      font-weight: bold;
+      margin-right: 8rpx;
+    }
+    
+    .point-unit {
+      font-size: 24rpx;
+      opacity: 0.8;
+    }
+  }
 }
 </style>

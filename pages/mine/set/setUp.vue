@@ -12,6 +12,18 @@
     <view style="height: 20rpx; width: 100%"></view>
     <!-- #endif -->
     <u-cell-group :border="false">
+      <!-- 语言设置 -->
+      <u-cell-item 
+        :title="$t('user.language')" 
+        :arrow="true" 
+        @click="showLanguagePicker = true"
+      >
+        <view slot="right" class="current-lang">
+          <text class="lang-flag">{{ currentLangFlag }}</text>
+          <text class="lang-name">{{ currentLangName }}</text>
+        </view>
+      </u-cell-item>
+      
       <!-- #ifdef APP-PLUS -->
       <u-cell-item title="清除缓存" :value="fileSizeString" @click="clearCache"></u-cell-item>
       <!-- #endif -->
@@ -24,12 +36,24 @@
       <!-- #endif -->
       <u-cell-item :title="`关于${config.name}`" @click="navigateTo('/pages/mine/set/editionIntro')"></u-cell-item>
     </u-cell-group>
+    
+    <!-- 语言选择器 -->
+    <u-picker
+      v-model="showLanguagePicker"
+      mode="selector"
+      :range="languageList"
+      range-key="name"
+      :default-selector="[currentLangIndex]"
+      @confirm="changeLanguage"
+    ></u-picker>
     <view class="submit" v-if="userInfo.id" @click="quiteLoginOut">退出登录</view>
   </view>
 </template>
 
 <script>
 import config from "@/config/config";
+import { setLanguage, getCurrentLanguage, getLanguageList } from '@/lang';
+
 export default {
   data() {
     return {
@@ -38,10 +62,53 @@ export default {
       isCertificate: false,
       userInfo: {},
       fileSizeString: "0B",
+      // 多语言相关
+      showLanguagePicker: false,
+      languageList: getLanguageList()
     };
+  },
+  
+  computed: {
+    currentLang() {
+      return getCurrentLanguage();
+    },
+    
+    currentLangIndex() {
+      return this.languageList.findIndex(lang => lang.code === this.currentLang);
+    },
+    
+    currentLangName() {
+      const lang = this.languageList.find(lang => lang.code === this.currentLang);
+      return lang ? lang.name : '简体中文';
+    },
+    
+    currentLangFlag() {
+      const lang = this.languageList.find(lang => lang.code === this.currentLang);
+      return lang ? lang.flag : '🇨🇳';
+    }
   },
 
   methods: {
+    // 切换语言
+    changeLanguage(index) {
+      const selectedLang = this.languageList[index[0]];
+      
+      if (selectedLang.code !== this.currentLang) {
+        setLanguage(selectedLang.code);
+        
+        uni.showToast({
+          title: this.$t('message.operationSuccess'),
+          icon: 'success'
+        });
+        
+        // 1秒后重新加载页面使语言生效
+        setTimeout(() => {
+          uni.reLaunch({
+            url: '/pages/mine/set/setUp'
+          });
+        }, 1000);
+      }
+    },
     navigateTo(url) {
       if (url == "/pages/set/securityCenter/securityCenter") {
         url += `?mobile=${this.userInfo.mobile}`;
@@ -164,6 +231,21 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.current-lang {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  
+  .lang-flag {
+    font-size: 36rpx;
+  }
+  
+  .lang-name {
+    font-size: 28rpx;
+    color: #666;
+  }
+}
+
 .submit {
   height: 90rpx;
   line-height: 90rpx;

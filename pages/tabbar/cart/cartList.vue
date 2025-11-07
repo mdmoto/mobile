@@ -1,16 +1,16 @@
 <template>
   <div class="wrapper">
-    <u-navbar :is-back="false" title="购物车">
+    <u-navbar :is-back="false" :title="$t('cart.title')">
       <div slot="right">
-        <div class="light-color edit" @click="isEdit = !isEdit">{{ !isEdit ? '编辑' : '完成'}}</div>
+        <div class="light-color edit" @click="isEdit = !isEdit">{{ !isEdit ? $t('common.edit') : $t('common.complete')}}</div>
       </div>
     </u-navbar> 
     <!-- 空白页-->
     <view v-if="!loading && (cartDetail.cartList == '' || cartDetail.cartList == [] || !cartDetail)" class="empty">
       <image src="/static/emptyCart.png" mode="aspectFit"></image>
       <view class="empty-tips">
-        空空如也
-        <navigator class="navigator" url="/pages/tabbar/home/index" open-type="switchTab">随便逛逛></navigator>
+        {{ $t('cart.empty') }}
+        <navigator class="navigator" url="/pages/tabbar/home/index" open-type="switchTab">{{ $t('cart.goShopping') }}></navigator>
       </view>
     </view>
     <!-- 店铺商品信息 -->

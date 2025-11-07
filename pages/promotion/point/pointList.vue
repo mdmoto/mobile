@@ -1,5 +1,6 @@
 <template>
   <view class="index">
+    <u-navbar :title="$t('points.pointsMall')" :is-back="true"></u-navbar>
     <user-point />
     <view class="index-head">
       <scroll-view scroll-x class="list-scroll-content" :scroll-left="currentLeft" scroll-with-animation>
