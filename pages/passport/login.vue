@@ -718,11 +718,21 @@
 
 			// 验证码验证
 			verification(val) {
+				console.log('验证码验证回调:', val, 'store key:', this.$store.state.verificationKey);
 				this.flage = val == this.$store.state.verificationKey ? true : false;
+				console.log('验证结果:', this.flage);
 				
 				// 如果是注册模式且验证通过，自动发送邮箱验证码
 				if (this.flage && this.isRegisterMode && this.current === 0) {
+					console.log('验证通过，准备发送邮箱验证码');
 					this.sendEmailCodeAfterVerification();
+				} else if (!this.flage) {
+					console.log('验证失败');
+					uni.showToast({
+						title: "验证失败，请重试",
+						duration: 2000,
+						icon: "none",
+					});
 				}
 			},
 			// 跳转
@@ -807,6 +817,17 @@
 
 			// 发送邮箱验证码（验证码验证通过后调用）
 			async sendEmailCodeAfterVerification() {
+				// 再次检查验证码验证状态
+				if (!this.flage) {
+					console.error('验证码验证状态为false，无法发送邮箱验证码');
+					uni.showToast({
+						title: "请先完成验证码验证",
+						duration: 2000,
+						icon: "none",
+					});
+					return;
+				}
+				
 				// 检查邮箱格式
 				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!emailRegex.test(this.email)) {
@@ -825,7 +846,7 @@
 				});
 				
 				try {
-					console.log('开始发送邮箱验证码:', this.email);
+					console.log('开始发送邮箱验证码:', this.email, '验证状态:', this.flage);
 					const res = await sendEmail(this.email, 'REGISTER');
 					console.log('邮箱验证码响应:', res);
 					uni.hideLoading();
@@ -930,11 +951,28 @@
 						return;
 					}
 					
-					// 否则先显示验证码验证组件
-					if (this.$refs.verification) {
-						this.$refs.verification.show();
-						this.codeFlag = true;
-					}
+					// 确保验证码组件显示
+					console.log('准备显示验证码组件, codeFlag:', this.codeFlag);
+					this.codeFlag = true;
+					
+					// 使用 $nextTick 确保组件已经渲染
+					this.$nextTick(() => {
+						console.log('nextTick回调, verification ref:', this.$refs.verification);
+						if (this.$refs.verification) {
+							// 重新获取验证码图片
+							this.$refs.verification.getCode();
+							// 显示验证码组件
+							this.$refs.verification.show();
+							console.log('验证码组件已显示');
+						} else {
+							console.error('验证码组件引用不存在, codeFlag:', this.codeFlag);
+							uni.showToast({
+								title: "验证码组件加载失败，请刷新页面重试",
+								duration: 2000,
+								icon: "none",
+							});
+						}
+					});
 					return;
 				}
 

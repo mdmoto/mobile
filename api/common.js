@@ -38,7 +38,7 @@ export const upload = api.common + "/common/upload/file";
  */
 export function sendEmail(email, verificationEnums = 'REGISTER') {
   return http.request({
-    url: `${api.common}/common/common/email/${verificationEnums}/${email}`,
+    url: `${api.common}/common/email/${verificationEnums}/${email}`,
     method: Method.GET,
     message: false,
   });
