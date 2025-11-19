@@ -6,7 +6,8 @@
 				<div class="title">{{ loginTitleWay[current].title }}</div>
 				<div :class="current == 1 ? 'desc-light' : 'desc'">
 					{{ loginTitleWay[current].desc
-          }}<span v-if="current == 1">{{ mobile | secrecyMobile }}</span>
+          }}<span v-if="current == 1 && isRegisterMode">{{ email }}</span>
+          <span v-if="current == 1 && !isRegisterMode">{{ mobile | secrecyMobile }}</span>
 				</div>
 			</div>
 			
@@ -24,18 +25,23 @@
 				<div v-if="inviteCodeValid" class="invite-code-success">✓ 验证成功</div>
 			</div>
 			
-			<!-- 手机号 -->
-			<div v-show="!enableUserPwdBox">
+			<!-- 注册模式：邮箱输入 -->
+			<div v-show="!enableUserPwdBox && isRegisterMode">
 				<div v-show="current == 0">
-					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入手机号 (11位)"
-						class="mobile" v-model="mobile" type="number" maxlength="11" />
+					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入邮箱地址"
+						class="mobile" v-model="email" type="text" />
 					<div :class="!enableFetchCode || !inviteCodeValid ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
 						{{ inviteCodeValid ? '获取验证码' : '请先输入邀请码' }}
+					</div>
+					<!-- 手机号注册稍后开放提示 -->
+					<div class="mobile-register-hint">
+						<u-icon name="info-circle" size="14" color="#999" style="margin-right: 5rpx;"></u-icon>
+						<span>手机号注册功能即将开放，敬请期待</span>
 					</div>
 				</div>
 				<!-- 输入验证码 -->
 				<div v-show="current == 1" class="box-code">
-					<verifyCode type="bottom" @confirm="submit" boxActiveColor="#D8D8D8" v-model="code" isFocus
+					<verifyCode type="bottom" @confirm="submitRegister" boxActiveColor="#D8D8D8" v-model="code" isFocus
 						boxNormalColor="#D8D8D8" cursorColor="#D8D8D8" />
 
 					<div class="fetch-btn">
@@ -50,7 +56,7 @@
 
 			<!-- 帐号密码登录 -->
 			<div v-show="enableUserPwdBox">
-				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入用户名"
+				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入手机号/邮箱/用户名"
 					class="mobile" focus v-model="userData.username" />
 				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入密码"
 					class="mobile" focus v-model="userData.password" type="password" />
@@ -64,7 +70,7 @@
 			<div v-if="current != 1 && !enableUserPwdBox" class="third-party-section">
 				<div class="section-divider">
 					<div class="divider-line"></div>
-					<div class="divider-text">第三方账号登录</div>
+					<div class="divider-text">第三方账号注册</div>
 					<div class="divider-line"></div>
 				</div>
 				
@@ -107,7 +113,7 @@
 					</div>
 				</div>
 				<div v-if="!inviteCodeValid" class="login-list-tip">
-					输入邀请码后可使用 Google/Apple 登录
+					输入邀请码后可使用 Google/Apple 注册
 				</div>
 			</div>
 
@@ -121,7 +127,7 @@
 				
 				<div class="user-password-tips" @click="enableUserPwdBox = !enableUserPwdBox">
 					<u-icon name="lock-fill" size="16" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
-					{{ !enableUserPwdBox ? "使用账号密码登录" : "返回手机号登录" }}
+					{{ !enableUserPwdBox ? "使用账号密码登录" : "返回注册" }}
 				</div>
 			</div>
 
@@ -152,8 +158,12 @@
 	import {
 		sendMobile,
 		smsLogin,
-		userLogin
+		userLogin,
+		register
 	} from "@/api/login";
+	import {
+		sendEmail
+	} from "@/api/common";
 	import myVerification from "@/components/verification/verification.vue"; //验证码模块
 	import uuid from "@/utils/uuid.modified.js"; // uuid
 	import verifyCode from "@/components/verify-code/verify-code";
@@ -192,12 +202,12 @@
 				lightColor: this.$lightColor,
 				seconds: 60, //默认验证码等待时间
 				loginTitleWay: [{
-						title: "欢迎登录",
+						title: "欢迎注册",
 						desc: "登录后更精彩，美好生活即将开始",
 					},
 					{
 						title: "请输入验证码",
-						desc: "已经发送验证码至",
+						desc: "已经发送验证码至邮箱",
 					},
 				],
 				userData: {
@@ -224,7 +234,14 @@
 				inviteCode: "",
 				inviteCodeValid: false,
 				inviteCodeError: "",
-				correctInviteCode: "OK4moto",
+				validInviteCodes: [
+					"OK4MOTO",  // 之前的邀请码
+					"LJVLP9", "2Z2RWY", "L96HWH", "FGHVKE", "PKZTYN",
+					"GV3AXJ", "6PBY6L", "BSA6ND", "B4E7YT", "FHWC3X"
+				],
+				// 注册相关
+				email: "", // 邮箱
+				isRegisterMode: true, // 是否为注册模式
 				inviteCodeInputStyle: {
 					height: "70rpx",
 					"border": "2rpx solid #E0E0E0",
@@ -284,7 +301,7 @@
 			// 使用统一的 Web OAuth 2.0 流程
 			this.methodFilter(["GOOGLE", "APPLE"]);
 		},
-		watch: {
+			watch: {
 			current(val) {
 				val ? (this.showBack = true) : (this.showBack = false);
 			},
@@ -303,6 +320,17 @@
 				handler(val) {
 					if (val.length == 11) {
 						this.enableFetchCode = true;
+					}
+				},
+			},
+			email: {
+				handler(val) {
+					// 简单的邮箱格式验证
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (emailRegex.test(val)) {
+						this.enableFetchCode = true;
+					} else {
+						this.enableFetchCode = false;
 					}
 				},
 			},
@@ -538,11 +566,12 @@
 			},
 			/**检查邀请码 */
 			checkInviteCode() {
-				// 实时验证邀请码
-				if (this.inviteCode === this.correctInviteCode) {
+				// 实时验证邀请码（不区分大小写）
+				const code = this.inviteCode.trim().toUpperCase();
+				if (this.validInviteCodes.includes(code)) {
 					this.inviteCodeValid = true;
 					this.inviteCodeError = "";
-				} else if (this.inviteCode.length > 0) {
+				} else if (code.length > 0) {
 					this.inviteCodeValid = false;
 					this.inviteCodeError = "邀请码错误，请重新输入";
 				} else {
@@ -585,19 +614,19 @@
 
 				// Google OAuth 统一使用 Web OAuth 流程
 				// #ifdef H5
-				let code = connectLogin.code;
-				let buyer = api.buyer;
+				const oauthCode = connectLogin.code;
+				const oauthBuyer = api.buyer;
 				window.open(
-					buyer + `/passport/connect/connect/login/web/` + code,
+					oauthBuyer + `/passport/connect/connect/login/web/` + oauthCode,
 					"_self"
 				);
 				// #endif
 				
 				// #ifdef APP-PLUS
 				// APP 端也使用 Web OAuth 流程，通过 WebView 打开
-				let code = connectLogin.code;
-				let buyer = api.buyer;
-				let url = buyer + `/passport/connect/connect/login/web/` + code;
+				const oauthCode = connectLogin.code;
+				const oauthBuyer = api.buyer;
+				const url = oauthBuyer + `/passport/connect/connect/login/web/` + oauthCode;
 				
 				// 使用内置浏览器打开 OAuth 授权页面
 				plus.runtime.openURL(url, function(res) {
@@ -773,7 +802,7 @@
 
 			// 发送验证码
 			fetchCode() {
-				// 1. 检查邀请码（手机号登录需要邀请码）
+				// 1. 检查邀请码（注册需要邀请码）
 				if (!this.inviteCodeValid) {
 					uni.showToast({
 						title: "请先输入正确的邀请码",
@@ -793,7 +822,51 @@
 					return false;
 				}
 
-				// 3. 检查手机号格式
+				// 3. 注册模式：检查邮箱格式
+				if (this.isRegisterMode) {
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!emailRegex.test(this.email)) {
+						uni.showToast({
+							title: "请填写正确邮箱地址",
+							duration: 2000,
+							icon: "none",
+						});
+						return false;
+					}
+					
+					// 发送邮箱验证码
+					uni.showLoading({
+						title: "发送中...",
+					});
+					sendEmail(this.email, 'REGISTER').then((res) => {
+						uni.hideLoading();
+						if (res.data.success) {
+							this.current = 1;
+							this.$refs.uCode.start();
+							uni.showToast({
+								title: "验证码已发送至邮箱",
+								duration: 2000,
+								icon: "none",
+							});
+						} else {
+							uni.showToast({
+								title: res.data.message || "发送失败，请稍后重试",
+								duration: 2000,
+								icon: "none",
+							});
+						}
+					}).catch((err) => {
+						uni.hideLoading();
+						uni.showToast({
+							title: "发送失败，请稍后重试",
+							duration: 2000,
+							icon: "none",
+						});
+					});
+					return;
+				}
+
+				// 登录模式：检查手机号格式
 				if (!this.$u.test.mobile(this.mobile)) {
 					uni.showToast({
 						title: "请填写正确手机号",
@@ -820,6 +893,85 @@
 					this.$refs.verification.error(); //发送
 
 					return false;
+				}
+			},
+			
+			// 注册提交
+			async submitRegister() {
+				if (!this.inviteCodeValid) {
+					uni.showToast({
+						title: "请先输入正确的邀请码",
+						duration: 2000,
+						icon: "none",
+					});
+					return;
+				}
+				
+				if (!this.code || this.code.length !== 6) {
+					uni.showToast({
+						title: "请输入6位验证码",
+						duration: 2000,
+						icon: "none",
+					});
+					return;
+				}
+				
+				if (!this.email) {
+					uni.showToast({
+						title: "请填写邮箱地址",
+						duration: 2000,
+						icon: "none",
+					});
+					return;
+				}
+				
+				// 调用注册API
+				uni.showLoading({
+					title: "注册中...",
+				});
+				
+				try {
+					// 生成默认用户名（使用邮箱前缀）
+					const username = this.email.split('@')[0] || this.email;
+					
+					const params = {
+						email: this.email,
+						code: this.code,
+						password: this.userData.password || '123456', // 默认密码，实际应该让用户输入
+						username: username
+					};
+					
+					const res = await register(params, this.clientType);
+					uni.hideLoading();
+					
+					if (res.data.success) {
+						uni.showToast({
+							title: "注册成功！",
+							duration: 2000,
+							icon: "success",
+						});
+						
+						// 注册成功后自动登录
+						setTimeout(() => {
+							// 跳转到登录页面或自动登录
+							uni.switchTab({
+								url: "/pages/tabbar/home/index",
+							});
+						}, 1500);
+					} else {
+						uni.showToast({
+							title: res.data.message || "注册失败，请稍后重试",
+							duration: 2000,
+							icon: "none",
+						});
+					}
+				} catch (error) {
+					uni.hideLoading();
+					uni.showToast({
+						title: "注册失败，请稍后重试",
+						duration: 2000,
+						icon: "none",
+					});
 				}
 			},
 		},
@@ -1048,5 +1200,19 @@
 		width: fit-content;
 		display: inline-flex;
 		align-items: center;
+	}
+	
+	/* 手机号注册提示 */
+	.mobile-register-hint {
+		margin-top: 20rpx;
+		padding: 15rpx 20rpx;
+		background: #f5f5f5;
+		border-radius: 8rpx;
+		font-size: 24rpx;
+		color: #999;
+		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
