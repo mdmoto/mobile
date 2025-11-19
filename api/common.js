@@ -30,3 +30,16 @@ export function getIMDetail() {
  * @type {string}
  */
 export const upload = api.common + "/common/upload/file";
+
+/**
+ * 发送邮箱验证码
+ * @param email 邮箱地址
+ * @param verificationEnums 验证场景 (REGISTER, LOGIN, etc.)
+ */
+export function sendEmail(email, verificationEnums = 'REGISTER') {
+  return http.request({
+    url: `${api.common}/common/common/email/${verificationEnums}/${email}`,
+    method: Method.GET,
+    message: false,
+  });
+}

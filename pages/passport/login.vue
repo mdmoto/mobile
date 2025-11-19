@@ -141,7 +141,7 @@
 				</div>
 			</div>
 			<myVerification v-if="codeFlag" @send="verification" class="verification" ref="verification"
-				business="LOGIN" />
+				:business="isRegisterMode ? 'REGISTER' : 'LOGIN'" />
 		</div>
 		<view v-else>
 			<wechatH5Login />
@@ -719,6 +719,11 @@
 			// 验证码验证
 			verification(val) {
 				this.flage = val == this.$store.state.verificationKey ? true : false;
+				
+				// 如果是注册模式且验证通过，自动发送邮箱验证码
+				if (this.flage && this.isRegisterMode && this.current === 0) {
+					this.sendEmailCodeAfterVerification();
+				}
 			},
 			// 跳转
 			navigateToPrivacy(val) {
@@ -800,6 +805,90 @@
 				}
 			},
 
+			// 发送邮箱验证码（验证码验证通过后调用）
+			async sendEmailCodeAfterVerification() {
+				// 检查邮箱格式
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if (!emailRegex.test(this.email)) {
+					uni.showToast({
+						title: "请填写正确邮箱地址",
+						duration: 2000,
+						icon: "none",
+					});
+					this.flage = false;
+					return;
+				}
+				
+				// 发送邮箱验证码
+				uni.showLoading({
+					title: "发送中...",
+				});
+				
+				try {
+					console.log('开始发送邮箱验证码:', this.email);
+					const res = await sendEmail(this.email, 'REGISTER');
+					console.log('邮箱验证码响应:', res);
+					uni.hideLoading();
+					
+					// 检查响应状态
+					if (res && res.data) {
+						if (res.data.success) {
+							this.current = 1;
+							this.$refs.uCode.start();
+							uni.showToast({
+								title: "验证码已发送至邮箱",
+								duration: 2000,
+								icon: "success",
+							});
+						} else {
+							const errorMsg = res.data.message || res.data.msg || "发送失败，请稍后重试";
+							console.error('邮箱验证码发送失败:', errorMsg, res.data);
+							uni.showToast({
+								title: errorMsg,
+								duration: 3000,
+								icon: "none",
+							});
+							this.flage = false;
+							if (this.$refs.verification) {
+								this.$refs.verification.getCode();
+							}
+						}
+					} else {
+						console.error('邮箱验证码响应格式错误:', res);
+						uni.showToast({
+							title: "响应格式错误，请稍后重试",
+							duration: 2000,
+							icon: "none",
+						});
+						this.flage = false;
+						if (this.$refs.verification) {
+							this.$refs.verification.getCode();
+						}
+					}
+				} catch (err) {
+					uni.hideLoading();
+					console.error('发送邮箱验证码异常:', err);
+					
+					// 提取错误信息
+					let errorMsg = "发送失败，请稍后重试";
+					if (err && err.response && err.response.data) {
+						errorMsg = err.response.data.message || err.response.data.msg || errorMsg;
+					} else if (err && err.message) {
+						errorMsg = err.message;
+					}
+					
+					uni.showToast({
+						title: errorMsg,
+						duration: 3000,
+						icon: "none",
+					});
+					this.flage = false;
+					if (this.$refs.verification) {
+						this.$refs.verification.getCode();
+					}
+				}
+			},
+			
 			// 发送验证码
 			fetchCode() {
 				// 1. 检查邀请码（注册需要邀请码）
@@ -822,8 +911,9 @@
 					return false;
 				}
 
-				// 3. 注册模式：检查邮箱格式
+				// 3. 注册模式：先完成验证码验证
 				if (this.isRegisterMode) {
+					// 检查邮箱格式
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 					if (!emailRegex.test(this.email)) {
 						uni.showToast({
@@ -834,35 +924,17 @@
 						return false;
 					}
 					
-					// 发送邮箱验证码
-					uni.showLoading({
-						title: "发送中...",
-					});
-					sendEmail(this.email, 'REGISTER').then((res) => {
-						uni.hideLoading();
-						if (res.data.success) {
-							this.current = 1;
-							this.$refs.uCode.start();
-							uni.showToast({
-								title: "验证码已发送至邮箱",
-								duration: 2000,
-								icon: "none",
-							});
-						} else {
-							uni.showToast({
-								title: res.data.message || "发送失败，请稍后重试",
-								duration: 2000,
-								icon: "none",
-							});
-						}
-					}).catch((err) => {
-						uni.hideLoading();
-						uni.showToast({
-							title: "发送失败，请稍后重试",
-							duration: 2000,
-							icon: "none",
-						});
-					});
+					// 如果已经完成验证码验证，直接发送邮箱验证码
+					if (this.flage) {
+						this.sendEmailCodeAfterVerification();
+						return;
+					}
+					
+					// 否则先显示验证码验证组件
+					if (this.$refs.verification) {
+						this.$refs.verification.show();
+						this.codeFlag = true;
+					}
 					return;
 				}
 

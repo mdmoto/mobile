@@ -82,6 +82,25 @@ export function smsLogin(params, clientType) {
 }
 
 /**
+ * 注册
+ * @param  email 邮箱
+ * @param  code 验证码
+ * @param  password 密码
+ * @param  username 用户名
+ */
+export function register(params, clientType) {
+  return http.request({
+    url: `/passport/member/register`,
+    method: "POST",
+    data: params,
+    header: {
+      "content-type": "application/x-www-form-urlencoded",
+      clientType: clientType,
+    },
+  });
+}
+
+/**
  * 修改密码
  * @param  newPassword
  * @param  password
