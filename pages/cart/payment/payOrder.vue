@@ -151,10 +151,13 @@
 				parms.orderType = this.orderType;
 				parms.clientType = this.paymentType;
 
-				API_Trade.getCashierData(parms).then((res) => {
+			API_Trade.getCashierData(parms).then((res) => {
+				console.log('收银台数据响应:', res);
 				
-					if(res.data.success){
+				if(res.data.success){
 					this.cashierParams = res.data.result;
+					console.log('收银台参数:', this.cashierParams);
+					console.log('支持的支付方式:', res.data.result.support);
 
 					// #ifdef MP-WEIXIN
 					this.payList = res.data.result.support.filter((item) => {
@@ -195,16 +198,31 @@
 					this.walletValue = res.data.result.walletValue;
 					this.autoCancel =
 						(res.data.result.autoCancel - new Date().getTime()) / 1000;
-					}
-					else if(res.data.code == 32000){
-						setTimeout(()=>{
-							uni.redirectTo({
-							 url: `/pages/order/myOrder?status=0`
-						});
-						},500)
-						
-					}
+					console.log('最终支付列表:', this.payList);
+				}
+				else if(res.data.code == 32000){
+					setTimeout(()=>{
+						uni.redirectTo({
+						 url: `/pages/order/myOrder?status=0`
+					});
+					},500)
+					
+				} else {
+					console.error('获取收银台数据失败:', res.data);
+					uni.showToast({
+						title: res.data.message || '获取支付方式失败',
+						icon: 'none',
+						duration: 2000
+					});
+				}
+			}).catch((err) => {
+				console.error('获取收银台数据异常:', err);
+				uni.showToast({
+					title: '获取支付方式失败，请重试',
+					icon: 'none',
+					duration: 2000
 				});
+			});
 			},
 
 
@@ -295,39 +313,132 @@
 			//H5 pay
 			await API_Trade.initiatePay(paymentMethod, paymentClient, params).then(
 				(res) => {
+					console.log('支付响应完整对象:', res);
+					console.log('res.data:', res.data);
+					console.log('res.data类型:', typeof res.data);
+					console.log('res.statusCode:', res.statusCode);
+					console.log('res.header:', res.header);
 					let response = res.data;
-					console.log('💳 支付响应:', {
-						paymentMethod,
-						statusCode: res.statusCode,
-						success: response.success,
-						hasResult: !!response.result
-					});
+					console.log('支付响应数据:', response, '类型:', typeof response);
 					
-					// 统一的错误检查（包括支付宝）
-					if (res.statusCode !== 200 || !response.success) {
-						if (this.$store.state.isShowToast) { uni.hideLoading(); }
-						console.error('❌ 支付请求失败:', response);
+					// 如果是支付宝支付，检查原始响应
+					if (paymentMethod === "ALIPAY") {
+						// 检查原始响应字符串
+						if (res.rawData && typeof res.rawData === 'string') {
+							console.log('发现原始响应数据:', res.rawData.substring(0, 200));
+							if (res.rawData.includes('<form') || res.rawData.includes('alipay')) {
+								console.log('从rawData提取HTML');
+								document.write(res.rawData);
+								return;
+							}
+						}
+					}
+					
+					// 检查支付是否失败（所有支付方式都需要检查）
+					if (!response.success) {
+						console.error('支付失败:', response);
+						uni.hideLoading();
+						// 确保 message 是字符串
+						let errorMsg = '支付失败';
+						if (response.message) {
+							if (typeof response.message === 'string') {
+								errorMsg = response.message;
+							} else if (typeof response.message === 'object') {
+								errorMsg = JSON.stringify(response.message);
+							}
+						}
+						// 如果是支付宝支付且返回错误，直接显示错误信息
+						if (paymentMethod === "ALIPAY") {
+							uni.showToast({
+								title: errorMsg,
+								duration: 3000,
+								icon:"none"
+							});
+							return;
+						}
+						// 其他支付方式的错误处理
 						uni.showToast({
-							title: response.message || '支付请求失败，请重试',
-							duration: 3000,
-							icon: "none"
+							title: errorMsg,
+							duration: 2000,
+							icon:"none"
 						});
 						return;
 					}
-					
 					if (paymentMethod === "ALIPAY") {
-						// 支付宝 H5 支付：后端返回 HTML 表单
-						if (typeof response === 'string' || (response.result && typeof response.result === 'string')) {
-							const htmlContent = response.result || response;
-							document.write(htmlContent);
-						} else {
-							console.error('❌ 支付宝返回格式错误:', response);
-							uni.showToast({
-								title: '支付宝支付异常，请联系客服',
-								duration: 3000,
-								icon: "none"
-							});
+						console.log('支付宝支付，处理响应:', typeof response, response);
+						console.log('res对象完整内容:', JSON.stringify(res, null, 2));
+						
+						// 支付宝H5支付返回的是HTML字符串，需要直接写入
+						// 首先检查rawData（原始响应数据）
+						if (res.rawData && typeof res.rawData === 'string') {
+							console.log('检查rawData，长度:', res.rawData.length, '前200字符:', res.rawData.substring(0, 200));
+							if (res.rawData.includes('<form') || res.rawData.includes('alipay') || res.rawData.includes('支付宝') || res.rawData.includes('action=')) {
+								console.log('从rawData提取HTML并写入');
+								document.write(res.rawData);
+								return;
+							}
 						}
+						
+						// 检查响应是否是HTML字符串（包含form标签或alipay相关）
+						if (typeof response === 'string') {
+							console.log('response是字符串，长度:', response.length, '前200字符:', response.substring(0, 200));
+							// 直接是HTML字符串
+							if (response.includes('<form') || response.includes('alipay') || response.includes('支付宝') || response.includes('action=')) {
+								console.log('检测到HTML响应，直接写入');
+								document.write(response);
+								return;
+							}
+						}
+						
+						// 如果响应是对象，尝试提取HTML
+						if (response && typeof response === 'object') {
+							console.log('response是对象，keys:', Object.keys(response));
+							// 检查是否有result字段且是字符串
+							if (response.result && typeof response.result === 'string') {
+								console.log('检查result字段，长度:', response.result.length);
+								if (response.result.includes('<form') || response.result.includes('alipay') || response.result.includes('action=')) {
+									console.log('从result字段提取HTML');
+									document.write(response.result);
+									return;
+								}
+							}
+							// 检查data字段
+							if (response.data && typeof response.data === 'string') {
+								console.log('检查data字段，长度:', response.data.length);
+								if (response.data.includes('<form') || response.data.includes('alipay') || response.data.includes('action=')) {
+									console.log('从data字段提取HTML');
+									document.write(response.data);
+									return;
+								}
+							}
+							// 如果对象中有HTML内容，尝试序列化查找
+							let htmlContent = null;
+							for (let key in response) {
+								if (typeof response[key] === 'string' && 
+									(response[key].includes('<form') || response[key].includes('alipay') || response[key].includes('action='))) {
+									htmlContent = response[key];
+									console.log('从key:', key, '提取HTML');
+									break;
+								}
+							}
+							if (htmlContent) {
+								console.log('从对象中提取HTML');
+								document.write(htmlContent);
+								return;
+							}
+						}
+						
+						// 如果都不匹配，显示错误和详细信息
+						console.error('支付宝支付响应格式错误，无法找到HTML内容');
+						console.error('response类型:', typeof response);
+						console.error('response内容:', response);
+						console.error('res对象:', res);
+						uni.hideLoading();
+						uni.showToast({
+							title: '支付响应格式错误，请查看控制台日志',
+							icon: 'none',
+							duration: 3000
+						});
 					} else if (paymentMethod === "WECHAT") {
 							if (this.isWeiXin()) {
 								//微信公众号支付
@@ -354,7 +465,24 @@
 								);
 								 if (this.$store.state.isShowToast){ uni.hideLoading() };
 							} else {
-								window.location.href = JSON.parse(response.result).h5_url;
+								console.log('微信H5支付，跳转URL:', response.result);
+								try {
+									let h5Url = typeof response.result === 'string' ? JSON.parse(response.result).h5_url : response.result.h5_url;
+									console.log('微信H5支付URL:', h5Url);
+									if (!h5Url) {
+										throw new Error('h5_url为空');
+									}
+									window.location.href = h5Url;
+								} catch (e) {
+									console.error('解析微信H5支付URL失败:', e, response.result);
+									uni.hideLoading();
+									uni.showToast({
+										title: '支付跳转失败: ' + (e.message || '未知错误'),
+										icon: 'none',
+										duration: 2000
+									});
+									return;
+								}
 								const searchParams = {
 									...params,
 									price:this.cashierParams,
@@ -373,8 +501,13 @@
 								 if (this.$store.state.isShowToast){ uni.hideLoading() };		
 							}
 						} else if (paymentMethod === "WALLET") {
+							// 确保 message 是字符串
+							let walletMsg = response.message || '余额支付';
+							if (typeof walletMsg !== 'string') {
+								walletMsg = typeof walletMsg === 'object' ? JSON.stringify(walletMsg) : String(walletMsg);
+							}
 							uni.showToast({
-								title: response.message,
+								title: walletMsg,
 								icon: "none",
 							});
 							if (response.success) {
@@ -382,7 +515,28 @@
 							}
 						}
 					}
-				);
+				).catch((err) => {
+					console.error('支付请求异常:', err);
+					uni.hideLoading();
+					// 处理错误信息
+					let errorMsg = '支付失败，请稍后重试';
+					if (err && err.data) {
+						if (typeof err.data.message === 'string') {
+							errorMsg = err.data.message;
+						} else if (err.data.message) {
+							errorMsg = JSON.stringify(err.data.message);
+						}
+					} else if (err && err.message) {
+						errorMsg = err.message;
+					} else if (typeof err === 'string') {
+						errorMsg = err;
+					}
+					uni.showToast({
+						title: errorMsg,
+						duration: 2000,
+						icon: 'none'
+					});
+				});
 				//H5pay
 				// #endif
 
