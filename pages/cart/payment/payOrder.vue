@@ -321,34 +321,21 @@
 					let response = res.data;
 					console.log('支付响应数据:', response, '类型:', typeof response);
 					
-					// 如果是支付宝支付，检查原始响应
-					if (paymentMethod === "ALIPAY") {
-						// 检查原始响应字符串
-						if (res.rawData && typeof res.rawData === 'string') {
-							console.log('发现原始响应数据:', res.rawData.substring(0, 200));
-							if (res.rawData.includes('<form') || res.rawData.includes('alipay')) {
-								console.log('从rawData提取HTML');
-								document.write(res.rawData);
-								return;
+					// 首先检查支付是否失败（所有支付方式都需要先检查）
+					// 检查多种错误情况：success === false, statusCode >= 400, 或者有错误信息
+					if (response && typeof response === 'object') {
+						// 检查success字段
+						if (response.success === false || response.success === 'false') {
+							console.error('支付失败 (success=false):', response);
+							uni.hideLoading();
+							let errorMsg = '支付失败';
+							if (response.message) {
+								if (typeof response.message === 'string') {
+									errorMsg = response.message;
+								} else if (typeof response.message === 'object') {
+									errorMsg = JSON.stringify(response.message);
+								}
 							}
-						}
-					}
-					
-					// 检查支付是否失败（所有支付方式都需要检查）
-					if (!response.success) {
-						console.error('支付失败:', response);
-						uni.hideLoading();
-						// 确保 message 是字符串
-						let errorMsg = '支付失败';
-						if (response.message) {
-							if (typeof response.message === 'string') {
-								errorMsg = response.message;
-							} else if (typeof response.message === 'object') {
-								errorMsg = JSON.stringify(response.message);
-							}
-						}
-						// 如果是支付宝支付且返回错误，直接显示错误信息
-						if (paymentMethod === "ALIPAY") {
 							uni.showToast({
 								title: errorMsg,
 								duration: 3000,
@@ -356,14 +343,42 @@
 							});
 							return;
 						}
-						// 其他支付方式的错误处理
-						uni.showToast({
-							title: errorMsg,
-							duration: 2000,
-							icon:"none"
-						});
-						return;
+						// 检查statusCode（HTTP错误）
+						if (res.statusCode && res.statusCode >= 400) {
+							console.error('支付失败 (HTTP错误):', res.statusCode, response);
+							uni.hideLoading();
+							let errorMsg = '支付失败';
+							if (response.message) {
+								if (typeof response.message === 'string') {
+									errorMsg = response.message;
+								} else if (typeof response.message === 'object') {
+									errorMsg = JSON.stringify(response.message);
+								}
+							} else if (response.code) {
+								errorMsg = `支付错误 (${response.code})`;
+							}
+							uni.showToast({
+								title: errorMsg,
+								duration: 3000,
+								icon:"none"
+							});
+							return;
+						}
 					}
+					
+					// 如果是支付宝支付，检查原始响应（成功的情况下）
+					if (paymentMethod === "ALIPAY") {
+						// 检查原始响应字符串
+						if (res.rawData && typeof res.rawData === 'string') {
+							console.log('发现原始响应数据:', res.rawData.substring(0, 200));
+							if (res.rawData.includes('<form') || res.rawData.includes('alipay') || res.rawData.includes('支付宝') || res.rawData.includes('action=')) {
+								console.log('从rawData提取HTML');
+								document.write(res.rawData);
+								return;
+							}
+						}
+					}
+					
 					if (paymentMethod === "ALIPAY") {
 						console.log('支付宝支付，处理响应:', typeof response, response);
 						console.log('res对象完整内容:', JSON.stringify(res, null, 2));

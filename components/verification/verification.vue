@@ -57,24 +57,26 @@
             margin-top: 30rpx;
           "
         >
-          <movable-view
-            scale-value="1"
-            animation="false"
-            damping="50"
-            :x="movePv"
-            class="flex-row-center"
-            style="
-              border-radius: 50%;
-              height: 100rpx;
-              width: 100rpx;
-              background-color: #ffffff;
-              border: 2rpx solid #e3e3e3;
-              margin-top: -13rpx;
-            "
-            direction="horizontal"
-            @change="moveChange"
-            @touchend="end"
-          >
+        <movable-view
+          scale-value="1"
+          animation="false"
+          damping="50"
+          :x="movePv"
+          :inertia="false"
+          class="flex-row-center"
+          style="
+            border-radius: 50%;
+            height: 100rpx;
+            width: 100rpx;
+            background-color: #ffffff;
+            border: 2rpx solid #e3e3e3;
+            margin-top: -13rpx;
+          "
+          direction="horizontal"
+          @change="moveChange"
+          @touchend="end"
+          @mouseup.native="end"
+        >
             <u-icon
               :color="mainColor"
               size="40"
@@ -172,15 +174,18 @@ export default {
       imgbk: "",
       endLoad: true,
       imgbKH: "",
+      isLoadingCode: false, // 防止重复加载验证码
     };
   },
   methods: {
     show() {
       this.hid = false;
-      // 只有在没有验证码图片时才获取新的验证码
-      // 避免每次显示时都刷新验证码，导致之前的验证码失效
-      if (!this.img || !this.key) {
+      // 只在没有验证码图片时才获取
+      if (!this.img) {
+        console.log('📸 滑块显示但无图片，自动获取验证码');
         this.getCode();
+      } else {
+        console.log('📸 滑块显示，已有验证码图片，不重复加载');
       }
     },
     hide() {
@@ -194,20 +199,21 @@ export default {
       this.hid = false;
       this.moveX = 0;
       this.moveCode = 0;
-      this.movePv = 0; // 重置滑块位置
-      this.flage = false;
-      // 注意：不在这里调用 getCode()，由调用方决定是否需要刷新验证码
+      this.isLoadingCode = false; // 重置加载状态
     },
     // 获取验证图片
     getCode() {
+      // 防止重复加载
+      if (this.isLoadingCode) {
+        console.log('⚠️ 验证码正在加载中，跳过重复请求');
+        return;
+      }
+      
+      this.isLoadingCode = true;
       this.col = "#b3afae";
       this.hasImg = "图片加载中...";
-      // 重置滑块位置和验证状态
-      this.moveX = 0;
-      this.moveCode = 0;
-      this.movePv = 0;
-      this.vsr = false;
-      this.flage = false;
+      console.log('🔄 开始获取验证码图片, business:', this.business);
+      
       if (!storage.getUuid()) {
         storage.setUuid(uuid.v1());
       }
@@ -230,22 +236,33 @@ export default {
           this.originalWidth = data.originalWidth * 1.8 + "rpx";
           this.sliderHeight = data.sliderHeight * 1.8 + "rpx";
           this.sliderWidth = data.sliderWidth * 1.8 + "rpx";
-          // 适应比率，用来适应滑动距离
-          this.tl = 1 / (1.8 * l);
+          // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
+          const currentPhone = uni.getSystemInfoSync();
+          const currentL = currentPhone.screenWidth / 750;
+          this.tl = 1 / (1.8 * currentL);
+          console.log('📏 屏幕宽度:', currentPhone.screenWidth, 'l:', currentL, 'tl:', this.tl);
           // 无用信息
           this.spcode = data.capcode;
           // 验证令牌
           this.key = data.key;
           this.$store.state.verificationKey = data.key;
+          console.log('✅ 验证码图片加载成功, key:', data.key);
+          
+          this.isLoadingCode = false;
         },
         fail: (err) => {
-          this.col = "#838383";
-          this.hasImg = "拖动滑块以完成拼图";
-          console.error('获取验证码失败:', err);
+          console.error('❌ 验证码图片加载失败:', err);
+          this.hasImg = "加载失败，请点击刷新";
+          this.isLoadingCode = false;
         },
       });
     },
-    end(e) {
+        end(e) {
+          console.log('🎯 滑块释放事件触发');
+          console.log('当前 moveCode:', this.moveCode, 'tl:', this.tl);
+          const xPos = parseInt(this.moveCode * this.tl);
+          console.log('计算后的 xPos:', xPos, '(moveCode * tl)');
+      
       this.endLoad = false;
       // 验证拼图位置是否正确
       uni.request({
@@ -255,13 +272,20 @@ export default {
           "/common/slider/" +
           this.business +
           "?xPos=" +
-          parseInt(this.moveCode * this.tl),
+          xPos,
         header: {
           uuid: storage.getUuid(),
         },
         success: (res) => {
           this.endLoad = true;
+          console.log('📥 滑块验证响应:', {
+            statusCode: res.statusCode,
+            success: res.data?.success,
+            result: res.data?.result,
+            message: res.data?.message
+          });
           
+<<<<<<< HEAD
           // 检查 HTTP 状态码，400 表示错误
           if (res.statusCode && res.statusCode !== 200) {
             // HTTP 错误状态码
@@ -298,35 +322,53 @@ export default {
 
           // 检查验证结果
           if (res.data && res.data.result === true) {
+=======
+          // 检查 HTTP 状态码和响应数据
+          const isSuccess = res.statusCode === 200 && res.data && (res.data.success === true || res.data.result === true);
+          
+          if (isSuccess) {
+            console.log('✅ 滑块验证成功，发送验证完成事件');
+>>>>>>> 2d37768 (feat: implement i18n, custom logo, and UI optimizations)
             //验证成功后把key发送出去,后端会把验证信息存在缓存里
             this.$emit("send", this.key);
             this.hide();
             this.vsr = true;
             this.vsrtx = "已通过验证";
           } else {
-            // 验证失败，重置滑块位置并刷新验证码
-            this.movePv = 0;
-            this.moveX = 0;
-            this.moveCode = 0;
+            console.log('❌ 滑块验证失败');
+            // 显示后端返回的错误消息（如果有）
+            const errorMsg = res.data?.message || "验证失败，请重试";
             uni.showToast({
-              title: "验证失败，请重试",
+              title: errorMsg,
               duration: 2000,
               icon: "none",
             });
-            this.getCode(); // 刷新验证码图片
+            // 验证失败，重置加载状态后重新获取验证码
+            this.isLoadingCode = false;
+            this.getCode(); // 让滑块回到起始位置
+            if (this.movePv == 1) {
+              this.movePv = 0;
+            } else {
+              this.movePv = 1;
+            }
           }
         },
-        fail: (res) => {
+        fail: (err) => {
+          console.error('❌ 滑块验证请求失败:', err);
           this.endLoad = true;
+          this.isLoadingCode = false;
           uni.showToast({
             title: "连接服务器失败",
             duration: 2000,
             icon: "none",
           });
-          // 重置滑块位置
-          this.movePv = 0;
-          this.moveX = 0;
-          this.moveCode = 0;
+          // 重新获取验证码
+          this.getCode();
+          if (this.movePv == 1) {
+            this.movePv = 0;
+          } else {
+            this.movePv = 1;
+          }
         },
       });
     },
@@ -334,6 +376,11 @@ export default {
     moveChange(e) {
       this.moveX = e.detail.x;
       this.moveCode = e.detail.x;
+      console.log('🎯 滑块移动:', {
+        moveX: this.moveX,
+        moveCode: this.moveCode,
+        detail: e.detail
+      });
     },
   },
 };

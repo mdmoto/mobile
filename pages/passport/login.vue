@@ -3,9 +3,9 @@
 		<div v-if="!wechatLogin">
 			<u-navbar :is-back="showBack" :border-bottom="false"></u-navbar>
 			<div>
-				<div class="title">{{ loginTitleWay[current].title }}</div>
+				<div class="title">{{ $t(loginTitleWay[current].title) }}</div>
 				<div :class="current == 1 ? 'desc-light' : 'desc'">
-					{{ loginTitleWay[current].desc
+					{{ $t(loginTitleWay[current].desc)
           }}<span v-if="current == 1 && isRegisterMode">{{ email }}</span>
           <span v-if="current == 1 && !isRegisterMode">{{ mobile | secrecyMobile }}</span>
 				</div>
@@ -16,68 +16,33 @@
 				<u-input 
 					:custom-style="inviteCodeInputStyle" 
 					:placeholder-style="placeholderStyle" 
-					placeholder="🔐 输入邀请码"
+					:placeholder="$t('deposit.inputInviteCode')"
 					class="invite-code-input" 
 					v-model="inviteCode" 
 					maxlength="20"
 					@input="checkInviteCode" />
 				<div v-if="inviteCodeError" class="invite-code-error">{{ inviteCodeError }}</div>
-				<div v-if="inviteCodeValid" class="invite-code-success">✓ 验证成功</div>
+				<div v-if="inviteCodeValid" class="invite-code-success">{{ $t('deposit.inviteCodeValid') }}</div>
 			</div>
 			
 			<!-- 注册模式：邮箱输入 -->
 			<div v-show="!enableUserPwdBox && isRegisterMode">
 				<div v-show="current == 0">
-					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入邮箱地址"
+					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputEmail')"
 						class="mobile" v-model="email" type="text" />
 					<div :class="!enableFetchCode || !inviteCodeValid ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
-						{{ inviteCodeValid ? '获取验证码' : '请先输入邀请码' }}
+						{{ inviteCodeValid ? $t('deposit.getVerifyCode') : $t('deposit.inputInviteCodeFirst') }}
 					</div>
 					<!-- 手机号注册稍后开放提示 -->
 					<div class="mobile-register-hint">
 						<u-icon name="info-circle" size="14" color="#999" style="margin-right: 5rpx;"></u-icon>
-						<span>手机号注册功能即将开放，敬请期待</span>
+						<span>{{ $t('deposit.mobileRegisterHint') }}</span>
 					</div>
 				</div>
-				<!-- 输入验证码和密码 -->
+				<!-- 输入验证码 -->
 				<div v-show="current == 1" class="box-code">
 					<verifyCode type="bottom" @confirm="submitRegister" boxActiveColor="#D8D8D8" v-model="code" isFocus
 						boxNormalColor="#D8D8D8" cursorColor="#D8D8D8" />
-					
-					<!-- 密码输入 -->
-					<u-input 
-						:custom-style="inputStyle" 
-						:placeholder-style="placeholderStyle" 
-						placeholder="请设置登录密码（6-20位）"
-						class="mobile" 
-						v-model="userData.password" 
-						type="password" 
-						style="margin-top: 20rpx;" />
-					
-					<!-- 确认密码输入 -->
-					<u-input 
-						:custom-style="inputStyle" 
-						:placeholder-style="placeholderStyle" 
-						placeholder="请再次输入密码确认"
-						class="mobile" 
-						v-model="userData.confirmPassword" 
-						type="password" 
-						style="margin-top: 20rpx;" />
-					
-					<!-- 密码提示和错误信息 -->
-					<div class="password-tips" v-if="!passwordError">
-						<u-icon name="info-circle" size="14" color="#999" style="margin-right: 5rpx;"></u-icon>
-						<span>密码长度为6-20位，请妥善保管</span>
-					</div>
-					<div class="password-error" v-if="passwordError">
-						<u-icon name="close-circle" size="14" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
-						<span>{{ passwordError }}</span>
-					</div>
-
-					<!-- 确认按钮 -->
-					<div :class="canSubmitRegister ? 'fetch' : 'disable'" @click="submitRegister" class="btn" style="margin-top: 40rpx;">
-						确认
-					</div>
 
 					<div class="fetch-btn">
 						<u-verification-code change-text="验证码已发送（x）" end-text="重新获取验证码" unique-key="page-login"
@@ -91,13 +56,13 @@
 
 			<!-- 帐号密码登录 -->
 			<div v-show="enableUserPwdBox">
-				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入手机号/邮箱/用户名"
+				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputAccountPlaceholder')"
 					class="mobile" focus v-model="userData.username" />
-				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" placeholder="请输入密码"
+				<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputPasswordPlaceholder')"
 					class="mobile" focus v-model="userData.password" type="password" />
 
 				<div :class="!enableUserBtnColor ? 'disable' : 'fetch'" @click="passwordLogin" class="btn">
-					帐号密码登录
+					{{ $t('deposit.accountLogin') }}
 				</div>
 			</div>
 
@@ -105,7 +70,7 @@
 			<div v-if="current != 1 && !enableUserPwdBox" class="third-party-section">
 				<div class="section-divider">
 					<div class="divider-line"></div>
-					<div class="divider-text">第三方账号注册</div>
+					<div class="divider-text">{{ $t('deposit.thirdPartyRegister') }}</div>
 					<div class="divider-line"></div>
 				</div>
 				
@@ -156,13 +121,13 @@
 			<div v-if="current != 1" class="bottom-section">
 				<div class="section-divider">
 					<div class="divider-line"></div>
-					<div class="divider-text">其他登录方式</div>
+					<div class="divider-text">{{ $t('deposit.otherLoginWays') }}</div>
 					<div class="divider-line"></div>
 				</div>
 				
 				<div class="user-password-tips" @click="enableUserPwdBox = !enableUserPwdBox">
 					<u-icon name="lock-fill" size="16" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
-					{{ !enableUserPwdBox ? "使用账号密码登录" : "返回注册" }}
+					{{ !enableUserPwdBox ? $t('deposit.useAccountLogin') : $t('deposit.backToRegister') }}
 				</div>
 			</div>
 
@@ -172,11 +137,11 @@
 					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
 				</u-checkbox-group>
 				<div class="tips">
-					登录即代表您已同意<span @click="navigateToPrivacy('PRIVACY_POLICY')">《隐私协议》</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">《用户协议》</span>
+					{{ $t('deposit.loginPrivacyDesc') }}<span @click="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
 				</div>
 			</div>
-			<myVerification v-if="codeFlag" @send="verification" class="verification" ref="verification"
-				:business="isRegisterMode ? 'REGISTER' : 'LOGIN'" />
+		<myVerification v-if="codeFlag" @send="verification" class="verification" ref="verification"
+			:business="enableUserPwdBox ? 'LOGIN' : (isRegisterMode ? 'REGISTER' : 'LOGIN')" />
 		</div>
 		<view v-else>
 			<wechatH5Login />
@@ -229,6 +194,7 @@
 				uuid,
 				wechatLogin: false, //是否加载微信公众号登录
 				flage: false, //是否验证码验证
+				isSubmitting: false, //防止重复提交登录
 				codeFlag: true, //验证开关，用于是否展示验证码
 				tips: "",
 				enableUserPwdBox: false, //帐号密码登录
@@ -237,20 +203,18 @@
 				lightColor: this.$lightColor,
 				seconds: 60, //默认验证码等待时间
 				loginTitleWay: [{
-						title: "欢迎注册",
-						desc: "登录后更精彩，美好生活即将开始",
+						title: "deposit.welcomeRegister",
+						desc: "deposit.loginDesc",
 					},
 					{
-						title: "请输入验证码",
-						desc: "已经发送验证码至邮箱",
+						title: "deposit.inputVerifyCode",
+						desc: "deposit.verifyCodeSentToEmail",
 					},
 				],
 				userData: {
 					username: "",
 					password: "",
-					confirmPassword: "", // 确认密码
 				},
-				passwordError: "", // 密码错误提示
 				showBack: false,
 				enableFetchCode: false,
 				enableUserBtnColor: false,
@@ -338,45 +302,21 @@
 			// 使用统一的 Web OAuth 2.0 流程
 			this.methodFilter(["GOOGLE", "APPLE"]);
 		},
-		computed: {
-			// 判断是否可以提交注册
-			canSubmitRegister() {
-				// 检查验证码（6位）
-				const codeValid = this.code && this.code.length === 6;
-				// 检查密码（6-20位）
-				const passwordValid = this.userData.password && 
-					this.userData.password.length >= 6 && 
-					this.userData.password.length <= 20;
-				// 检查确认密码（6-20位）
-				const confirmPasswordValid = this.userData.confirmPassword && 
-					this.userData.confirmPassword.length >= 6 && 
-					this.userData.confirmPassword.length <= 20;
-				// 检查两次密码是否一致
-				const passwordMatch = this.userData.password === this.userData.confirmPassword;
-				// 检查邮箱
-				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				const emailValid = this.email && emailRegex.test(this.email);
-				// 检查邀请码
-				const inviteCodeValid = this.inviteCodeValid;
-				
-				return codeValid && passwordValid && confirmPasswordValid && passwordMatch && emailValid && inviteCodeValid;
-			}
-		},
 		watch: {
-			current(val) {
-				val ? (this.showBack = true) : (this.showBack = false);
+		current(val) {
+			val ? (this.showBack = true) : (this.showBack = false);
+		},
+		userData: {
+			handler(val) {
+				if (this.userData.username && this.userData.password) {
+					this.enableUserBtnColor = true;
+				} else {
+					this.enableUserBtnColor = false;
+				}
 			},
-			userData: {
-				handler(val) {
-					if (this.userData.username && this.userData.password) {
-						this.enableUserBtnColor = true;
-					} else {
-						this.enableUserBtnColor = false;
-					}
-				},
-				deep: true,
+			deep: true,
 
-			},
+		},
 			mobile: {
 				handler(val) {
 					if (val.length == 11) {
@@ -395,47 +335,36 @@
 					}
 				},
 			},
-			// 监听密码变化，校验两次密码是否一致
-			'userData.password': {
-				handler() {
-					this.validatePassword();
-				},
-			},
-			'userData.confirmPassword': {
-				handler() {
-					this.validatePassword();
-				},
-			},
 
-			async flage(val) {
-				if (val) {
-					// 账号密码登录：直接提交登录，不需要检查 uCode
+		async flage(val) {
+			if (val) {
+				if (this.$refs.uCode.canGetCode) {
 					if (this.enableUserPwdBox) {
-						this.submitUserLogin();
+						// 密码登录已在 verification() 回调中处理，避免重复调用
+						console.log('⚠️ flage watcher 触发，但密码登录已在 verification 回调中处理，跳过');
 						return;
-					}
-					
-					// 验证码登录：需要检查 uCode 是否可用
-					if (this.$refs.uCode && this.$refs.uCode.canGetCode) {
-						// 向后端请求验证码
-						uni.showLoading({});
-						let res = await sendMobile(this.mobile);
-						 if (this.$store.state.isShowToast){ uni.hideLoading() };
-						// 这里此提示会被this.start()方法中的提示覆盖
-						if (res.data.success) {
-							this.current = 1;
-							this.$refs.uCode.start();
-						} else {
-							uni.showToast({
-								title: res.data.message,
-								duration: 2000,
-								icon: "none",
-							});
-							this.flage = false;
-							this.$refs.verification.getCode();
+						// 执行登录
+					} else {
+							// 向后端请求验证码
+							uni.showLoading({});
+							let res = await sendMobile(this.mobile);
+							 if (this.$store.state.isShowToast){ uni.hideLoading() };
+							// 这里此提示会被this.start()方法中的提示覆盖
+							if (res.data.success) {
+								this.current = 1;
+								this.$refs.uCode.start();
+							} else {
+								uni.showToast({
+									title: res.data.message,
+									duration: 2000,
+									icon: "none",
+								});
+								this.flage = false;
+								this.$refs.verification.getCode();
+							}
 						}
 					} else {
-						this.$u.toast("请倒计时结束后再发送");
+						!this.enableUserPwdBox ? this.$u.toast("请倒计时结束后再发送") : "";
 					}
 				} else {
 					this.$refs.verification.hide();
@@ -448,37 +377,6 @@
 			}
 		},
 		methods: {
-			// 校验密码
-			validatePassword() {
-				// 如果两个密码都为空，清除错误
-				if (!this.userData.password && !this.userData.confirmPassword) {
-					this.passwordError = "";
-					return;
-				}
-				
-				// 如果密码长度不符合要求
-				if (this.userData.password && (this.userData.password.length < 6 || this.userData.password.length > 20)) {
-					this.passwordError = "密码长度为6-20位";
-					return;
-				}
-				
-				// 如果确认密码长度不符合要求
-				if (this.userData.confirmPassword && (this.userData.confirmPassword.length < 6 || this.userData.confirmPassword.length > 20)) {
-					this.passwordError = "确认密码长度为6-20位";
-					return;
-				}
-				
-				// 如果两个密码都已输入，检查是否一致
-				if (this.userData.password && this.userData.confirmPassword) {
-					if (this.userData.password !== this.userData.confirmPassword) {
-						this.passwordError = "两次输入的密码不一致";
-						return;
-					}
-				}
-				
-				// 所有校验通过，清除错误
-				this.passwordError = "";
-			},
 			//联合信息返回登录
 			stateLogin(state) {
 				loginCallback(state).then((res) => {
@@ -488,7 +386,7 @@
 						storage.setRefreshToken(data.result.refreshToken);
 						// 登录成功
 						uni.showToast({
-							title: "登录成功!",
+							title: this.$t("deposit.loginSuccess"),
 							icon: "none",
 						});
 						getUserInfo().then((user) => {
@@ -531,7 +429,7 @@
 						});
 					} else {
 						uni.showToast({
-							title: "配置有误请联系管理员",
+							title: this.$t("common.configError"),
 							duration: 2000,
 							icon: "none",
 						});
@@ -558,7 +456,7 @@
 					},
 					fail(e) {
 						uni.showToast({
-							title: "第三方登录暂不可用！",
+							title: this.$t("message.authFailed"),
 							icon: "none",
 							duration: 3000,
 						});
@@ -619,7 +517,7 @@
 						storage.setRefreshToken(res.data.result.refreshToken);
 						// 登录成功
 						uni.showToast({
-							title: "第三方登录成功!",
+							title: this.$t("deposit.loginSuccess"),
 							icon: "none",
 						});
 						// 执行登录
@@ -677,7 +575,7 @@
 					this.inviteCodeError = "";
 				} else if (code.length > 0) {
 					this.inviteCodeValid = false;
-					this.inviteCodeError = "邀请码错误，请重新输入";
+					this.inviteCodeError = this.$t("deposit.inviteCodeError");
 				} else {
 					this.inviteCodeValid = false;
 					this.inviteCodeError = "";
@@ -689,7 +587,7 @@
 				// 1. 检查邀请码
 				if (!this.inviteCodeValid) {
 					uni.showToast({
-						title: "请先输入正确的邀请码",
+						title: this.$t("deposit.enterCorrectInviteCode"),
 						duration: 2000,
 						icon: "none",
 					});
@@ -699,7 +597,7 @@
 				// 2. 检查隐私协议
 				if (!this.enablePrivacy) {
 					uni.showToast({
-						title: "请先同意用户隐私协议",
+						title: this.$t("deposit.pleaseAgreePrivacy"),
 						duration: 2000,
 						icon: "none",
 					});
@@ -709,17 +607,18 @@
 				// 3. 如果是 Apple 登录，提示暂未开放
 				if (connectLogin.code === 'APPLE') {
 					uni.showToast({
-						title: "Apple 登录即将开放，敬请期待",
+						title: this.$t("deposit.appleLoginWait"),
 						duration: 2000,
 						icon: "none",
 					});
 					return false;
 				}
 
-				// Google OAuth 统一使用 Web OAuth 流程
-				// #ifdef H5
 				const oauthCode = connectLogin.code;
 				const oauthBuyer = api.buyer;
+
+				// Google OAuth 统一使用 Web OAuth 流程
+				// #ifdef H5
 				window.open(
 					oauthBuyer + `/passport/connect/connect/login/web/` + oauthCode,
 					"_self"
@@ -728,8 +627,6 @@
 				
 				// #ifdef APP-PLUS
 				// APP 端也使用 Web OAuth 流程，通过 WebView 打开
-				const oauthCode = connectLogin.code;
-				const oauthBuyer = api.buyer;
 				const url = oauthBuyer + `/passport/connect/connect/login/web/` + oauthCode;
 				
 				// 使用内置浏览器打开 OAuth 授权页面
@@ -737,7 +634,7 @@
 					console.log('OAuth opened:', res);
 				}, function(e) {
 					uni.showToast({
-						title: "无法打开登录页面",
+						title: this.$t("message.cannotOpenPage"),
 						duration: 2000,
 						icon: "none",
 					});
@@ -747,7 +644,7 @@
 				// #ifdef MP
 				// 小程序端使用 Web View 组件或提示用户在浏览器中登录
 				uni.showToast({
-					title: "请在浏览器中使用Google登录",
+					title: this.$t("deposit.googleLoginBrowserTips"),
 					duration: 3000,
 					icon: "none",
 				});
@@ -778,6 +675,9 @@
 
 			// 登录成功之后获取用户信息
 			getUserInfoMethods(res) {
+				// 登录成功，重置提交状态
+				this.isSubmitting = false;
+				
 				if (res.data.success) {
 					storage.setAccessToken(res.data.result.accessToken);
 					storage.setRefreshToken(res.data.result.refreshToken);
@@ -820,31 +720,53 @@
 				}
 			},
 
-			// 验证码验证
-			verification(val) {
-				console.log('验证码验证回调:', val, 'store key:', this.$store.state.verificationKey);
-				this.flage = val == this.$store.state.verificationKey ? true : false;
-				console.log('验证结果:', this.flage);
-				
-				// 如果是账号密码登录模式，不处理邮箱验证码发送
-				if (this.enableUserPwdBox) {
-					// 账号密码登录的验证码验证由 watch.flage 处理
-					return;
-				}
-				
-				// 如果是注册模式且验证通过，自动发送邮箱验证码
-				if (this.flage && this.isRegisterMode && this.current === 0) {
-					console.log('验证通过，准备发送邮箱验证码');
-					this.sendEmailCodeAfterVerification();
-				} else if (!this.flage) {
-					console.log('验证失败');
-					uni.showToast({
-						title: "验证失败，请重试",
-						duration: 2000,
-						icon: "none",
-					});
-				}
-			},
+		// 验证码验证
+		verification(val) {
+			console.log('===== 验证码验证回调 START =====');
+			console.log('接收到的 key:', val);
+			console.log('store key:', this.$store.state.verificationKey);
+			console.log('当前 uuid:', storage.getUuid());
+			console.log('时间戳:', new Date().toISOString());
+			console.log('当前 flage 状态:', this.flage);
+			console.log('当前 isSubmitting 状态:', this.isSubmitting);
+			
+			this.flage = val == this.$store.state.verificationKey ? true : false;
+			console.log('验证结果:', this.flage);
+			
+			if (!this.flage) {
+				console.log('❌ 验证失败');
+				uni.showToast({
+					title: this.$t("deposit.authFailedRetry"),
+					duration: 2000,
+					icon: "none",
+				});
+				return;
+			}
+			
+			// 验证成功 - 根据不同模式执行不同操作
+			console.log('✅ 验证成功！模式：', {
+				isRegisterMode: this.isRegisterMode,
+				enableUserPwdBox: this.enableUserPwdBox,
+				current: this.current
+			});
+			
+			// 密码登录模式：立即提交登录（模仿 Web 端）
+			if (this.enableUserPwdBox) {
+				console.log('🔑 密码登录模式，立即提交登录');
+				console.log('提交前状态 - flage:', this.flage, 'isSubmitting:', this.isSubmitting);
+				console.log('提交时间:', new Date().toISOString());
+				this.submitUserLogin();
+				console.log('===== 验证码验证回调 END (已调用 submitUserLogin) =====');
+				return;
+			}
+			
+			// 注册模式：发送邮箱验证码
+			if (this.isRegisterMode && this.current === 0) {
+				console.log('📧 注册模式，发送邮箱验证码');
+				this.sendEmailCodeAfterVerification();
+			}
+			console.log('===== 验证码验证回调 END =====');
+		},
 			// 跳转
 			navigateToPrivacy(val) {
 				uni.navigateTo({
@@ -864,7 +786,13 @@
 			},
 			/**点击验证码*/
 			codeChange(text) {
-				this.tips = text;
+				if (text === "验证码已发送（x）") {
+					this.tips = this.$t('deposit.codeSent');
+				} else if (text === "重新获取验证码") {
+					this.tips = this.$t('deposit.reGetCode');
+				} else {
+					this.tips = text;
+				}
 			},
 			/** 结束验证码后执行 */
 			end() {
@@ -873,115 +801,133 @@
 				console.log(this.codeColor);
 			},
 
-			passwordLogin() {
-				if (!this.enablePrivacy) {
-					uni.showToast({
-						title: "请同意用户隐私",
-						duration: 2000,
-						icon: "none",
-					});
-					return false;
-				}
+	passwordLogin() {
+		if (!this.enablePrivacy) {
+			uni.showToast({
+				title: this.$t("deposit.pleaseAgreePrivacy"),
+				duration: 2000,
+				icon: "none",
+			});
+			return false;
+		}
 
-				if (!this.userData.username) {
-					uni.showToast({
-						title: "请填写用户名/手机号/邮箱",
-						duration: 2000,
-						icon: "none",
-					});
-					return false;
-				}
+		if (!this.userData.username) {
+			uni.showToast({
+				title: this.$t("deposit.inputAccountPlaceholder"),
+				duration: 2000,
+				icon: "none",
+			});
+			return false;
+		}
 
-				if (!this.userData.password) {
-					uni.showToast({
-						title: "请填写密码",
-						duration: 2000,
-						icon: "none",
-					});
-					return false;
-				}
+		if (!this.userData.password) {
+			uni.showToast({
+				title: this.$t("deposit.inputPasswordPlaceholder"),
+				duration: 2000,
+				icon: "none",
+			});
+			return false;
+		}
 
-				// 如果已经完成验证码验证，直接提交登录
-				if (this.flage) {
-					this.submitUserLogin();
-					return;
-				}
+	// 后端强制要求验证码，恢复验证步骤
+	if (!this.flage) {
+		this.codeFlag = true;
+		this.$nextTick(() => {
+			if (this.$refs.verification) {
+				// 只调用 show()，它会自动处理是否需要加载验证码
+				this.$refs.verification.show();
+			}
+		});
+		return false;
+	}
+		
+		// 验证通过，提交登录
+		this.submitUserLogin();
+	},
 
-				// 如果未完成验证码验证，显示验证码组件
-				if (!this.flage) {
-					this.codeFlag = true;
-					this.$nextTick(() => {
-						if (this.$refs.verification) {
-							// 只显示验证码组件，不重新获取验证码
-							// show() 方法会按需获取验证码（如果没有验证码图片）
-							this.$refs.verification.show();
-						}
-					});
-					return false;
-				}
-			},
-
-			// 提交用户登录
-			async submitUserLogin() {
-				const params = JSON.parse(JSON.stringify(this.userData));
-				params.password = md5(params.password);
-				try {
-					let res = await userLogin(params,this.clientType);
-					if (res.data.success) {
-						this.getUserInfoMethods(res);
-					} else {
-						// 显示后端返回的错误信息，如果没有则显示通用错误提示
-						const errorMsg = res.data?.message || "用户名或密码错误，请重试";
-						uni.showToast({
-							title: errorMsg,
-							duration: 2000,
-							icon: "none",
-						});
-						// 重置验证状态
-						this.$refs.verification.error();
-						this.flage = false;
-						// 刷新验证码图片
-						this.$refs.verification.getCode();
-					}
-				} catch (error) {
-					// 显示网络错误或服务器错误
-					const errorMsg = error?.response?.data?.message || error?.message || "登录失败，请重试";
-					uni.showToast({
-						title: errorMsg,
-						duration: 2000,
-						icon: "none",
-					});
-					// 重置验证状态
-					this.$refs.verification.error();
-					this.flage = false;
-					// 刷新验证码图片
+		// 提交用户登录
+	async submitUserLogin() {
+		// 防止重复提交
+		if (this.isSubmitting) {
+			console.log('⚠️ 正在提交中，忽略重复请求');
+			return;
+		}
+		
+		this.isSubmitting = true;
+		console.log('===== 开始提交登录 =====');
+		console.log('时间戳:', new Date().toISOString());
+		console.log('uuid:', storage.getUuid());
+		console.log('用户名:', this.userData.username);
+		console.log('flage:', this.flage);
+		
+		const params = JSON.parse(JSON.stringify(this.userData));
+		params.password = md5(params.password);
+		
+		try {
+			console.log('发送登录请求，时间:', new Date().toISOString());
+			let res = await userLogin(params,this.clientType);
+			console.log('登录响应:', res);
+			
+			if (res.data.success) {
+				console.log('✅ 登录成功');
+				this.getUserInfoMethods(res);
+			} else {
+				// 显示登录失败消息
+				const errorMsg = res.data?.message || res.data?.msg || "用户名或密码错误，请重试";
+				console.log('❌ 登录失败:', errorMsg, '完整响应:', res.data);
+				uni.showToast({
+					title: errorMsg,
+					duration: 2000,
+					icon: "none",
+				});
+				// 登录失败，重置验证状态并获取新验证码
+				this.flage = false;
+				this.isSubmitting = false;
+				if (this.$refs.verification) {
 					this.$refs.verification.getCode();
 				}
-			},
+			}
+		} catch (error) {
+			// 显示异常消息
+			console.log('❌ 登录异常:', error);
+			let errorMsg = "登录失败，请重试";
+			if (error.response && error.response.data) {
+				errorMsg = error.response.data.message || error.response.data.msg || errorMsg;
+			} else if (error.message) {
+				errorMsg = error.message;
+			}
+			uni.showToast({
+				title: errorMsg,
+				duration: 2000,
+				icon: "none",
+			});
+			// 登录失败，重置验证状态并获取新验证码
+			this.flage = false;
+			this.isSubmitting = false;
+			if (this.$refs.verification) {
+				this.$refs.verification.getCode();
+			}
+		}
+	},
 
 			// 发送邮箱验证码（验证码验证通过后调用）
 			async sendEmailCodeAfterVerification() {
-				// 如果是账号密码登录模式，不应该调用此方法
-				if (this.enableUserPwdBox) {
-					return;
-				}
-				
 				// 再次检查验证码验证状态
 				if (!this.flage) {
 					console.error('验证码验证状态为false，无法发送邮箱验证码');
 					uni.showToast({
-						title: "请先完成验证码验证",
+						title: this.$t("deposit.authFailedRetry"),
 						duration: 2000,
 						icon: "none",
 					});
 					return;
 				}
 				
-				// 检查邮箱格式（仅注册模式需要）
+				// 检查邮箱格式
 				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!emailRegex.test(this.email)) {
 					uni.showToast({
-						title: "请填写正确邮箱地址",
+						title: this.$t("deposit.inputEmail"),
 						duration: 2000,
 						icon: "none",
 					});
@@ -991,7 +937,7 @@
 				
 				// 发送邮箱验证码
 				uni.showLoading({
-					title: "发送中...",
+					title: this.$t("common.loading"),
 				});
 				
 				try {
@@ -1006,66 +952,64 @@
 							this.current = 1;
 							this.$refs.uCode.start();
 							uni.showToast({
-								title: "验证码已发送至邮箱",
+								title: this.$t("deposit.verifyCodeSentToEmail"),
 								duration: 2000,
 								icon: "success",
 							});
-						} else {
-							const errorMsg = res.data.message || res.data.msg || "发送失败，请稍后重试";
-							console.error('邮箱验证码发送失败:', errorMsg, res.data);
-							uni.showToast({
-								title: errorMsg,
-								duration: 3000,
-								icon: "none",
-							});
-							this.flage = false;
-							if (this.$refs.verification) {
-								this.$refs.verification.getCode();
-							}
-						}
 					} else {
-						console.error('邮箱验证码响应格式错误:', res);
+						const errorMsg = res.data.message || res.data.msg || "发送失败，请稍后重试";
+						console.error('邮箱验证码发送失败:', errorMsg, res.data);
 						uni.showToast({
-							title: "响应格式错误，请稍后重试",
-							duration: 2000,
+							title: errorMsg,
+							duration: 3000,
 							icon: "none",
 						});
-						this.flage = false;
+						// 重置验证状态，不刷新验证码
 						if (this.$refs.verification) {
-							this.$refs.verification.getCode();
+							this.$refs.verification.error();
 						}
+						this.flage = false;
 					}
-				} catch (err) {
-					uni.hideLoading();
-					console.error('发送邮箱验证码异常:', err);
-					
-					// 提取错误信息
-					let errorMsg = "发送失败，请稍后重试";
-					if (err && err.response && err.response.data) {
-						errorMsg = err.response.data.message || err.response.data.msg || errorMsg;
-					} else if (err && err.message) {
-						errorMsg = err.message;
-					}
-					
+				} else {
+					console.error('邮箱验证码响应格式错误:', res);
 					uni.showToast({
-						title: errorMsg,
-						duration: 3000,
+						title: "响应格式错误，请稍后重试",
+						duration: 2000,
 						icon: "none",
 					});
-					this.flage = false;
+					// 重置验证状态，不刷新验证码
 					if (this.$refs.verification) {
-						this.$refs.verification.getCode();
+						this.$refs.verification.error();
 					}
+					this.flage = false;
 				}
-			},
+			} catch (err) {
+				uni.hideLoading();
+				console.error('发送邮箱验证码异常:', err);
+				
+				// 提取错误信息
+				let errorMsg = "发送失败，请稍后重试";
+				if (err && err.response && err.response.data) {
+					errorMsg = err.response.data.message || err.response.data.msg || errorMsg;
+				} else if (err && err.message) {
+					errorMsg = err.message;
+				}
+					
+				uni.showToast({
+					title: errorMsg,
+					duration: 3000,
+					icon: "none",
+				});
+				// 重置验证状态，不刷新验证码
+				if (this.$refs.verification) {
+					this.$refs.verification.error();
+				}
+				this.flage = false;
+			}
+		},
 			
 			// 发送验证码
 			fetchCode() {
-				// 如果是账号密码登录模式，不应该调用此方法
-				if (this.enableUserPwdBox) {
-					return false;
-				}
-				
 				// 1. 检查邀请码（注册需要邀请码）
 				if (!this.inviteCodeValid) {
 					uni.showToast({
@@ -1188,36 +1132,6 @@
 					return;
 				}
 				
-				// 检查密码
-				if (!this.userData.password || this.userData.password.length < 6 || this.userData.password.length > 20) {
-					uni.showToast({
-						title: "密码长度为6-20位",
-						duration: 2000,
-						icon: "none",
-					});
-					return;
-				}
-				
-				// 检查确认密码
-				if (!this.userData.confirmPassword || this.userData.confirmPassword.length < 6 || this.userData.confirmPassword.length > 20) {
-					uni.showToast({
-						title: "请再次输入密码确认",
-						duration: 2000,
-						icon: "none",
-					});
-					return;
-				}
-				
-				// 检查两次密码是否一致
-				if (this.userData.password !== this.userData.confirmPassword) {
-					uni.showToast({
-						title: "两次输入的密码不一致",
-						duration: 2000,
-						icon: "none",
-					});
-					return;
-				}
-				
 				// 调用注册API
 				uni.showLoading({
 					title: "注册中...",
@@ -1230,80 +1144,27 @@
 					const params = {
 						email: this.email,
 						code: this.code,
-						password: this.userData.password,
+						password: this.userData.password || '123456', // 默认密码，实际应该让用户输入
 						username: username
 					};
 					
-					console.log('注册参数:', { ...params, password: '***' });
 					const res = await register(params, this.clientType);
-					console.log('注册响应:', res);
 					uni.hideLoading();
 					
-					if (res.data && res.data.success) {
-						// 注册成功，后端返回Token，自动登录
-						if (res.data.result && res.data.result.accessToken) {
-							// 保存token
-							storage.setAccessToken(res.data.result.accessToken);
-							storage.setRefreshToken(res.data.result.refreshToken);
-							
-							// 获取用户信息并保存登录状态
-							getUserInfo().then((user) => {
-								if (user.data.success) {
-									storage.setUserInfo(user.data.result);
-									storage.setHasLogin(true);
-									
-									uni.showToast({
-										title: "注册成功，已自动登录！",
-										duration: 2000,
-										icon: "success",
-									});
-									
-									// 跳转到首页
-									setTimeout(() => {
-										uni.switchTab({
-											url: "/pages/tabbar/home/index",
-										});
-									}, 1500);
-								} else {
-									console.error('获取用户信息失败:', user.data);
-									uni.showToast({
-										title: "注册成功，但获取用户信息失败，请重新登录",
-										duration: 3000,
-										icon: "none",
-									});
-									// 跳转到登录页面
-									setTimeout(() => {
-										uni.switchTab({
-											url: "/pages/tabbar/user/my",
-										});
-									}, 2000);
-								}
-							}).catch((err) => {
-								console.error('获取用户信息异常:', err);
-								uni.showToast({
-									title: "注册成功，但获取用户信息失败，请重新登录",
-									duration: 3000,
-									icon: "none",
-								});
-								setTimeout(() => {
-									uni.switchTab({
-										url: "/pages/tabbar/user/my",
-									});
-								}, 2000);
+					if (res.data.success) {
+						uni.showToast({
+							title: this.$t("deposit.loginSuccess"),
+							duration: 2000,
+							icon: "success",
+						});
+						
+						// 注册成功后自动登录
+						setTimeout(() => {
+							// 跳转到登录页面或自动登录
+							uni.switchTab({
+								url: "/pages/tabbar/home/index",
 							});
-						} else {
-							// 如果没有返回token，提示用户手动登录
-							uni.showToast({
-								title: "注册成功，请使用邮箱和密码登录",
-								duration: 3000,
-								icon: "success",
-							});
-							setTimeout(() => {
-								// 跳转到登录页面
-								this.current = 0;
-								this.enableUserPwdBox = true;
-							}, 2000);
-						}
+						}, 1500);
 					} else {
 						uni.showToast({
 							title: res.data.message || "注册失败，请稍后重试",
@@ -1313,9 +1174,8 @@
 					}
 				} catch (error) {
 					uni.hideLoading();
-					console.error('注册异常:', error);
 					uni.showToast({
-						title: error.response?.data?.message || "注册失败，请稍后重试",
+						title: "注册失败，请稍后重试",
 						duration: 2000,
 						icon: "none",
 					});
@@ -1483,24 +1343,6 @@
 		text-align: center;
 		font-size: 22rpx;
 		color: #999;
-	}
-	
-	.password-tips {
-		margin-top: 10rpx;
-		color: #999;
-		font-size: 24rpx;
-		display: flex;
-		align-items: center;
-		padding: 0 30rpx;
-	}
-	
-	.password-error {
-		margin-top: 10rpx;
-		color: #ff5e00;
-		font-size: 24rpx;
-		display: flex;
-		align-items: center;
-		padding: 0 30rpx;
 	}
 
 	.login-item {

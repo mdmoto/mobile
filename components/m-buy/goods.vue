@@ -224,38 +224,6 @@ export default {
 					this.num = 1;
 				}
 			}
-		},
-		// 监听 goodsSpec 变化，自动初始化 selectSkuList
-		goodsSpec: {
-			handler(val) {
-				if (val) {
-					this.$nextTick(() => {
-						this.formatSku(val);
-					});
-				}
-			},
-			immediate: true
-		},
-		// 监听 goodsDetail 变化，确保 selectSkuList 正确初始化
-		goodsDetail: {
-			handler(val) {
-				if (val && val.id) {
-					this.$nextTick(() => {
-						// 如果 selectSkuList 未初始化，且 formatList 为空，则自动初始化
-						if (!this.selectSkuList && (!this.formatList || this.formatList.length === 0)) {
-							this.selectSkuList = {
-								spec: {
-									specName: '',
-									specValue: ''
-								},
-								data: val
-							};
-							this.selectName = '默认';
-						}
-					});
-				}
-			},
-			deep: true
 		}
 	},
 
@@ -329,35 +297,23 @@ export default {
 			});
 		},
 
-		/**
-		 * 添加到购物车或购买
-		 */
-		addToCartOrBuy(val) {
-			// 如果没有规格列表或规格列表为空，且 selectSkuList 未初始化，则自动初始化
-			if (!this.selectSkuList) {
-				// 如果商品没有规格（formatList为空），直接使用商品详情
-				if (!this.formatList || this.formatList.length === 0) {
-					this.selectSkuList = {
-						spec: {
-							specName: '',
-							specValue: ''
-						},
-						data: this.goodsDetail
-					};
-					this.selectName = '默认';
-				} else {
-					// 有规格但未选择，提示用户选择
-					uni.showToast({
-						title: '请选择规格商品',
-						icon: 'none'
-					});
-					return;
-				}
-			}
-			let data = {
-				skuId: this.goodsDetail.id,
-				num: this.num
-			};
+	/**
+	 * 添加到购物车或购买
+	 */
+	addToCartOrBuy(val) {
+		// 如果没有选择规格，但商品有默认SKU ID，则允许继续
+		// 这适用于只有一个默认规格的商品
+		if (!this.selectSkuList && !this.goodsDetail.id) {
+			uni.showToast({
+				title: '请选择规格商品',
+				icon: 'none'
+			});
+			return;
+		}
+		let data = {
+			skuId: this.goodsDetail.id,
+			num: this.num
+		};
 
 			if (val == 'cart') {
 				API_trade.addToCart(data).then(res => {
@@ -394,28 +350,10 @@ export default {
 			// 格式化数据
 			let arr = [{}];
 
-			// 如果规格列表为空或不是数组，初始化默认选中状态
-			if (!Array.isArray(list) || list.length === 0) {
-				// 没有规格的商品，直接使用商品详情作为选中SKU
-				this.selectSkuList = {
-					spec: {
-						specName: '',
-						specValue: ''
-					},
-					data: this.goodsDetail
-				};
-				this.selectName = '默认';
-				this.formatList = [];
-				this.skuList = [];
-				return;
+			if (!Array.isArray(list)) {
+				return false;
 			}
-
 			list.forEach((item, index) => {
-				// 确保 specValues 存在
-				if (!item.specValues || !Array.isArray(item.specValues)) {
-					return;
-				}
-				
 				item.specValues.forEach((spec, specIndex) => {
 					let name = spec.specName;
 					let values = {
@@ -454,67 +392,23 @@ export default {
 			arr.shift();
 			this.formatList = arr;
 
-			// 默认选中当前商品对应的SKU
-			let defaultSelected = false;
 			list.forEach(item => {
 				// 默认选中
 				if (item.skuId === this.goodsDetail.id) {
-					const validSpecValues = item.specValues
-						? item.specValues.filter(i => i.specName !== 'images')
-						: [];
-					
-					if (validSpecValues.length > 0) {
-						validSpecValues.forEach((value, _index) => {
+					item.specValues
+						.filter(i => i.specName !== 'images')
+						.forEach((value, _index) => {
 							this.currentSelected[_index] = value.specValue;
+
 							this.selectName = value.specValue;
+
+							this.selectSkuList = {
+								spec: value,
+								data: this.goodsDetail
+							};
 						});
-						// 使用最后一个规格值作为 selectSkuList 的 spec
-						this.selectSkuList = {
-							spec: validSpecValues[validSpecValues.length - 1],
-							data: this.goodsDetail
-						};
-					} else {
-						// 如果规格值为空，使用默认值
-						this.selectSkuList = {
-							spec: {
-								specName: '',
-								specValue: ''
-							},
-							data: this.goodsDetail
-						};
-						this.selectName = '默认';
-					}
-					defaultSelected = true;
 				}
 			});
-
-			// 如果没有找到匹配的SKU，使用第一个SKU或默认值
-			if (!defaultSelected && list.length > 0) {
-				const firstItem = list[0];
-				const validSpecValues = firstItem.specValues
-					? firstItem.specValues.filter(i => i.specName !== 'images')
-					: [];
-				
-				if (validSpecValues.length > 0) {
-					validSpecValues.forEach((value, _index) => {
-						this.currentSelected[_index] = value.specValue;
-						this.selectName = value.specValue;
-					});
-					this.selectSkuList = {
-						spec: validSpecValues[validSpecValues.length - 1],
-						data: this.goodsDetail
-					};
-				} else {
-					this.selectSkuList = {
-						spec: {
-							specName: '',
-							specValue: ''
-						},
-						data: this.goodsDetail
-					};
-					this.selectName = '默认';
-				}
-			}
 
 			this.skuList = list;
 			// console.log(" this.skuList", this.skuList)
