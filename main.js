@@ -1,4 +1,15 @@
 import Vue from "vue";
+import { Buffer } from 'buffer';
+import process from 'process';
+
+// 全局 Polyfill 以支持 Solana SDK
+if (typeof window !== 'undefined') {
+  window.Buffer = Buffer;
+  window.process = process;
+} else if (typeof global !== 'undefined') {
+  global.Buffer = Buffer;
+  global.process = process;
+}
 import App from "./App";
 import * as filters from "./utils/filters.js"; // global filter
 import uView from "uview-ui";
@@ -13,7 +24,10 @@ import i18n from './lang'; // 引入多语言
  * 
  */
 // #ifdef H5
-if (config.enableMiniBarStartUpApp) {
+// 增加 Standalone 模式检测，如果是从桌面图标启动（Web Clip/PWA），则不显示下载引导按钮
+const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+if (config.enableMiniBarStartUpApp && !isStandalone) {
   let btn = Vue.component("airBtn", airBtn); //全局注册
   document.body.appendChild(new btn().$mount().$el);
 }
