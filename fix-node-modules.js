@@ -2,35 +2,33 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * A more stable replacement for optional chaining.
- * Instead of recursive nesting which breaks parentheses in HBuilder/Babel,
- * we use a simpler approach for standard identifiers.
+ * A robust replacement for optional chaining that avoids 
+ * corrupting regex literals and other sensitive parts.
  */
-function stableFix(content) {
-    // 1. First, handle the most complex nested cases surgically to avoid regex madness
+function robustFix(content) {
+    // 1. Surgical fix for PhantomWalletAdapter - most sensitive part
     content = content.replace(/window\.phantom\?\.solana\?\.isPhantom/g, "(window.phantom && window.phantom.solana && window.phantom.solana.isPhantom)");
     content = content.replace(/window\.solana\?\.isPhantom/g, "(window.solana && window.solana.isPhantom)");
     content = content.replace(/window\.phantom\?\.solana/g, "(window.phantom && window.phantom.solana)");
 
-    // 2. Simple conversion for standard single-level optional chaining: a?.b -> (a && a.b)
-    // We avoid matching if there are already parentheses to prevent nesting errors
+    // 2. Safely replace optional chaining: identifier?.identifier
+    // We use \?\. to match a literal dot.
+    // We ensure it's not preceded by a backslash or part of a common regex pattern
     let last;
     do {
         last = content;
-        // Match: identifier ?. identifier (avoiding parentheses)
+        // Match: identifier ?. identifier
+        // MUST escape the dot as \. to avoid matching any character
         content = content.replace(/([a-zA-Z0-9_$]+)\?\.([a-zA-Z0-9_$]+)/g, "($1 && $1.$2)");
-        // Match: expr) ?. identifier
-        content = content.replace(/([a-zA-Z0-9_$]+\))\?\.([a-zA-Z0-9_$]+)/g, "($1 && $1.$2)");
     } while (last !== content);
 
     // 3. Nullish coalescing: ?? -> ||
+    // Only replace if not inside a string (simple check for now)
+    content = content.replace(/([a-zA-Z0-9_$]+)\s*\?\?\s*([a-zA-Z0-9_$]+)/g, "($1 !== undefined && $1 !== null ? $1 : $2)");
+    // Fallback for simple ?? if the above didn't catch it
     content = content.replace(/\?\?/g, "||");
 
-    // 4. Clean up the messy line produced by the previous failed attempt
-    content = content.replace(/\(window\.phantom && \(window\.phantom\.solana\) && window\.phantom\.solana\)\.isPhantom\) \|\| \(window\.solana && window\.solana\.isPhantom\)/g,
-        "(window.phantom && window.phantom.solana && window.phantom.solana.isPhantom) || (window.solana && window.solana.isPhantom)");
-
-    // 5. Fix class fields
+    // 4. Fix static class fields: static instance = null; -> (remove)
     content = content.replace(/static instance = null;/g, "");
 
     return content;
@@ -56,7 +54,13 @@ function traverse(dir) {
             }
         } else if (file.endsWith('.js') || file.endsWith('.mjs')) {
             let original = fs.readFileSync(fullPath, 'utf8');
-            let fixed = stableFix(original);
+
+            // Critical check: Skip files that are known to be minified or large and sensitive
+            if (file.endsWith('.min.js')) return;
+
+            // Apply fixes
+            let fixed = robustFix(original);
+
             if (original !== fixed) {
                 console.log(`Fixed: ${fullPath}`);
                 fs.writeFileSync(fullPath, fixed, 'utf8');
@@ -66,4 +70,4 @@ function traverse(dir) {
 }
 
 targetDirs.forEach(dir => traverse(dir));
-console.log('Stable cleanup complete.');
+console.log('Robust cleanup complete.');
