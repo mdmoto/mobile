@@ -1,10 +1,11 @@
 module.exports = {
     // 允许对 node_modules 中的依赖进行编译，特别是 Solana 这种使用 ES2020 语法的库
     transpileDependencies: [
-        '@[/\\\\]solana[/\\\\]',
+        '@solana',
         'bs58',
         'buffer',
-        'uview-ui'
+        'uview-ui',
+        'tweetnacl'
     ],
     /**
      *  此处为发行h5,微信小程序，app中删除console 
@@ -13,21 +14,25 @@ module.exports = {
     chainWebpack: (config) => {
         // 发行或运行时启用了压缩时会生效
         config.optimization.minimizer('terser').tap((args) => {
-            const compress = args[0].terserOptions.compress
-            // 非 App 平台移除 console 代码(包含所有 console 方法，如 log,debug,info...)
-            compress.drop_console = true
-            compress.pure_funcs = [
-                '__f__', // App 平台 vue 移除日志代码
-            ]
+            if (args[0] && args[0].terserOptions && args[0].terserOptions.compress) {
+                const compress = args[0].terserOptions.compress
+                compress.drop_console = true
+                compress.pure_funcs = ['__f__']
+            }
             return args
         })
 
-        // 增加对 modern JS 语法的支持处理（针对一些库可能没被 transpileDependencies 覆盖全的情况）
+        // 支持 .mjs 文件以及针对 Solana 的编译优化
+        config.module
+            .rule('mjs')
+            .test(/\.mjs$/)
+            .include.add(/node_modules/).end()
+            .type('javascript/auto');
+
+        // 核心修复：确保 Babel 包含所有相关的 node_modules
         config.module
             .rule('js')
-            .test(/\.m?js$/)
-            .use('babel-loader')
-            .loader('babel-loader')
+            .include.add(/node_modules[/\\](@solana|bs58|buffer|tweetnacl)/)
             .end();
     }
 }
