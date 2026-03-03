@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    publicPath: './',
+    publicPath: '/',
     // 允许对 node_modules 中的依赖进行编译，特别是 ES2020 语法的库
     transpileDependencies: [
         /@solana/,
@@ -41,6 +41,15 @@ module.exports = {
             .test(/\.mjs$/)
             .include.add(/node_modules/).end()
             .type('javascript/auto')
+            .use('babel-loader')
+            .loader('babel-loader')
+            .end();
+
+        // 确保本地 uview-ui 目录也经过 Babel 处理
+        config.module
+            .rule('uview')
+            .test(/\.js$/)
+            .include.add(path.resolve(__dirname, 'uview-ui')).end()
             .use('babel-loader')
             .loader('babel-loader')
             .end();

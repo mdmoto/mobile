@@ -233,6 +233,8 @@ export {
 	http
 };
 
+export default http;
+
 export const Method = {
 	GET: "GET",
 	POST: "POST",
