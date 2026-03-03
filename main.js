@@ -34,7 +34,7 @@ if (config.enableMiniBarStartUpApp && !isStandalone) {
 // #endif
 
 // 引入uView对小程序分享的mixin封装
-let mpShare = require('uview-ui/libs/mixin/mpShare.js');
+import mpShare from 'uview-ui/libs/mixin/mpShare.js';
 Vue.mixin(mpShare)
 
 /**

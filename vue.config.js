@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+    publicPath: './',
     // 允许对 node_modules 中的依赖进行编译，特别是 ES2020 语法的库
     transpileDependencies: [
         /@solana/,
@@ -40,20 +41,6 @@ module.exports = {
             .test(/\.mjs$/)
             .include.add(/node_modules/).end()
             .type('javascript/auto')
-            .use('babel-loader')
-            .loader('babel-loader')
-            .end();
-
-        // 核心修复：确保 Babel 强制处理可能存在 ES2020 语法的依赖包
-        config.module
-            .rule('js')
-            .include
-            .add(/node_modules[/\\]@solana/)
-            .add(/node_modules[/\\]@noble/)
-            .add(/node_modules[/\\]rpc-websockets/)
-            .add(/node_modules[/\\]jayson/)
-            .add(/node_modules[/\\]superstruct/)
-            .end()
             .use('babel-loader')
             .loader('babel-loader')
             .end();
