@@ -9,7 +9,7 @@ export default {
   aMapKey: "1f78544934b66c9fbc0104117f663973", //在高德中申请Web服务key
   scanAuthNavigation: ["https://m.maollar.com/"], //扫码认证跳转域名配置 会根据此处配置的路由进行跳转
   iosAppId: "id1564638363", //AppStore的应用地址id 具体在分享->拷贝链接中查看
-  logo: "https://your-new-maollar-oss.oss-cn-hongkong.aliyuncs.com/4c864e133c2944efad1f7282ac8a3b9e.png", //logo地址
+  logo: "/static/logo.png", //logo地址
   customerServiceMobile: "", //客服电话（请在管理后台设置）
   customerServiceEmail: "support@maollar.com", //客服邮箱
   imWebSrc: "https://im.maollar.com", //IM地址（暂用官方）

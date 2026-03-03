@@ -121,7 +121,7 @@ http.interceptors.request.use(
 		config.header = {
 			...config.header,
 			uuid: storage.getUuid(),
-			'Accept-Language': (uni.getStorageSync('app_language') || 'en-US').split('-')[0]
+			'Accept-Language': (uni.getStorageSync('app_language') || 'zh-CN')
 		};
 		return config;
 	},
