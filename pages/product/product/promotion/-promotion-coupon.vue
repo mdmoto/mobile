@@ -54,7 +54,7 @@
 						Object.keys(this.res).forEach((item) => {
 							let key = item.split("-")[0];
 							if (key === "COUPON") {
-								this.couponRes.push(this?.res[item]);
+								this.couponRes.push(this.res[item]);
 
 							}
 						});

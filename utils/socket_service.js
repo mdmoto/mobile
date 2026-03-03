@@ -1,35 +1,37 @@
 import store from '@/store/index'
 import config from '@/config/config.js'
 import storage from './storage';
+
 export default class SocketService {
+  constructor() {
+    // 和服务端连接的socket对象
+    this.ws = null;
+
+    // 存储回调函数
+    this.callBackMapping = {};
+
+    // 标识是否连接成功
+    this.connected = false;
+
+    // 记录重试的次数
+    this.sendRetryCount = 0;
+
+    // 重新连接尝试的次数
+    this.connectRetryCount = 0;
+  }
+
   /**
    * 单例
    */
-  static instance = null;
-  static get Instance () {
-    if (!this.instance) {
-      this.instance = new SocketService();
+  static get Instance() {
+    if (!SocketService.instance) {
+      SocketService.instance = new SocketService();
     }
-    return this.instance;
+    return SocketService.instance;
   }
 
-  // 和服务端连接的socket对象
-  ws = null;
-
-  // 存储回调函数
-  callBackMapping = {};
-
-  // 标识是否连接成功
-  connected = false;
-
-  // 记录重试的次数
-  sendRetryCount = 0;
-
-  // 重新连接尝试的次数
-  connectRetryCount = 0;
-
   //  定义连接服务器的方法
-  connect () {
+  connect() {
     // 连接服务器
     if (!window.WebSocket) {
       return console.log("您的浏览器不支持WebSocket");
@@ -59,19 +61,19 @@ export default class SocketService {
     };
   }
   // 回调函数的注册
-  registerCallBack (callBack) {
+  registerCallBack(callBack) {
     // console.log("回调函数的注册", callBack);
     this.callBackMapping = callBack;
   }
 
   // 取消某一个回调函数
-  unRegisterCallBack (callBack) {
+  unRegisterCallBack(callBack) {
     console.log("取消某一个回调函数", callBack);
     this.callBackMapping = null;
   }
 
   // 发送数据的方法
-  send (data) {
+  send(data) {
     // 判断此时此刻有没有连接成功
     if (this.connected) {
       this.sendRetryCount = 0;
@@ -84,3 +86,5 @@ export default class SocketService {
     }
   }
 }
+
+SocketService.instance = null;

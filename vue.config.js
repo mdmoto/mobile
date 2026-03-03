@@ -3,14 +3,15 @@ const path = require('path');
 module.exports = {
     // 允许对 node_modules 中的依赖进行编译，特别是 ES2020 语法的库
     transpileDependencies: [
-        '@solana',
-        'rpc-websockets',
-        'jayson',
-        'superstruct',
-        'bs58',
-        'buffer',
-        'uview-ui',
-        'tweetnacl'
+        /@solana/,
+        /rpc-websockets/,
+        /jayson/,
+        /superstruct/,
+        /bs58/,
+        /buffer/,
+        /uview-ui/,
+        /tweetnacl/,
+        /@noble/
     ],
     /**
      *  此处为发行h5,微信小程序，app中删除console 
@@ -27,22 +28,43 @@ module.exports = {
             return args
         })
 
-        // 路径别名修复：解决 Solana 1.78.3 查找 rpc-websockets 路径失败的问题
+        // 路径别名修复：针对 rpc-websockets 7.5.0 的特殊路径
+        // HBuilder 的 Webpack 可能在处理 import 'path' 时不会自动尝试 'path.js'
         config.resolve.alias
-            .set('rpc-websockets/dist/lib/client', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client.js'))
-            .set('rpc-websockets/dist/lib/client/websocket.browser', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client/websocket.browser.js'));
+            .set('rpc-websockets/dist/lib/client$', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client.js'))
+            .set('rpc-websockets/dist/lib/client/websocket.browser$', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client/websocket.browser.js'));
 
-        // 支持 .mjs 文件
+        // 支持 .mjs 文件并强制通过 babel-loader
         config.module
             .rule('mjs')
             .test(/\.mjs$/)
             .include.add(/node_modules/).end()
-            .type('javascript/auto');
+            .type('javascript/auto')
+            .use('babel-loader')
+            .loader('babel-loader')
+            .end();
 
-        // 核心修复：确保 Babel 包含所有相关的 node_modules
+        // 核心修复：确保 Babel 强制处理可能存在 ES2020 语法的依赖包
         config.module
             .rule('js')
-            .include.add(/node_modules[/\\](@solana|rpc-websockets|jayson|superstruct|bs58|buffer|tweetnacl)/)
+            .include
+            .add(/node_modules[/\\]@solana/)
+            .add(/node_modules[/\\]@noble/)
+            .add(/node_modules[/\\]rpc-websockets/)
+            .add(/node_modules[/\\]jayson/)
+            .add(/node_modules[/\\]superstruct/)
+            .end()
+            .use('babel-loader')
+            .loader('babel-loader')
+            .end();
+
+        // 允许解析 .cjs 文件
+        config.module
+            .rule('cjs')
+            .test(/\.cjs$/)
+            .include.add(/node_modules/).end()
+            .use('babel-loader')
+            .loader('babel-loader')
             .end();
     }
 }
