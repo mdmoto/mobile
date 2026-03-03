@@ -1,9 +1,9 @@
 {
-    "name": "猫乐商城",
+    "name": "MaoMall",
     "appid": "__UNI__GCA92B21",
-    "description": "",
-    "versionName": "0.9.2",
-    "versionCode": 4000503,
+    "description": "MaoMall - 一站购全球, 消费即投资",
+    "versionName": "1.0.0",
+    "versionCode": 100,
     "transformPx": false,
     "app-plus": {
         "compatible": {
@@ -83,12 +83,12 @@
             "ios": {
                 "idfa": false,
                 "privacyDescription": {
-                    "NSPhotoLibraryUsageDescription": "需要用与评论上传，头像上传功能",
-                    "NSPhotoLibraryAddUsageDescription": "保存商品图片到本地",
-                    "NSFaceIDUsageDescription": "使用面部识别进行登录",
-                    "NSCameraUsageDescription": "需要用与扫描二维码和商品评论图片拍摄",
-                    "NSLocationAlwaysAndWhenInUseUsageDescription": "位置信息将用于高德地图的效果展示",
-                    "NSMicrophoneUsageDescription": "用户上传视频时需使用音频信息"
+                    "NSPhotoLibraryUsageDescription": "MaoMall需要访问您的相册，以便您上传头像和商品评价图片",
+                    "NSPhotoLibraryAddUsageDescription": "MaoMall需要保存权限，以便您可以将商品图片保存到本地",
+                    "NSFaceIDUsageDescription": "MaoMall将使用面部识别功能为您提供更快捷的登录体验",
+                    "NSCameraUsageDescription": "MaoMall需要使用相机，以便您扫描二维码和拍摄商品评论图片",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription": "MaoMall需要您的位置信息，以便在地图中为您展示周边的自提点和物流状况",
+                    "NSMicrophoneUsageDescription": "MaoMall需要访问麦克风，以便您在上传视频评论时录制音频"
                 },
                 "urltypes": "maollar",
                 "dSYMs": false
