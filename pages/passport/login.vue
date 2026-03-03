@@ -858,7 +858,7 @@
 				this.getUserInfoMethods(res);
 			} else {
 				// 显示登录失败消息
-				const errorMsg = res.data?.message || res.data?.msg || "用户名或密码错误，请重试";
+				const errorMsg = (res.data && (res.data.message || res.data.msg)) || "用户名或密码错误，请重试";
 				console.log('❌ 登录失败:', errorMsg, '完整响应:', res.data);
 				uni.showToast({
 					title: errorMsg,

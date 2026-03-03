@@ -260,7 +260,7 @@ export default {
 					return i;
 				}
 			});
-			if (selectedSkuId?.skuId) {
+			if (selectedSkuId && selectedSkuId.skuId) {
 				this.$set(this.currentSelected, index, specValue.value);
 				this.selectSkuList = {
 					spec: {

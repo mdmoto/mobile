@@ -280,55 +280,16 @@ export default {
           this.endLoad = true;
           console.log('📥 滑块验证响应:', {
             statusCode: res.statusCode,
-            success: res.data?.success,
-            result: res.data?.result,
-            message: res.data?.message
+            success: res.data ? res.data.success : false,
+            result: res.data ? res.data.result : false,
+            message: res.data ? res.data.message : ''
           });
           
-<<<<<<< HEAD
-          // 检查 HTTP 状态码，400 表示错误
-          if (res.statusCode && res.statusCode !== 200) {
-            // HTTP 错误状态码
-            const errorMsg = (res.data && res.data.message) || "验证失败，请重试";
-            uni.showToast({
-              title: errorMsg,
-              duration: 2000,
-              icon: "none",
-            });
-            // 重置滑块位置并刷新验证码
-            this.movePv = 0;
-            this.moveX = 0;
-            this.moveCode = 0;
-            this.getCode(); // 刷新验证码图片
-            return;
-          }
-          
-          // 检查后端返回的success字段
-          if (res.data && res.data.success === false) {
-            // 后端返回错误，显示错误信息
-            const errorMsg = res.data.message || "验证失败，请重试";
-            uni.showToast({
-              title: errorMsg,
-              duration: 2000,
-              icon: "none",
-            });
-            // 重置滑块位置并刷新验证码
-            this.movePv = 0;
-            this.moveX = 0;
-            this.moveCode = 0;
-            this.getCode(); // 刷新验证码图片
-            return;
-          }
-
-          // 检查验证结果
-          if (res.data && res.data.result === true) {
-=======
           // 检查 HTTP 状态码和响应数据
           const isSuccess = res.statusCode === 200 && res.data && (res.data.success === true || res.data.result === true);
           
           if (isSuccess) {
             console.log('✅ 滑块验证成功，发送验证完成事件');
->>>>>>> 2d37768 (feat: implement i18n, custom logo, and UI optimizations)
             //验证成功后把key发送出去,后端会把验证信息存在缓存里
             this.$emit("send", this.key);
             this.hide();
@@ -337,7 +298,7 @@ export default {
           } else {
             console.log('❌ 滑块验证失败');
             // 显示后端返回的错误消息（如果有）
-            const errorMsg = res.data?.message || "验证失败，请重试";
+            const errorMsg = (res.data && res.data.message) || "验证失败，请重试";
             uni.showToast({
               title: errorMsg,
               duration: 2000,

@@ -138,7 +138,7 @@ export default {
       console.log('触底事件触发:', {
         enableBottomLoad: this.enableBottomLoad,
         goodsResult: this.goodsResult,
-        totalElements: this.goodsResult?.totalElements,
+        totalElements: this.goodsResult ? this.goodsResult.totalElements : 0,
         goodsDataLength: this.goodsData.length,
         loadStatus: this.loadStatus,
         canLoadMore: this.goodsResult && this.goodsResult.totalElements > this.goodsData.length

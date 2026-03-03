@@ -1,7 +1,12 @@
+const path = require('path');
+
 module.exports = {
-    // 允许对 node_modules 中的依赖进行编译，特别是 Solana 这种使用 ES2020 语法的库
+    // 允许对 node_modules 中的依赖进行编译，特别是 ES2020 语法的库
     transpileDependencies: [
         '@solana',
+        'rpc-websockets',
+        'jayson',
+        'superstruct',
         'bs58',
         'buffer',
         'uview-ui',
@@ -22,7 +27,12 @@ module.exports = {
             return args
         })
 
-        // 支持 .mjs 文件以及针对 Solana 的编译优化
+        // 路径别名修复：解决 Solana 1.78.3 查找 rpc-websockets 路径失败的问题
+        config.resolve.alias
+            .set('rpc-websockets/dist/lib/client', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client.js'))
+            .set('rpc-websockets/dist/lib/client/websocket.browser', path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client/websocket.browser.js'));
+
+        // 支持 .mjs 文件
         config.module
             .rule('mjs')
             .test(/\.mjs$/)
@@ -32,7 +42,7 @@ module.exports = {
         // 核心修复：确保 Babel 包含所有相关的 node_modules
         config.module
             .rule('js')
-            .include.add(/node_modules[/\\](@solana|bs58|buffer|tweetnacl)/)
+            .include.add(/node_modules[/\\](@solana|rpc-websockets|jayson|superstruct|bs58|buffer|tweetnacl)/)
             .end();
     }
 }
