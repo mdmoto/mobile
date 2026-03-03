@@ -1,4 +1,4 @@
-const name = "Maollar"; //全局商城name
+const name = "MaoMall"; //全局商城name
 const schemeName = "maollar"; //唤醒app需要的schemeName
 export default {
   name: name,
@@ -12,8 +12,8 @@ export default {
   logo: "https://your-new-maollar-oss.oss-cn-hongkong.aliyuncs.com/4c864e133c2944efad1f7282ac8a3b9e.png", //logo地址
   customerServiceMobile: "", //客服电话（请在管理后台设置）
   customerServiceEmail: "support@maollar.com", //客服邮箱
-  imWebSrc: "https://im.pickmall.cn", //IM地址（暂用官方）
-  baseWsUrl: "wss://im-api.pickmall.cn/lili/webSocket", // IM WS 地址（暂用官方）
+  imWebSrc: "https://im.maollar.com", //IM地址（暂用官方）
+  baseWsUrl: "wss://im-api.maollar.com/lili/webSocket", // IM WS 地址（暂用官方）
   enableGetClipboard: false, //是否启用粘贴板获取 scanAuthNavigation 中的链接，如果匹配则会跳转到对应页面
   enableMiniBarStartUpApp: true, //是否在h5中右侧浮空按钮点击启动app
   /**

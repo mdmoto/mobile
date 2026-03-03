@@ -33,7 +33,7 @@ export function modelNavigateTo(item) {
 			// 活动
 		case "marketing":
 			switch (val.___promotion) {
-				// 喵币商品
+				// 猫币商品
 				case "POINTS_GOODS":
 					uni.navigateTo({
 						url: `/pages/promotion/point/detail?id=${val.promotionId}`,
@@ -127,7 +127,7 @@ export function modelNavigateTo(item) {
 						url: `/pages/promotion/bargain/list`,
 					});
 					break;
-				case "喵币商城":
+				case "猫币商城":
 					uni.navigateTo({
 						url: `/pages/promotion/point/pointList`,
 					});
@@ -183,7 +183,7 @@ async function scan() {
   } else {
     /**
      * TODO 安卓 权限已经授权了，调用api总是显示用户已永久拒绝申请。人傻了
-     * TODO 如果xdm有更好的办法请在 https://gitee.com/beijing_hongye_huicheng/lilishop/issues 提下谢谢
+     * TODO 如果xdm有更好的办法请在 https://gitee.com/beijing_hongye_huicheng/maollar/issues 提下谢谢
      */
     seacnCode();
   }

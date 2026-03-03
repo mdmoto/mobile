@@ -13,18 +13,18 @@
 
       <view class="logistics-List">
         <view class="verificationCode" v-if="order.verificationCode">
-          券码： {{ order.orderStatus == 'CANCELLED' ?  '已失效' : order.verificationCode }}
+          {{ $t('order.couponCode') }}： {{ order.orderStatus == 'CANCELLED' ?  $t('order.expired') : order.verificationCode }}
         </view>
 		<view @click="handleClickDeliver()" class="info-view logi-view"  v-else-if="orderPackage && orderPackage.length">
 		  <view class="verificationCode">
-		      当前订单有 {{ orderPackage.length }} 个包裹快递
+		      {{ $t('order.packageCount', {count: orderPackage.length}) }}
 		  </view>
 		  <div>
-		      点击此处查看
+		      {{ $t('order.viewPackage') }}
 		  </div>
 		</view>
         <view v-else class="logistics-List-title">
-          {{ '暂无物流信息' }}
+          {{ $t('common.noData') }}
         </view>
       </view>
 
@@ -34,10 +34,10 @@
       <view class="address-view">
         <view>
           <view class="address-title">
-            <span>{{ order.consigneeName || "未填写昵称" }}</span>
-            <span>{{ order.consigneeMobile || "未填写手机号" | secrecyMobile }}</span>
+            <span>{{ order.consigneeName || $t('user.noNickname') }}</span>
+            <span>{{ order.consigneeMobile || $t('user.noMobile') | secrecyMobile }}</span>
           </view>
-          <view class="address">地址：{{ order.consigneeAddressPath }}
+          <view class="address">{{ $t('user.address') }}：{{ order.consigneeAddressPath }}
             {{ order.consigneeDetail }}</view>
         </view>
       </view>
@@ -48,11 +48,11 @@
       <view class="address-view">
         <view>
           <view class="order-info-view">
-            <view class="title">自提点地址:</view>
+            <view class="title">{{ $t('address.pickUpAddress') }}:</view>
             <view class="value address-line-height">{{ order.storeAddressPath }}</view>
           </view>
           <view class="order-info-view" @click="callPhone" >
-            <view class="title">联系方式:</view>
+            <view class="title">{{ $t('address.phone') }}:</view>
             <view class="value">{{ order.storeAddressMobile }}<u-icon name='phone-fill' ></u-icon></view>
           </view>
          
@@ -82,7 +82,7 @@
                 <view class="goods-title u-line-2">{{ sku.goodsName }}</view>
                 <view class="goods-price">
                   ￥{{ sku.goodsPrice | unitPrice }}
-                  <!-- <span v-if="sku.point">+{{ sku.point }}喵币</span> -->
+                  <!-- <span v-if="sku.point">+{{ sku.point }}猫币</span> -->
 				  <span style="font-size: 24rpx;margin-left: 14rpx;color: #ff9900;" v-if="sku.isRefund && sku.isRefund !== 'NO_REFUND'">
 				  {{refundPriceList(sku.isRefund)}} ({{ sku.refundPrice | unitPrice("￥") }})
 				   </span>
@@ -93,7 +93,7 @@
 
                 <view class="good-complaint">
                   <u-tag size="mini" mode="plain" @click="complaint(sku)" v-if="sku.complainStatus == 'NO_APPLY'"
-                    text="投诉" type="info" />
+                    :text="$t('common.complaint')" type="info" />
                 </view>
               </view>
             </view>
@@ -105,23 +105,23 @@
     <view class="info-view">
       <view>
         <view class="order-info-view">
-          <view class="title">商品总价：</view>
+          <view class="title">{{ $t('goods.totalPrice') }}：</view>
           <view class="value">￥{{ order.goodsPrice | unitPrice }}</view>
         </view>
         <view class="order-info-view" v-if="order.freightPrice">
-          <view class="title">运费：</view>
+          <view class="title">{{ $t('order.shippingFee') }}：</view>
           <view class="value">￥{{ order.freightPrice | unitPrice }}</view>
         </view>
         <view class="order-info-view" v-if="order.priceDetailDTO">
-          <view class="title">优惠券：</view>
+          <view class="title">{{ $t('user.coupon') }}：</view>
           <view class="value main-color">-￥{{ order.priceDetailDTO.couponPrice | unitPrice }}</view>
         </view>
         <view class="order-info-view">
-          <view class="title">活动优惠：</view>
+          <view class="title">{{ $t('goods.promotion') }}：</view>
           <view class="value main-color">-￥{{ order.discountPrice | unitPrice }}</view>
         </view>
         <!-- <view class="order-info-view" v-if="order.use_point">
-					<view class="title">使用喵币：</view>
+					<view class="title">使用猫币：</view>
 					<view class="value">{{ order.use_point }}</view>
 				</view> -->
       </view>
@@ -130,43 +130,43 @@
     <view class="info-view">
       <view style="width: 100%">
         <view class="order-info-view">
-          <view class="title">服务</view>
+          <view class="title">{{ $t('user.service') }}</view>
         </view>
         <view class="customer-list">
           <view class="customer-service"
             v-if="orderDetail.allowOperationVO && orderDetail.allowOperationVO.cancel == true"
-            @click="onCancel(order.sn)">取消订单</view>
-          <view class="customer-service" v-if="order.orderStatus == 'DELIVERED'" @click="onLogistics(order)">查看物流</view>
+            @click="onCancel(order.sn)">{{ $t('order.cancel') }}</view>
+          <view class="customer-service" v-if="order.orderStatus == 'DELIVERED'" @click="onLogistics(order)">{{ $t('order.viewLogistics') }}</view>
           <view class="customer-service" v-if="order.orderStatus != 'UNPAID' && order.orderPromotionType == 'PINTUAN'"
-            @click="ByUserMessage(order)">查看拼团信息</view>
+            @click="ByUserMessage(order)">{{ $t('order.viewPromotion') }}</view>
             <view class="customer-service"
-            @click="contact(order.storeId)">联系客服</view>
+            @click="contact(order.storeId)">{{ $t('user.service') }}</view>
         </view>
       </view>
     </view>
     <view class="info-view">
       <view style="width: 100%">
         <view class="order-info-view">
-          <view class="title">订单编号：</view>
+          <view class="title">{{ $t('order.orderNo') }}：</view>
           <view class="value">
             {{ order.sn }}
-            <u-tag class="copy" text="复制" type="info" size="mini" @click="onCopy(order.sn)" />
+            <u-tag class="copy" :text="$t('common.copy')" type="info" size="mini" @click="onCopy(order.sn)" />
           </view>
         </view>
         <view class="order-info-view">
-          <view class="title">下单时间：</view>
+          <view class="title">{{ $t('order.orderTime') }}：</view>
           <view class="value">{{
               order.createTime
           }}</view>
         </view>
         <view class="order-info-view">
-          <view class="title">订单备注：</view>
+          <view class="title">{{ $t('order.remark') }}：</view>
           <view class="value">{{
-              order.remark || '暂无备注'
+              order.remark || $t('common.noData')
           }}</view>
         </view>
         <view class="order-info-view">
-          <view class="title">支付状态：</view>
+          <view class="title">{{ $t('order.payStatus') }}：</view>
           <view class="value">
             {{
                 order.payStatus == "UNPAID"
@@ -177,8 +177,8 @@
             }}</view>
         </view>
         <view class="order-info-view">
-          <view class="title">支付方式：</view>
-          <view class="value">{{ orderDetail.paymentMethodValue || '暂无'}}</view>
+          <view class="title">{{ $t('order.paymentMethod') }}：</view>
+          <view class="value">{{ orderDetail.paymentMethodValue || $t('common.noData')}}</view>
         </view>
       </view>
     </view>
@@ -186,9 +186,9 @@
     <view class="info-view" v-if="order.payStatus == 'PAID'">
       <view>
         <view class="invoice-info-view">
-          <view class="invoice-title">发票信息：</view>
-          <view v-if="!order.needReceipt" class="value">无需发票</view>
-          <view v-else class="value" @click="onReceipt(orderDetail.receipt)">查看发票</view>
+          <view class="invoice-title">{{ $t('invoice.title') }}：</view>
+          <view v-if="!order.needReceipt" class="value">{{ $t('invoice.notIssued') }}</view>
+          <view v-else class="value" @click="onReceipt(orderDetail.receipt)">{{ $t('invoice.view') }}</view>
         </view>
       </view>
     </view>
@@ -200,8 +200,8 @@
           <!-- 全部 -->
           <!-- 等待付款 -->
 
-          <text v-if="order.payStatus === 'PAID'">已付金额：</text>
-          <text v-else>应付金额：</text>
+          <text v-if="order.payStatus === 'PAID'">{{ $t('order.paidAmount') }}：</text>
+          <text v-else>{{ $t('order.payableAmount') }}：</text>
 
           <text class="price" v-if="order.priceDetailDTO">￥{{ order.priceDetailDTO.flowPrice | unitPrice }}</text>
         </view>
@@ -209,22 +209,22 @@
           <!-- 全部 -->
           <!-- 等待付款 -->
           <u-button type="error" ripple size="mini" v-if="orderDetail.allowOperationVO && orderDetail.allowOperationVO.pay"
-            @click="toPay(order)">立即付款</u-button>
+            @click="toPay(order)">{{ $t('order.payment') }}</u-button>
 
           <!-- <u-button class="rebuy-btn" size="mini" v-if="order.order_operate_allowable_vo.allow_service_cancel"> 提醒发货</u-button> -->
           <!-- <div class="pay-btn">确认收货</div> -->
           <u-button shape="circle" ripple type="warning" size="mini" v-if="order.orderStatus == 'DELIVERED'"
-            @click="onRog(order.sn)">确认收货</u-button>
+            @click="onRog(order.sn)">{{ $t('order.confirm') }}</u-button>
           <!-- 交易完成 未评价 -->
           <u-button shape="circle" ripple size="mini" v-if="order.orderStatus == 'COMPLETE'"
-            @click="onComment(order.sn)">评价商品</u-button>
+            @click="onComment(order.sn)">{{ $t('review.writeReview') }}</u-button>
         </view>
       </view>
     </view>
     <u-popup class="cancel-popup" v-model="cancelShow" mode="bottom" length="60%">
-      <view class="header">取消订单</view>
+      <view class="header">{{ $t('order.cancel') }}</view>
       <view class="body">
-        <view class="title">取消订单后，本单享有的优惠可能会一并取消，是否继续？</view>
+        <view class="title">{{ $t('order.cancelTips') }}</view>
         <view>
           <u-radio-group v-model="reason">
             <view class="value">
@@ -237,11 +237,11 @@
         </view>
       </view>
       <view class="footer">
-        <u-button size="medium" v-if="reason" shape="circle" @click="submitCancel">提交</u-button>
+        <u-button size="medium" v-if="reason" shape="circle" @click="submitCancel">{{ $t('common.submit') }}</u-button>
       </view>
     </u-popup>
     <u-toast ref="uToast" />
-    <u-modal v-model="rogShow" :show-cancel-button="true" :content="'是否确认收货?'" :confirm-color="lightColor"
+    <u-modal v-model="rogShow" :show-cancel-button="true" :content="$t('order.confirmRogTips')" :confirm-color="lightColor"
       @confirm="confirmRog"></u-modal>
 
     <!-- 分享 -->

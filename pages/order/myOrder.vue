@@ -2,13 +2,13 @@
 	<view class="content">
 		<view class="navbar">
 			<view v-for="(item, index) in navList" :key="index" class="nav-item"
-				:class="{ current: tabCurrentIndex === index }" @click="tabClick(index)">{{ item.text }}</view>
+				:class="{ current: tabCurrentIndex === index }" @click="tabClick(index)">{{ $t(item.textKey) }}</view>
 		</view>
 		<swiper :current="tabCurrentIndex" class="swiper-box" duration="300" @change="changeTab">
 			<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
 				<scroll-view class="list-scroll-content" scroll-y @scrolltolower="loadData(tabIndex)">
 					<!-- 空白页 -->
-					<u-empty text="暂无订单" mode="list"
+					<u-empty :text="$t('order.noOrder')" mode="list"
 						v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></u-empty>
 					<!-- 订单列表 -->
 					<view class="seller-view" :key="oderIndex" v-for="(order, oderIndex) in tabItem.orderList">
@@ -52,32 +52,32 @@
 							<view class="btn-view u-flex u-row-between">
 								<view class="description">
 									<!-- 等待付款 -->
-									<div v-if="order.payStatus === 'PAID'">已付金额:</div>
-									<div v-else>应付金额:</div>
+									<div v-if="order.payStatus === 'PAID'">{{ $t('order.paidAmount') }}:</div>
+									<div v-else>{{ $t('order.payableAmount') }}:</div>
 									<div class="price">￥{{ order.flowPrice | unitPrice }}</div>
 								</view>
 								<view class="goods-btn flex flex-a-c">
 									<!-- 全部 -->
 									<view ripple class="pay-btn" shape="circle" size="mini"
-										v-if="order.allowOperationVO.pay" @click="waitPay(order)">立即付款</view>
+										v-if="order.allowOperationVO.pay" @click="waitPay(order)">{{ $t('order.payment') }}</view>
 									<!-- 取消订单 -->
 									<view ripple class="cancel-btn" shape="circle" size="mini"
 										v-if="order.allowOperationVO.cancel" @click="onCancel(order.sn)">
-										取消订单
+										{{ $t('order.cancel') }}
 									</view>
 									<!-- 等待收货 -->
 									<view ripple shape="circle" class="rebuy-btn" size="mini"
 										v-if="order.allowOperationVO.showLogistics" @click="navigateToLogistics(order)">
-										查看物流
+										{{ $t('order.viewLogistics') }}
 									</view>
 									<view ripple shape="circle" class="pay-btn" size="mini"
 										v-if="order.allowOperationVO.rog" @click="onRog(order.sn)">
-										确认收货
+										{{ $t('order.confirm') }}
 									</view>
 									<view ripple shape="circle" class="cancel-btn" size="mini"
 										v-if="order.groupAfterSaleStatus && ( order.groupAfterSaleStatus.includes('NOT_APPLIED') || order.groupAfterSaleStatus.includes('PART_AFTER_SALE'))"
 										@click="applyService(order)">
-										退款/售后
+										{{ $t('order.afterSale') }}
 									</view> 
 								</view>
 							</view>
@@ -88,9 +88,9 @@
 			</swiper-item>
 		</swiper>
 		<u-popup class="cancel-popup" v-model="cancelShow" mode="bottom" length="60%">
-			<view class="header">取消订单</view>
+			<view class="header">{{ $t('order.cancel') }}</view>
 			<view class="body">
-				<view class="title">取消订单后，本单享有的优惠可能会一并取消，是否继续？</view>
+				<view class="title">{{ $t('order.cancelTips') }}</view>
 				<view>
 					<u-radio-group v-model="reason">
 						<view class="value">
@@ -103,11 +103,11 @@
 				</view>
 			</view>
 			<view class="footer">
-				<u-button size="medium" ripple v-if="reason" shape="circle" @click="submitCancel">提交</u-button>
+				<u-button size="medium" ripple v-if="reason" shape="circle" @click="submitCancel">{{ $t('common.submit') }}</u-button>
 			</view>
 		</u-popup>
 		<u-toast ref="uToast" />
-		<u-modal :confirm-color="lightColor" v-model="rogShow" :show-cancel-button="true" :content="'是否确认收货?'"
+		<u-modal :confirm-color="lightColor" v-model="rogShow" :show-cancel-button="true" :content="$t('order.confirmRogTips')"
 			@confirm="confirmRog"></u-modal>
 	</view>
 </template>
@@ -135,42 +135,42 @@
 					//导航栏list
 					{
 						state: 0,
-						text: "全部",
+						textKey: "order.all",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
 					},
 					{
 						state: 1,
-						text: "待付款",
+						textKey: "order.waitPay",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
 					},
 					{
 						state: 2,
-						text: "待发货",
+						textKey: "order.waitDeliver",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
 					},
 					{
 						state: 3,
-						text: "待收货",
+						textKey: "order.waitReceive",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
 					},
 					{
 						state: 4,
-						text: "已完成",
+						textKey: "order.completed",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
 					},
 					{
 						state: 5,
-						text: "已取消",
+						textKey: "order.cancelled",
 						loadStatus: "more",
 						orderList: [],
 						pageNumber: 1,
@@ -286,18 +286,18 @@
 			renderOrderTag(orderPromotionType) {
 				switch (orderPromotionType) {
 					case "NORMAL":
-						return "普通订单";
+						return this.$t("order.promotionNormal");
 					case "PINTUAN":
-						return "拼团订单";
+						return this.$t("order.promotionPintuan");
 						break;
 					case "GIFT":
-						return "赠品订单";
+						return this.$t("order.promotionGift");
 						break;
 					case "POINTS":
-						return "喵币订单";
+						return this.$t("order.promotionPoints");
 						break;
 					case "KANJIA":
-						return "砍价订单";
+						return this.$t("order.promotionKanjia");
 					default:
 						return "";
 				}
@@ -328,7 +328,7 @@
 				this.orderSn = sn;
 				this.cancelShow = true;
 				uni.showLoading({
-					title: "加载中",
+					title: this.$t("common.loading"),
 				});
 				getClearReason().then((res) => {
 					if (res.data.result.length >= 1) {
@@ -413,7 +413,7 @@
 			//删除订单
 			deleteOrder(index) {
 				uni.showLoading({
-					title: "请稍后",
+					title: this.$t("common.loading"),
 				});
 				setTimeout(() => {
 					this.navList[this.tabCurrentIndex].orderList.splice(index, 1);
@@ -425,7 +425,7 @@
 			//取消订单
 			cancelOrder(item) {
 				uni.showLoading({
-					title: "请稍后",
+					title: this.$t("common.loading"),
 				});
 				setTimeout(() => {
 					let {
@@ -454,13 +454,13 @@
 					stateTipColor = this.$lightColor;
 				switch (+state) {
 					case 1:
-						stateTip = "待付款";
+						stateTip = this.$t("order.waitPay");
 						break;
 					case 2:
-						stateTip = "待发货";
+						stateTip = this.$t("order.waitDeliver");
 						break;
 					case 9:
-						stateTip = "订单已关闭";
+						stateTip = this.$t("order.orderClosed");
 						stateTipColor = "#909399";
 						break;
 
@@ -497,7 +497,7 @@
 				}).then((res) => {
 					if (res.data.success) {
 						uni.showToast({
-							title: "订单已取消",
+							title: this.$t("order.cancelled"),
 							duration: 2000,
 							icon: "none",
 						});
@@ -530,7 +530,7 @@
 				confirmReceipt(this.orderSn).then((res) => {
 					if (res.data.code == 200) {
 						uni.showToast({
-							title: "已确认收货",
+							title: this.$t("order.confirmRogSuccess"),
 							duration: 2000,
 							icon: "none",
 						});

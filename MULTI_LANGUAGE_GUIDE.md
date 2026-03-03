@@ -1,6 +1,6 @@
 # 🌍 移动端多语言配置指南
 
-**项目**: lilishop-uniapp  
+**项目**: maollar-uniapp  
 **框架**: uni-app  
 **当前状态**: ❌ 未实现多语言
 
@@ -101,7 +101,7 @@
 #### 步骤1: 安装依赖
 
 ```bash
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 npm install vue-i18n@8.28.2
 ```
 
@@ -112,7 +112,7 @@ npm install vue-i18n@8.28.2
 #### 步骤2: 创建语言文件结构
 
 ```
-lilishop-uniapp/
+maollar-uniapp/
   ├── lang/                    # 新建
   │   ├── index.js            # i18n配置
   │   ├── zh-CN.js            # 中文
@@ -495,7 +495,7 @@ export default {
 ### 必需文件
 
 ```
-lilishop-uniapp/
+maollar-uniapp/
   ├── lang/
   │   ├── index.js              # i18n配置入口
   │   ├── zh-CN.js              # 中文语言包

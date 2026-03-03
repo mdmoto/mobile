@@ -29,7 +29,7 @@
             {{item.name}}
           </div>
           <div class="live-store">
-            <span class="wes">lilishop</span>
+            <span class="wes">maollar</span>
           </div>
           <div class="live-goods-list">
             <div class="live-goods-item">
@@ -95,7 +95,7 @@ export default {
       swiperImg: [
         {
           image:
-            "https://lilishop-oss.oss-cn-beijing.aliyuncs.com/48d789cb9c864b7b87c1c0f70996c3e8.jpeg",
+            "https://maollar-oss.oss-cn-beijing.aliyuncs.com/48d789cb9c864b7b87c1c0f70996c3e8.jpeg",
         },
       ],
     };

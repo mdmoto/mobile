@@ -1,21 +1,21 @@
-## Lilishop B2B2C 商城系统
+## MaoMall B2B2C 商城系统
 
 ### 商城介绍
 
-**官网**：https://pickmall.cn
+**官网**：https://maollar.com
 
-**更多 README**：https://gitee.com/beijing_hongye_huicheng/lilishop/blob/master/README.md
+**更多 README**：https://gitee.com/beijing_hongye_huicheng/maollar/blob/master/README.md
 
-**演示站点**：https://m-b2b2c.pickmall.cn/ 账号：13011111111 验证码：111111
+**演示站点**：https://m-b2b2c.maollar.com/ 账号：13011111111 验证码：111111
 
 **商城 小程序/公众号/APP**：扫描二维码
 
-![image-20210511171611793](https://static.pickmall.cn/images/h5-qrcode.png)
+![image-20210511171611793](https://static.maollar.com/images/h5-qrcode.png)
 
-## lilishop-uniapp如何在本地h5和微信小程序中运行
+## maollar-uniapp如何在本地h5和微信小程序中运行
 https://www.bilibili.com/video/BV17K8EemEh2/
 
-## lilishop-uniapp如何打包h5到服务器
+## maollar-uniapp如何打包h5到服务器
 https://www.bilibili.com/video/BV1CX87exE64/
 
 ### 快速开始
@@ -42,7 +42,7 @@ https://www.bilibili.com/video/BV1CX87exE64/
 1. 克隆项目到本地
 
 ```shell
-git clone https://gitee.com/beijing_hongye_huicheng/lilishop-uniapp.git
+git clone https://gitee.com/beijing_hongye_huicheng/maollar-uniapp.git
 ```
 
 2. 从`hbulider`中打开项目
@@ -107,22 +107,22 @@ git clone https://gitee.com/beijing_hongye_huicheng/lilishop-uniapp.git
 在根目录`config`下的`config`设置中配置了一些默认的配置，可以根据自己的需求进行修改
 
 ```
-const name = "lilishop"; //全局商城name
-const schemeName = "lilishop"; //唤醒app需要的schemeName
+const name = "maollar"; //全局商城name
+const schemeName = "maollar"; //唤醒app需要的schemeName
 export default {
   name: name,
   schemeLink: `${schemeName}://`, //唤起app地址
-  downloadLink: "https://pickmall.cn/download-page/index.html", //下载地址，下载app的地址
-  shareLink: "https://m-b2b2c.pickmall.cn", //分享地址，也就是在h5中默认的复制地址
+  downloadLink: "https://maollar.com/download-page/index.html", //下载地址，下载app的地址
+  shareLink: "https://m-b2b2c.maollar.com", //分享地址，也就是在h5中默认的复制地址
   appid: "", //小程序唯一凭证，即 AppID，可在「微信公众平台 - 设置 - 开发设置」页中获得。（需要已经成为开发者，且帐号没有异常状态）
   aMapKey: "", //在高德中申请Web服务key
-  scanAuthNavigation: ["https://m-b2b2c.pickmall.cn/"], //扫码认证跳转域名配置 会根据此处配置的路由进行跳转
+  scanAuthNavigation: ["https://m-b2b2c.maollar.com/"], //扫码认证跳转域名配置 会根据此处配置的路由进行跳转
   iosAppId: "id1564638363", //AppStore的应用地址id 具体在分享->拷贝链接中查看
-  logo: "https://lilishop-oss.oss-cn-beijing.aliyuncs.com/4c864e133c2944efad1f7282ac8a3b9e.png", //logo地址
+  logo: "https://maollar-oss.oss-cn-beijing.aliyuncs.com/4c864e133c2944efad1f7282ac8a3b9e.png", //logo地址
   customerServiceMobile: "13161366885", //客服电话
   customerServiceEmail: "lili@lili.com", //客服邮箱
-  imWebSrc: "https://im.pickmall.cn", //IM地址
-  baseWsUrl: "wss://im-api.pickmall.cn/lili/webSocket", // IM WS 地址
+  imWebSrc: "https://im.maollar.com", //IM地址
+  baseWsUrl: "wss://im-api.maollar.com/lili/webSocket", // IM WS 地址
   enableGetClipboard: false, //是否启用粘贴板获取 scanAuthNavigation 中的链接，如果匹配则会跳转到对应页面
   enableMiniBarStartUpApp: true, //是否在h5中右侧浮空按钮点击启动app
   /**
@@ -159,7 +159,7 @@ export default {
 #### 微信小程序移动端启动报错
 
 小程序直播插件报错，在`manifest`中删除代码。
-![启动报错](https://docs.pickmall.cn/configure/images/live.png)
+![启动报错](https://docs.maollar.com/configure/images/live.png)
 
 #### 微信小程序上传文件过大超出 2MB
 
@@ -178,26 +178,26 @@ export default {
 
 request合法域名基础配置如下
 ```
-https://buyer-api.pickmall.cn
-https://common-api.pickmall.cn
-https://im-api.pickmall.cn
+https://buyer-api.maollar.com
+https://common-api.maollar.com
+https://im-api.maollar.com
 https://restapi.amap.com
 ```
 
 socket合法域名
 ```
-wss://im-api.pickmall.cn
+wss://im-api.maollar.com
 ```
 uploadFile合法域名
 ```
-https://common-api.pickmall.cn
+https://common-api.maollar.com
 ```
 downloadFile合法域名
 ```
-https://buyer-api.pickmall.cn
-https://common-api.pickmall.cn
-https://im-api.pickmall.cn
-https://lilishop-oss.oss-cn-beijing.aliyuncs.com
+https://buyer-api.maollar.com
+https://common-api.maollar.com
+https://im-api.maollar.com
+https://maollar-oss.oss-cn-beijing.aliyuncs.com
 ```
 
 #### 如何配置API

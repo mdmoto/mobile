@@ -15,8 +15,16 @@
         <view class="user-name">{{ $t('user.login') }}/{{ $t('user.register') }}</view>
       </view>
       <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
+      
+      <!-- 币种切换器 -->
+      <view class="currency-picker" @click.stop="showCurrencyAction = true">
+        <text>{{ currentCurrency }}</text>
+        <u-icon name="arrow-down-fill" size="20"></u-icon>
+      </view>
     </view>
-    <!-- 喵币，预存款，优惠券 -->
+    
+    <u-action-sheet :list="currencyList" v-model="showCurrencyAction" @click="changeCurrency"></u-action-sheet>
+    <!-- 猫币，预存款，优惠券 -->
     <div class="pointBox box">
       <u-row text-align="center" gutter="16" class="point">
         <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/point/myPoint')">
@@ -94,10 +102,18 @@ export default {
       couponNum: "",
       footNum: "",
       walletNum: "",
+      showCurrencyAction: false,
+      currentCurrency: storage.getCurrency(),
+      currencyList: [
+        { text: "CNY (人民币)" },
+        { text: "USD (美元)" },
+        { text: "JPY (日元)" }
+      ]
     };
   },
   onLoad() { },
   onShow() {
+    this.currentCurrency = storage.getCurrency();
     this.userInfo = this.$options.filters.isLogin() || {};
     if (this.$options.filters.isLogin("auth")) {
       this.getUserOrderNum();
@@ -130,6 +146,13 @@ export default {
       uni.navigateTo({
         url,
       });
+    },
+    changeCurrency(index) {
+      const selected = this.currencyList[index].text.substring(0, 3);
+      storage.setCurrency(selected);
+      this.currentCurrency = selected;
+      uni.showToast({ title: `已切换至 ${selected}`, icon: "none" });
+      this.getUserOrderNum(); // 重新加载数据以应用新汇率显示
     },
     userDetail() {
       this.userInfo.id
@@ -180,6 +203,23 @@ body {
     color: #ffffff;
     display: flex;
     justify-content: space-between;
+
+    .currency-picker {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10rpx 20rpx;
+      border-radius: 40rpx;
+      display: flex;
+      align-items: center;
+      height: 60rpx;
+      margin-top: 100rpx;
+      font-size: 24rpx;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      
+      text {
+        margin-right: 10rpx;
+      }
+    }
 
     .head-1 {
       text-align: center;

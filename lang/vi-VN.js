@@ -212,7 +212,7 @@ export default {
     operationFailed: 'Thao tác thất bại'
   },
   
-  // 喵币 (Xu Mèo)
+  // 猫币 (Xu Mèo)
   points: {
     title: 'Xu Mèo Của Tôi',
     myPoints: 'Xu Mèo Của Tôi',

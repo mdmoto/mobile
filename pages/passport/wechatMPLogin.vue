@@ -94,7 +94,7 @@
 		},
 		methods: {
 			/**
-			 * TODO 此方法不一定是最优解，如果有更好的办法请在  https://gitee.com/beijing_hongye_huicheng/lilishop/issues 中提出
+			 * TODO 此方法不一定是最优解，如果有更好的办法请在  https://gitee.com/beijing_hongye_huicheng/maollar/issues 中提出
 			 * 小程序返回bug
 			 * 1.介于微信登录是在login.vue的基础上作为判断跳转来
 			 * 所以在页面栈中会自动记录回退路径，所以导致每次微信小程序点击回退就会自动返回login页面

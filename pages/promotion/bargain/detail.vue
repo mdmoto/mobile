@@ -93,7 +93,7 @@
       <u-modal :show-title="false" v-model="helpBargainFlage" :show-confirm-button="false">
         <view class="help-bargain" @click="handleClickHelpBargain">
           <u-image width="100%" height="600rpx"
-            src="https://lilishop-oss.oss-cn-beijing.aliyuncs.com/91631d5a66c7426bbe3f7d644ee41946.jpeg"></u-image>
+            src="https://maollar-oss.oss-cn-beijing.aliyuncs.com/91631d5a66c7426bbe3f7d644ee41946.jpeg"></u-image>
           <u-image class="help" width="300rpx" height="80rpx" src="/pages/promotion/static/help-bargain.png"></u-image>
         </view>
       </u-modal>

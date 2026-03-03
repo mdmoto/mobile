@@ -278,5 +278,5 @@ Chờ thanh toán | Chờ nhận hàng
 
 **版本**: v1.0  
 **日期**: 2025-11-03  
-**开发**: Maollar Team
+**开发**: MaoMall Team
 

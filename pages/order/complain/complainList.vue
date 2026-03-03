@@ -16,7 +16,7 @@
           <view class="goods-title u-line-2">{{ item.goodsName }}</view>
           <view class="goods-price">
             ￥{{ item.goodsPrice | unitPrice }}
-            <!-- <span>+{{ '1' }}喵币</span> -->
+            <!-- <span>+{{ '1' }}猫币</span> -->
           </view>
         </view>
         <view class="goods-num">

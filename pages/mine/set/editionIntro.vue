@@ -8,31 +8,31 @@
       Version {{localVersion.version}}
       <!-- #endif -->
 	  <!-- #ifdef MP-WEIXIN -->
-	  小程序版本: {{localVersion.version}}  {{ localVersion.envVersion}}
+	  {{ $t('user.miniVersion') }}: {{localVersion.version}}  {{ localVersion.envVersion}}
 	  <!--  #endif -->
     </view>
 
     <!-- {{localVersion}} -->
     <u-cell-group class="cell" :border="false">
       <!--  #ifdef APP-PLUS -->
-      <u-cell-item v-if="IosWhether" @click="checkStar" title="去评分"></u-cell-item>
-      <u-cell-item title="功能介绍" @click="navigateTo('/pages/mine/set/versionFunctionList')"></u-cell-item>
-      <u-cell-item title="检查更新" @click="checkUpdate"></u-cell-item>
+      <u-cell-item v-if="IosWhether" @click="checkStar" :title="$t('user.rateApp')"></u-cell-item>
+      <u-cell-item :title="$t('user.functionDesc')" @click="navigateTo('/pages/mine/set/versionFunctionList')"></u-cell-item>
+      <u-cell-item :title="$t('user.checkUpdate')" @click="checkUpdate"></u-cell-item>
       <!--  #endif -->
 	 
-      <u-cell-item title="证照信息" @click="navigateTo('/pages/mine/help/tips?type=LICENSE_INFORMATION')"></u-cell-item>
-      <u-cell-item title="服务协议" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')"></u-cell-item>
-      <u-cell-item title="隐私协议" @click="navigateTo('/pages/mine/help/tips?type=PRIVACY_POLICY')"></u-cell-item>
-      <u-cell-item title="关于我们" :border-bottom="false" @click="navigateTo('/pages/mine/help/tips?type=ABOUT')"></u-cell-item>
+      <u-cell-item :title="$t('user.licenseInfo')" @click="navigateTo('/pages/mine/help/tips?type=LICENSE_INFORMATION')"></u-cell-item>
+      <u-cell-item :title="$t('auth.terms')" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')"></u-cell-item>
+      <u-cell-item :title="$t('auth.privacy')" @click="navigateTo('/pages/mine/help/tips?type=PRIVACY_POLICY')"></u-cell-item>
+      <u-cell-item :title="$t('user.about')" :border-bottom="false" @click="navigateTo('/pages/mine/help/about2')"></u-cell-item>
 
     </u-cell-group>
 
     <view class="intro">
-      <view>{{config.customerServiceMobile ? `客服热线：${config.customerServiceMobile}` :  ``}}</view>
-      <view style="margin:20rpx 0 0 0;">{{config.customerServiceEmail ? `客服邮箱：${config.customerServiceEmail}` :  ``}}</view>
+      <view>{{config.customerServiceMobile ? `${$t('user.hotline')}：${config.customerServiceMobile}` :  ``}}</view>
+      <view style="margin:20rpx 0 0 0;">{{config.customerServiceEmail ? `${$t('user.email')}：${config.customerServiceEmail}` :  ``}}</view>
 
       <view>
-        <view style="margin:20rpx 0; color:#003a8c;" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')">《{{config.name}}用户协议》</view>
+        <view style="margin:20rpx 0; color:#003a8c;" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')">《{{config.name}}{{ $t('auth.terms') }}》</view>
         <view>CopyRight ©{{config.name}} </view>
       </view>
     </view>
@@ -105,6 +105,17 @@ export default {
     },
 
     navigateTo(url) {
+      if (url === "/pages/mine/help/about2") {
+        // #ifdef H5
+        window.open('https://about.maollar.com', '_blank');
+        // #endif
+        // #ifndef H5
+        uni.navigateTo({
+          url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maollar.com')
+        });
+        // #endif
+        return;
+      }
       uni.navigateTo({
         url,
       });
@@ -130,9 +141,7 @@ export default {
         APPUpdate();
       } else {
         uni.showToast({
-          title: "当前版本已是最新版",
-          duration: 2000,
-          icon: "none",
+          title: this.$t('user.latestVersion'),
         });
       }
     },

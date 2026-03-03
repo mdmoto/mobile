@@ -17,7 +17,7 @@
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'POINTS_GOODS'">
-					<!-- 喵币活动 -->
+					<!-- 猫币活动 -->
 					<div class="flex">
 						<view class="deg_tag">{{ promotionItem.title }}</view>
 						<div class="text proText">{{ res[item].promotionName }}</div>

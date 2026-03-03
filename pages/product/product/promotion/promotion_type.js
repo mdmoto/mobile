@@ -1,6 +1,6 @@
 const promotion = [
   {
-    title: "喵币活动",
+    title: "猫币活动",
     value: "POINTS_GOODS",
   },
   {
@@ -16,7 +16,7 @@ const promotion = [
     value: "GROUPBUY",
   },
   {
-    title: "喵币换购",
+    title: "猫币换购",
     value: "EXCHANGE",
   },
   {

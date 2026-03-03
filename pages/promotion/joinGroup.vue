@@ -4,13 +4,13 @@
 			<!-- 中间 -->
 			<view class="slot-wrap container-wrap">
 				<view v-if="search">
-					<u-search @search="searchFun()" @custom="searchFun()" v-model="params.goodsName"></u-search>
+					<u-search :placeholder="$t('common.search')" @search="searchFun()" @custom="searchFun()" v-model="params.goodsName"></u-search>
 				</view>
 			</view>
 			<!-- 右侧 -->
 			<view slot="right">
 				<view style="margin-right: 24rpx;" @click="searchFlag()">
-					<view v-if="search">取消</view>
+					<view v-if="search">{{ $t('common.cancel') }}</view>
 					<u-icon v-if="!search" size="44rpx" name="search"></u-icon>
 				</view>
 			</view>
@@ -23,7 +23,7 @@
 		<div class="swiper">
 			<goodsTemplate v-if="goodsList.length" :res="goodsList" />
 			
-			<u-empty v-else style="margin-top:20%" text="暂无拼团活动" mode="data"></u-empty>
+			<u-empty v-else style="margin-top:20%" :text="$t('promotion.noJoinGroup')" mode="data"></u-empty>
 		</div>
 
 	</view>
@@ -41,7 +41,7 @@
 			return {
 				is_empty: false,
 				search: false,
-				title: "拼团活动",
+				title: this.$t("promotion.joinGroup"),
 
 				empty: false,
 				params: {
@@ -56,7 +56,7 @@
 		mounted() {},
 		watch: {
 			search(val) {
-				val ? (this.title = "") : (this.title = "拼团活动");
+				val ? (this.title = "") : (this.title = this.$t("promotion.joinGroup"));
 			},
 		},
 		onReachBottom() {

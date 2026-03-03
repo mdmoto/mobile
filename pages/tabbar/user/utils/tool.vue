@@ -57,10 +57,6 @@
 		
 			        
 					
-          <view class="interact-item" @click="navigateTo('/pages/mine/signIn')">
-            <image src="/static/mine/sign.png" mode=""></image>
-            <view>{{ $t('points.dailyCheckIn') }}</view>
-          </view>
          
          
        

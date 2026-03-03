@@ -28,24 +28,24 @@
 
 ## 📁 修改的文件清单
 
-### PC端（lilishop-ui）
+### PC端（maollar-ui）
 
 #### 1️⃣ 登录页面
-- **文件路径**: `lilishop-ui/buyer/src/pages/Login.vue`
+- **文件路径**: `maollar-ui/buyer/src/pages/Login.vue`
 - **修改位置**: 第 129 行，第 415-422 行
 
 #### 2️⃣ 头部导航组件
-- **文件路径**: `lilishop-ui/buyer/src/components/header/Header.vue`
+- **文件路径**: `maollar-ui/buyer/src/components/header/Header.vue`
 - **修改位置**: 第 10-12 行，第 185-192 行
 
 #### 3️⃣ 注册页面
-- **文件路径**: `lilishop-ui/buyer/src/pages/SignUp.vue`
+- **文件路径**: `maollar-ui/buyer/src/pages/SignUp.vue`
 - **修改位置**: 第 210-220 行，第 226 行
 
-### 移动端（lilishop-uniapp）
+### 移动端（maollar-uniapp）
 
 #### 4️⃣ 移动端登录页面
-- **文件路径**: `lilishop-uniapp/pages/passport/login.vue`
+- **文件路径**: `maollar-uniapp/pages/passport/login.vue`
 - **修改位置**: 第 52-60 行
 
 ---
@@ -94,7 +94,7 @@
 **移动端**:
 ```bash
 # 1. 进入移动端项目
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 
 # 2. 方式A - 直接回退提交
 git revert 34e24ed
@@ -113,7 +113,7 @@ git push origin master
 
 #### 恢复移动端 login.vue
 
-**文件**: `lilishop-uniapp/pages/passport/login.vue`
+**文件**: `maollar-uniapp/pages/passport/login.vue`
 
 **位置** - 第 52-60 行，恢复原始提示：
 
@@ -157,7 +157,7 @@ Changed files:
 **恢复前版本**:
 ```
 Commit: 1c5c538
-Message: feat: 积分改为喵币，修复Sass语法，更新App启动页和schemes
+Message: feat: 积分改为猫币，修复Sass语法，更新App启动页和schemes
 ```
 
 ---
@@ -181,7 +181,7 @@ Message: feat: 积分改为喵币，修复Sass语法，更新App启动页和sche
 
 ## 🔗 相关文档
 
-- 完整变更日志（含PC端）: `lilishop-ui/login-change.md`
+- 完整变更日志（含PC端）: `maollar-ui/login-change.md`
 - Git diff: `git show 34e24ed`
 
 ---

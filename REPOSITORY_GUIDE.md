@@ -6,7 +6,7 @@
 
 **用途**: uni-app 源代码版本控制和备份
 
-- **本地路径**: `/Users/adam/0.9/lilishop-uniapp/`
+- **本地路径**: `/Users/adam/0.9/maollar-uniapp/`
 - **远程仓库**: `git@github.com:mdmoto/mobile.git`
 - **分支**: `master`
 - **内容**: uni-app 源代码（.vue, .js, .json 等源文件）
@@ -21,7 +21,7 @@
 
 **推送命令**:
 ```bash
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git add .
 git commit -m "描述"
 git push origin master
@@ -35,7 +35,7 @@ git push origin master
 
 **用途**: 编译后的静态文件，用于 Cloudflare Pages 自动部署
 
-- **本地路径**: `/Users/adam/0.9/m/` 或 `/Users/adam/0.9/lilishop-uniapp/unpackage/dist/build/web/`
+- **本地路径**: `/Users/adam/0.9/m/` 或 `/Users/adam/0.9/maollar-uniapp/unpackage/dist/build/web/`
 - **远程仓库**: `git@github.com:mdmoto/m.git`
 - **分支**: `main` (注意：是 main，不是 master)
 - **内容**: 编译后的静态文件（HTML, CSS, JS 等）
@@ -50,7 +50,7 @@ git push origin master
 **推送命令**:
 ```bash
 # 方法1: 从编译目录推送
-cd /Users/adam/0.9/lilishop-uniapp/unpackage/dist/build/web
+cd /Users/adam/0.9/maollar-uniapp/unpackage/dist/build/web
 git add .
 git commit -m "部署: 更新编译后的文件"
 git push origin main
@@ -70,7 +70,7 @@ git push origin main
 
 ```bash
 # 步骤1: 修改源代码
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 # ... 修改代码 ...
 
 # 步骤2: 提交源代码到 mobile 仓库（备份）
@@ -98,34 +98,34 @@ git push origin main
 ### 错误1: 将源代码推送到 m 仓库
 ```bash
 # ❌ 错误
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git push origin main  # 推送到 m 仓库
 
 # ✅ 正确
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git push origin master  # 推送到 mobile 仓库
 ```
 
 ### 错误2: 将编译后的文件推送到 mobile 仓库
 ```bash
 # ❌ 错误
-cd /Users/adam/0.9/lilishop-uniapp/unpackage/dist/build/web
+cd /Users/adam/0.9/maollar-uniapp/unpackage/dist/build/web
 git push origin master  # 推送到 mobile 仓库
 
 # ✅ 正确
-cd /Users/adam/0.9/lilishop-uniapp/unpackage/dist/build/web
+cd /Users/adam/0.9/maollar-uniapp/unpackage/dist/build/web
 git push origin main  # 推送到 m 仓库
 ```
 
 ### 错误3: 忘记编译就直接推送
 ```bash
 # ❌ 错误
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git push origin master
 # 然后直接推送到 m 仓库（没有编译）
 
 # ✅ 正确
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git push origin master  # 先备份源代码
 npm run build:h5        # 编译
 cd unpackage/dist/build/web
@@ -139,7 +139,7 @@ git push origin main    # 再推送编译后的文件
 推送前检查：
 
 - [ ] 我在正确的目录？
-  - mobile 仓库：`/Users/adam/0.9/lilishop-uniapp/`
+  - mobile 仓库：`/Users/adam/0.9/maollar-uniapp/`
   - m 仓库：`/Users/adam/0.9/m/` 或编译目录
 
 - [ ] 我在推送正确的内容？

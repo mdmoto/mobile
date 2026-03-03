@@ -11,8 +11,8 @@
 				</div>
 			</div>
 			
-			<!-- 邀请码输入（手机号登录时需要） -->
-			<div v-if="!enableUserPwdBox && current == 0" class="invite-code-section-top">
+			<!-- 邀请码输入（已隐藏） -->
+			<div v-if="false" class="invite-code-section-top">
 				<u-input 
 					:custom-style="inviteCodeInputStyle" 
 					:placeholder-style="placeholderStyle" 
@@ -30,8 +30,8 @@
 				<div v-show="current == 0">
 					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputEmail')"
 						class="mobile" v-model="email" type="text" />
-					<div :class="!enableFetchCode || !inviteCodeValid ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
-						{{ inviteCodeValid ? $t('deposit.getVerifyCode') : $t('deposit.inputInviteCodeFirst') }}
+					<div :class="!enableFetchCode ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
+						{{ $t('deposit.getVerifyCode') }}
 					</div>
 					<!-- 手机号注册稍后开放提示 -->
 					<div class="mobile-register-hint">
@@ -74,8 +74,8 @@
 					<div class="divider-line"></div>
 				</div>
 				
-				<!-- 邀请码输入 -->
-				<div class="invite-code-section">
+				<!-- 邀请码输入（已隐藏） -->
+				<div v-if="false" class="invite-code-section">
 					<u-input 
 						:custom-style="inviteCodeInputStyle" 
 						:placeholder-style="placeholderStyle" 
@@ -92,7 +92,7 @@
 				<div class="flex login-list">
 					<div 
 						v-if="item.code" 
-						:style="{ background: inviteCodeValid ? item.color : '#cccccc', opacity: inviteCodeValid ? 1 : 0.5 }" 
+						:style="{ background: item.color, opacity: 1 }" 
 						class="login-item"
 						v-for="(item, index) in loginList" 
 						:key="index">
@@ -112,7 +112,7 @@
 							height="70" />
 					</div>
 				</div>
-				<div v-if="!inviteCodeValid" class="login-list-tip">
+				<div v-if="false" class="login-list-tip">
 					输入邀请码后可使用 Google/Apple 注册
 				</div>
 			</div>
@@ -233,7 +233,7 @@
 				
 				// 邀请码相关
 				inviteCode: "",
-				inviteCodeValid: false,
+				inviteCodeValid: true,
 				inviteCodeError: "",
 				validInviteCodes: [
 					"OK4MOTO",  // 之前的邀请码
@@ -568,31 +568,16 @@
 			},
 			/**检查邀请码 */
 			checkInviteCode() {
-				// 实时验证邀请码（不区分大小写）
-				const code = this.inviteCode.trim().toUpperCase();
-				if (this.validInviteCodes.includes(code)) {
-					this.inviteCodeValid = true;
-					this.inviteCodeError = "";
-				} else if (code.length > 0) {
-					this.inviteCodeValid = false;
-					this.inviteCodeError = this.$t("deposit.inviteCodeError");
-				} else {
-					this.inviteCodeValid = false;
-					this.inviteCodeError = "";
-				}
+				// 实时验证邀请码（不区分大小写） - 已取消验证要求
+				this.inviteCodeValid = true;
+				this.inviteCodeError = "";
 			},
 			
 			/**跳转到登录页面 - Google OAuth 2.0 + Apple（预留）*/
 			navigateLogin(connectLogin) {
-				// 1. 检查邀请码
-				if (!this.inviteCodeValid) {
-					uni.showToast({
-						title: this.$t("deposit.enterCorrectInviteCode"),
-						duration: 2000,
-						icon: "none",
-					});
-					return false;
-				}
+				// 1. 检查邀请码 - 已取消验证要求
+				// if (!this.inviteCodeValid) { ... }
+				this.inviteCodeValid = true;
 				
 				// 2. 检查隐私协议
 				if (!this.enablePrivacy) {
@@ -1010,15 +995,8 @@
 			
 			// 发送验证码
 			fetchCode() {
-				// 1. 检查邀请码（注册需要邀请码）
-				if (!this.inviteCodeValid) {
-					uni.showToast({
-						title: "请先输入正确的邀请码",
-						duration: 2000,
-						icon: "none",
-					});
-					return false;
-				}
+				// 1. 检查邀请码（注册需要邀请码）- 已取消验证要求
+				this.inviteCodeValid = true;
 				
 				// 2. 检查隐私协议
 				if (!this.enablePrivacy) {
@@ -1105,14 +1083,8 @@
 			
 			// 注册提交
 			async submitRegister() {
-				if (!this.inviteCodeValid) {
-					uni.showToast({
-						title: "请先输入正确的邀请码",
-						duration: 2000,
-						icon: "none",
-					});
-					return;
-				}
+				// 已取消验证要求
+				this.inviteCodeValid = true;
 				
 				if (!this.code || this.code.length !== 6) {
 					uni.showToast({
@@ -1158,11 +1130,10 @@
 							icon: "success",
 						});
 						
-						// 注册成功后自动登录
+						// 注册成功后引导绑定钱包（即“赠送”数字钱包模块）
 						setTimeout(() => {
-							// 跳转到登录页面或自动登录
-							uni.switchTab({
-								url: "/pages/tabbar/home/index",
+							uni.navigateTo({
+								url: "/pages/mine/point/myPoint?register=true",
 							});
 						}, 1500);
 					} else {

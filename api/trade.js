@@ -32,7 +32,7 @@ export function getCartNum() {
 
 /**
  * 获取购物车可用优惠券数量
- * @param way 购物车购买：CART/立即购买：BUY_NOW/拼团购买：PINTUAN / 喵币购买：POINT
+ * @param way 购物车购买：CART/立即购买：BUY_NOW/拼团购买：PINTUAN / 猫币购买：POINT
  */
 export function getCartCouponNum(way) {
   return http.request({
@@ -207,7 +207,7 @@ export function getCashierData(params) {
 export function initiatePay(paymentMethod, paymentClient, params) {
   // 支付宝H5支付返回HTML表单，需要指定dataType为text
   const isAlipayH5 = paymentMethod === 'ALIPAY' && paymentClient === 'H5';
-  
+
   return http.request({
     url: `payment/cashier/pay/${paymentMethod}/${paymentClient}`,
     method: Method.GET,
@@ -332,6 +332,18 @@ export function setShipMethod(params) {
 export function getPackage(orderSn) {
   return http.request({
     url: `/order/order/getPackage/${orderSn}`,
+    method: Method.GET,
+    needToken: true,
+  });
+}
+
+/**
+ * 加载 AI 推荐的草稿购物车
+ * @param draftId 草稿ID
+ */
+export function loadAiDraft(draftId) {
+  return http.request({
+    url: `/ai/cart/load_draft/${draftId}`,
     method: Method.GET,
     needToken: true,
   });

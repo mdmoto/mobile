@@ -17,7 +17,7 @@
 							</span>
 							<span v-if="pointDetail.points">
 								<span class="goods-price-promotionShow goods-price-bigshow">{{ pointDetail.points }}</span>
-								喵币
+								猫币
 							</span>
 							<div class="promotion-box">
 								￥

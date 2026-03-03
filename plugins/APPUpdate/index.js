@@ -9,7 +9,7 @@ const platform = uni.getSystemInfoSync().platform;
 const $mainColor = "#1ABC9C";
 // 弹窗图标url
 const $iconUrl =
-  "https://lilishop-oss.oss-cn-beijing.aliyuncs.com/app/upgrade.png";
+  "https://maollar-oss.oss-cn-beijing.aliyuncs.com/app/upgrade.png";
 
 // 获取当前应用的版本号
 export const getCurrentNo = function (callback) {

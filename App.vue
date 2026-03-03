@@ -11,6 +11,7 @@ import storage from "@/utils/storage";
 import {
 	mapMutations
 } from "vuex";
+import { getMaoMallRates } from "@/api/maollar";
 
 	
 	
@@ -79,6 +80,8 @@ import {
 			// #ifdef MP-WEIXIN
 			this.applyUpdateWeChat();
 			// #endif
+			
+			this.initMaoMallRates();
 		},
 
 		onShow() {
@@ -98,6 +101,17 @@ import {
 			// #endif
 		},
 		methods: {
+			async initMaoMallRates() {
+				try {
+					let res = await getMaoMallRates();
+					if (res.data.success) {
+						storage.setExchangeRates(res.data.result);
+						console.log("MaoMall rates updated:", res.data.result);
+					}
+				} catch (e) {
+					console.error("Failed to fetch MaoMall rates", e);
+				}
+			},
 			/**
 			 * 微信小程序版本提交更新版本 解决缓存问题
 			 */
@@ -251,4 +265,45 @@ import {
 	.flex1 {
 		flex: 1; //必须父级设置flex
 	}
+
+  /* 9-Language RTL Mobile Layout Handling */
+  .rtl-container {
+    direction: rtl;
+    text-align: right;
+
+    // Reverse flex layouts
+    .u-flex, .flex, [style*="display: flex"] {
+      flex-direction: row-reverse !important;
+    }
+
+    // Mirror standard arrow icons
+    .u-icon__icon.u-icon-right, .u-icon__icon.u-icon-arrow-right, .u-icon__icon.u-icon-arrow-left-double {
+      transform: scaleX(-1);
+    }
+
+    // Specific uView component fixes
+    .u-tabs .u-scroll-box {
+      direction: ltr; // Fix scrollable tabs jumping
+    }
+
+    // Dynamic Margin/Padding Swapping (Basic set)
+    @for $i from 0 through 80 {
+      @if $i % 2 == 0 or $i % 5 == 0 {
+        .u-m-l-#{$i}, .u-margin-left-#{$i} { margin-left: 0 !important; margin-right: $i + rpx !important; }
+        .u-m-r-#{$i}, .u-margin-right-#{$i} { margin-right: 0 !important; margin-left: $i + rpx !important; }
+        .u-p-l-#{$i}, .u-padding-left-#{$i} { padding-left: 0 !important; padding-right: $i + rpx !important; }
+        .u-p-r-#{$i}, .u-padding-right-#{$i} { padding-right: 0 !important; padding-left: $i + rpx !important; }
+      }
+    }
+
+    .u-row-left { justify-content: flex-end !important; }
+    .u-row-right { justify-content: flex-start !important; }
+    .u-text-left { text-align: right !important; }
+    .u-text-right { text-align: left !important; }
+
+    .u-cell__left-icon-wrap {
+      margin-left: 20rpx;
+      margin-right: 0 !important;
+    }
+  }
 </style>

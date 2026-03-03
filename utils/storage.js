@@ -10,19 +10,19 @@ const FINGER_LOGIN = isDev ? "finger_login_dev" : "finger_login";
 const CART_BACKBTN = isDev ? "cart_backbtn_dev" : "cart_backbtn";
 const AFTERSALE_DATA = isDev ? "aftersale_data_dev" : "aftersale_data";
 export default {
-	setInviter(val){
-		uni.setStorageSync('inviter', val)
-	},
-	getInviter(){
-		return uni.getStorageSync('inviter');
-	},
+  setInviter(val) {
+    uni.setStorageSync('inviter', val)
+  },
+  getInviter() {
+    return uni.getStorageSync('inviter');
+  },
 
   //写入自动发券
-  setAutoCp(val){
+  setAutoCp(val) {
     uni.setStorageSync('autoCp', val)
   },
   //获取自动发券时间
-  getAutoCp(){
+  getAutoCp() {
     return uni.getStorageSync('autoCp');
   },
   // 写入热门搜索时间戳
@@ -67,10 +67,10 @@ export default {
   getUserInfo() {
     return uni.getStorageSync(USER_INFO);
   },
-  setTalkToUser(val){
+  setTalkToUser(val) {
     uni.setStorageSync("TALK_TO_USER", val);
   },
-  getTalkToUser(){
+  getTalkToUser() {
     return uni.getStorageSync("TALK_TO_USER");
   },
   // 写入uuid
@@ -139,6 +139,22 @@ export default {
     uni.setStorageSync('imGoodId', val);
   },
   getImGoodsLink() {
-  return  uni.getStorageSync('imGoodId');
+    return uni.getStorageSync('imGoodId');
   },
+  // 写入当前选择的币种
+  setCurrency(val) {
+    uni.setStorageSync('current_currency', val);
+  },
+  // 获取当前选择的币种，默认为 JPY (适应日本市场) 或 USD
+  getCurrency() {
+    return uni.getStorageSync('current_currency') || 'USD';
+  },
+  // 写入汇率列表
+  setExchangeRates(val) {
+    uni.setStorageSync('exchange_rates', val);
+  },
+  // 获取汇率列表
+  getExchangeRates() {
+    return uni.getStorageSync('exchange_rates') || { CNY: 0.14, JPY: 0.0065, USD: 1.0 };
+  }
 };

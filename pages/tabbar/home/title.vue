@@ -1,10 +1,10 @@
 <template>
 	<view>
 		<view>
-			<u-tabs :list="list" :is-scroll="false" :current="current" @change="change"></u-tabs>
+			<u-tabs :list="translatedList" :is-scroll="false" :current="current" @change="change"></u-tabs>
 			<view v-if="showLoading" style="width:500rpx;margin:0 auto;text-align: center;height:800rpx;line-height: 800rpx;">
 				<u-loading mode="flower" ></u-loading>
-				<text>正在加载中</text>
+				<text>{{ $t('common.loading') }}</text>
 			</view>
 			<u-cell-group v-if="current == 0">
 				<view v-for="(item,index) in lists" :key="index">
@@ -76,9 +76,9 @@
 					status:"UN_READY"
 				},
 				loadText: {
-					loadmore: '轻轻上拉',
-					loading: '努力加载中',
-					nomore: '实在没有了'
+					loadmore: this.$t('common.loadMore'),
+					loading: this.$t('common.loading'),
+					nomore: this.$t('common.noMore')
 				},
 				list: [{
 					name: "未读"
@@ -88,6 +88,14 @@
 				current: 0,
 				lists: [],
 				status: "loadmore"
+			}
+		},
+		computed: {
+			translatedList() {
+				return [
+					{ name: this.$t('message.unread') },
+					{ name: this.$t('message.read') }
+				]
 			}
 		},
 		onShow() {

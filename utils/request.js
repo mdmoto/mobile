@@ -82,7 +82,7 @@ http.interceptors.request.use(
 	(config) => {
 		/* 请求之前拦截器。可以使用async await 做异步操作 */
 		let accessToken = storage.getAccessToken();
-		if(storage.getInviter()){
+		if (storage.getInviter()) {
 			config.header.inviter = storage.getInviter();
 		}
 		if (accessToken) {
@@ -96,7 +96,7 @@ http.interceptors.request.use(
 				accessToken = ""
 				storage.setAccessToken('')
 			}
-			
+
 
 			const nonce = Foundation.randomString(6);
 			const timestamp = parseInt(new Date().getTime() / 1000);
@@ -120,7 +120,8 @@ http.interceptors.request.use(
 		createUuid();
 		config.header = {
 			...config.header,
-			uuid: storage.getUuid()
+			uuid: storage.getUuid(),
+			'Accept-Language': (uni.getStorageSync('app_language') || 'en-US').split('-')[0]
 		};
 		return config;
 	},

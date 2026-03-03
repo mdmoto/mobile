@@ -38,7 +38,7 @@
 
 在HBuilderX中：
 ```
-1. 打开项目：lilishop-uniapp
+1. 打开项目：maollar-uniapp
 2. 运行 → 运行到浏览器 → Chrome
 3. 或运行到微信小程序开发工具
 ```

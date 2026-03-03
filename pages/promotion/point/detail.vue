@@ -3,7 +3,7 @@
     <u-navbar :border-bottom="false" :title="$t('points.pointsGoods')"></u-navbar>
 
     <div class="wrapper">
-      <!-- 喵币商品列表 -->
+      <!-- 猫币商品列表 -->
       <div class="box box1">
         <div class="bargain">
           <div class="row-title">{{ $t('goods.detail') }}</div>
@@ -64,8 +64,8 @@ export default {
       },
       maskFlag: false, //商品弹框
       lightColor: this.$lightColor,
-      goodsData: {}, //喵币商品中商品详情
-      pointDetail: {}, //喵币商品详情
+      goodsData: {}, //猫币商品中商品详情
+      pointDetail: {}, //猫币商品详情
       goodsDetail: {}, //商品详情
       goodsSpec: {}, //商品规格
       selectedGoods: {},
@@ -79,7 +79,7 @@ export default {
   },
   watch: {},
   methods: {
-    // 购买喵币商品
+    // 购买猫币商品
     getGoodsDetail() {
       uni.showLoading({
         title: "加载中",

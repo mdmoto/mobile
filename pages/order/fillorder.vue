@@ -371,7 +371,7 @@
           ><span style="margin-right: 10rpx">{{
             orderMessage.priceDetailDTO.payPoint | unitPrice
           }}</span
-          >喵币</span
+          >猫币</span
         >
       </div>
       <div class="navRiv" @click="createTradeFun()">
@@ -518,6 +518,11 @@ export default {
     uni.showLoading({
       mask: true,
     });
+    if (!this.routerVal.way) this.routerVal.way = 'CART';
+    if (this.routerVal.draft_id) {
+      await this.handleAiDraft(this.routerVal.draft_id);
+      delete this.routerVal.draft_id;
+    }
     await this.getOrderList();
     await this.getDistribution();
     if (this.$store.state.isShowToast) {
@@ -548,6 +553,25 @@ export default {
           this.shippingFlag = false;
           this.getOrderList();
         }
+      }
+    },
+
+    // 加载 AI 推荐草稿
+    async handleAiDraft(draftId) {
+      try {
+        const res = await API_Trade.loadAiDraft(draftId);
+        if (res.data.success && res.data.result && res.data.result.length > 0) {
+          for (const skuId of res.data.result) {
+            await API_Trade.addToCart({
+              skuId,
+              num: 1,
+              cartType: "CART",
+            });
+          }
+          this.routerVal.way = "CART";
+        }
+      } catch (e) {
+        console.error("AI Draft Error:", e);
       }
     },
 

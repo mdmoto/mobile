@@ -20,7 +20,7 @@ npm install vue-i18n@8.28.2
 ### 2️⃣ **文件结构** ✅
 
 ```
-lilishop-uniapp/
+maollar-uniapp/
   ├── lang/
   │   ├── index.js          # i18n配置和导出
   │   ├── zh-CN.js          # 中文语言包（200+条）

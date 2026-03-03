@@ -82,7 +82,7 @@ git push origin master
 ### ⚠️ 重要：两个仓库的用途完全不同
 
 #### 1. mobile 仓库（源代码备份）
-- **本地路径**: `/Users/adam/0.9/lilishop-uniapp/`
+- **本地路径**: `/Users/adam/0.9/maollar-uniapp/`
 - **远程**: `git@github.com:mdmoto/mobile.git`
 - **用途**: **uni-app 源代码备份**
 - **分支**: `master`
@@ -90,7 +90,7 @@ git push origin master
 - **⚠️ 注意**: 这是源代码，不是编译后的文件
 
 #### 2. m 仓库（编译后的部署文件）
-- **本地路径**: `/Users/adam/0.9/m/` 或 `/Users/adam/0.9/lilishop-uniapp/unpackage/dist/build/web/`
+- **本地路径**: `/Users/adam/0.9/m/` 或 `/Users/adam/0.9/maollar-uniapp/unpackage/dist/build/web/`
 - **远程**: `git@github.com:mdmoto/m.git`
 - **用途**: **编译后的静态文件，直接用于 Cloudflare Pages 部署**
 - **分支**: `master`
@@ -100,7 +100,7 @@ git push origin master
 ### 🔄 工作流程
 
 ```
-1. 修改源代码 (lilishop-uniapp/)
+1. 修改源代码 (maollar-uniapp/)
    ↓
 2. 提交并推送到 mobile 仓库 (备份源代码)
    ↓

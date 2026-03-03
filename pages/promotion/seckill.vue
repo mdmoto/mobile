@@ -1,6 +1,6 @@
 <template>
 	<view class="sale">
-		<u-navbar title='限时抢购'></u-navbar>
+		<u-navbar :title="$t('promotion.seckill')"></u-navbar>
 		<view class="header-wraper">
 				<image mode="widthFix" src="/static/seckill.png"></image>
 		</view>
@@ -10,7 +10,7 @@
 					<view class="index-nav" :class="{ 'index-nav-active': nav == index }"
 						@click="clickNavigateTime(index)" v-for="(item, index) in timeLine" :key="index">
 						{{ item.timeLine }}:00
-						<view class="index-nav-desc">{{ index === 0 && item.distanceStartTime === 0 ? '抢购中' : '即将开始' }}
+						<view class="index-nav-desc">{{ index === 0 && item.distanceStartTime === 0 ? $t('promotion.seckillIng') : $t('promotion.seckillWait') }}
 						</view>
 					</view>
 				</view>
@@ -24,7 +24,7 @@
 		<view v-else>
 			<view class="nodata">
 				<image style="height: 240rpx;width: 320rpx;" src="/static/nodata.png" alt="" />
-				<div>暂无商品</div>
+				<div>{{ $t('common.noData') }}</div>
 			</view>
 		</view>
 
@@ -67,7 +67,7 @@
 				await uni.showToast({
 					icon: "none",
 					duration: 2000,
-					title: "今天没有活动，明天再来吧",
+					title: this.$t('promotion.noSeckillToday'),
 				});
 			}
 			this._setTimeInterval = setInterval(() => {

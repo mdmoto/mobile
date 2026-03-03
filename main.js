@@ -58,6 +58,18 @@ Vue.config.productionTip = false;
  * 颜色使用驼峰命名对应 uni.scss中全局颜色变量名
  * 如需更换主题请修改此处以及uni.scss中的全局颜色
  */
+Vue.mixin({
+  computed: {
+    isRTL() {
+      const currentLang = this.$i18n.locale;
+      return currentLang === 'ar-SA' || currentLang === 'ar';
+    },
+    currentLang() {
+      return this.$i18n.locale;
+    }
+  }
+})
+
 // 主题色
 Vue.prototype.$mainColor = config.mainColor;
 // 高亮主题色
