@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["pages-mine-distribution-achievement"],{a5a9:function(e,i,n){"use strict";n.r(i);var t={},a=n("828b"),s=Object(a["a"])(t,(function(){var e=this.$createElement,i=this._self._c||e;return i("div")}),[],!1,null,"2a0ec6a4",null,!1,void 0,void 0);i["default"]=s.exports}}]);
