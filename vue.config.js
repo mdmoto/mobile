@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    publicPath: './',
+    publicPath: '/',
     // 允许对 node_modules 中的依赖进行编译，特别是 ES2020 语法的库
     transpileDependencies: [
         /@solana/,

@@ -99,7 +99,7 @@
 						<u-icon 
 							v-if="item.title != 'Apple'" 
 							color="#fff" 
-							size="36" 
+							size="42" 
 							:name="item.icon"
 							@click="navigateLogin(item)">
 						</u-icon>
@@ -108,8 +108,8 @@
 							src="/static/appleidButton@2x.png" 
 							:lazy-load="false" 
 							@click="navigateLogin(item)"
-							width="70" 
-							height="70" />
+							width="80" 
+							height="80" />
 					</div>
 				</div>
 				<div v-if="false" class="login-list-tip">
@@ -1317,9 +1317,9 @@
 	}
 
 	.login-item {
-		width: 70rpx;
+		width: 80rpx;
 		border-radius: 10rpx;
-		height: 70rpx;
+		height: 80rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
