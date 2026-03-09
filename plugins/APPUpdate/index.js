@@ -28,17 +28,19 @@ export const getServerNo = function (callback) {
 
   platform == "android" ? (type = "ANDROID") : (type = "IOS");
 
-  getAppVersion(type).then((res) => {
-    if (res.data.success && res.data.result.downloadUrl) {
-      let response = res.data.result;
-      let result = {};
-      result.versionCode = response.version;
-      result.versionName = response.versionName;
-      result.versionInfo = response.content || "暂无";
-      result.forceUpdate = response.forceUpdate;
-      result.downloadUrl = response.downloadUrl;
-      callback && callback(result);
+  getAppVersion(type).then((result) => {
+    if (result && result.downloadUrl) {
+      let response = result;
+      let resultObj = {};
+      resultObj.versionCode = response.version;
+      resultObj.versionName = response.versionName;
+      resultObj.versionInfo = response.content || "暂无";
+      resultObj.forceUpdate = response.forceUpdate;
+      resultObj.downloadUrl = response.downloadUrl;
+      callback && callback(resultObj);
     }
+  }).catch(err => {
+    console.error('Failed to get server version:', err);
   });
 };
 // 从服务器下载应用资源包（wgt文件）

@@ -1,20 +1,13 @@
 /**
- * 信任登录相关API - Google OAuth 2.0
+ * 信任登录相关API (Refactored for Vue2/Vue3 Bridge)
  */
-
-import {
-	http,
-	Method
-} from '@/utils/request.js';
-const request = http.request;
-
+import { request, Method } from "@/api/base.js";
 
 /**
- * web 第三方登录 - Google OAuth 2.0
- * @param {Object} code
+ * web 第三方登录
  */
-export function webConnect(code) {
-	return http.request({
+export async function webConnect(code) {
+	return request({
 		url: `passport/connect/connect/login/web/${code}`,
 		method: Method.GET,
 		needToken: true,
@@ -26,10 +19,9 @@ export function webConnect(code) {
 
 /**
  * Google OAuth 登录
- * @param {String} provider - 登录提供商（GOOGLE）
  */
-export function googleLogin() {
-	return http.request({
+export async function googleLogin() {
+	return request({
 		url: `passport/connect/connect/login/web/GOOGLE`,
 		method: Method.GET,
 		needToken: true,
@@ -38,8 +30,12 @@ export function googleLogin() {
 		}
 	});
 }
-export function openIdLogin(params, clientType) {
-	return http.request({
+
+/**
+ * App OpenID 登录
+ */
+export async function openIdLogin(params, clientType) {
+	return request({
 		url: `passport/connect/connect/app/login`,
 		method: Method.POST,
 		needToken: true,
@@ -51,24 +47,21 @@ export function openIdLogin(params, clientType) {
 }
 
 /**
- * 第三方登录成功 回调接口
+ * 第三方登录成功回调
  */
-export function loginCallback(state) {
-	return http.request({
+export async function loginCallback(state) {
+	return request({
 		url: `passport/connect/connect/result?state=${state}`,
 		method: Method.GET,
 		needToken: false
 	});
 }
 
-
-
 /**
  * 小程序自动登录
- * @param params
  */
-export function mpAutoLogin(params) {
-	return http.request({
+export async function mpAutoLogin(params) {
+	return request({
 		url: 'passport/connect/miniProgram/auto-login',
 		method: Method.GET,
 		params

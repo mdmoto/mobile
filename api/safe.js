@@ -1,22 +1,19 @@
 /**
- * 安全相关API
+ * 安全中心相关API (Refactored for Vue2/Vue3 Bridge)
  */
-
-import {http,Method} from '@/utils/request.js';
+import { request, Method } from "@/api/base.js";
 import storage from "@/utils/storage.js"
 import { md5 } from '@/utils/md5.js'
 
 /**
- * 发送绑定手机验证码
- * @param mobile
- * @param captcha
+ * 发送绑定手机短信验证码
  */
-export function sendBindMobileSms(mobile, captcha) {
-  return http.request({
+export async function sendBindMobileSms(mobile, captcha) {
+  return request({
     url: `members/security/bind/send/${mobile}`,
     method: Method.POST,
     needToken: true,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     data: {
       uuid: storage.getUuid(),
       captcha,
@@ -25,30 +22,26 @@ export function sendBindMobileSms(mobile, captcha) {
 }
 
 /**
- * 绑定手机号
- * @param mobile
- * @param sms_code
+ * 绑定手机号码
  */
-export function bindMobile(mobile, sms_code) {
-  return http.request({
+export async function bindMobile(mobile, sms_code) {
+  return request({
     url: `members/security/bind/${mobile}`,
     method: Method.PUT,
     needToken: true,
-    data: {sms_code},
+    data: { sms_code },
   });
 }
 
 /**
- * 发送手机验证码
- * 在修改手机号和更改密码时通用
- * @param captcha
+ * 发送安全验证短信 (修改手机/更改密码通用)
  */
-export function sendMobileSms(captcha) {
-  return http.request({
+export async function sendMobileSms(captcha) {
+  return request({
     url: 'members/security/send',
     method: Method.POST,
     needToken: true,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     data: {
       uuid: storage.getUuid(),
       captcha,
@@ -57,44 +50,38 @@ export function sendMobileSms(captcha) {
 }
 
 /**
- * 验证更换手机号短信
- * @param sms_code
+ * 验证更换手机号短信原手机号
  */
-export function validChangeMobileSms(sms_code) {
-  return http.request({
+export async function validChangeMobileSms(sms_code) {
+  return request({
     url: 'members/security/exchange-bind',
     method: Method.GET,
     needToken: true,
-    params: {sms_code},
+    params: { sms_code },
   });
 }
 
 /**
- * 更换手机号
- * @param mobile
- * @param sms_code
+ * 更换绑定手机号
  */
-export function changeMobile(mobile, sms_code) {
-  return http.request({
+export async function changeMobile(mobile, sms_code) {
+  return request({
     url: `members/security/exchange-bind/${mobile}`,
     method: Method.PUT,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     needToken: true,
-    data: {sms_code},
+    data: { sms_code },
   });
 }
 
-
 /**
- * 更改密码
- * @param captcha
- * @param password
+ * 修改登录密码
  */
-export function changePassword(captcha, password) {
-  return http.request({
+export async function changePassword(captcha, password) {
+  return request({
     url: 'members/security/password',
     method: Method.PUT,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     needToken: true,
     data: {
       uuid: storage.getUuid(),
@@ -105,12 +92,10 @@ export function changePassword(captcha, password) {
 }
 
 /**
- * 获取当前实名认证进度
- * @param email
- * @param email_code
+ * 获取实名认证进度状态
  */
-export function contractStep() {
-  return http.request({
+export async function contractStep() {
+  return request({
     url: `members/contract/step`,
     method: Method.GET,
     needToken: true
@@ -118,19 +103,14 @@ export function contractStep() {
 }
 
 /**
- * 实名认证
- * @param email
- * @param email_code
+ * 提交实名认证申请
  */
-export function authentication(params) {
-  return http.request({
+export async function authentication(params) {
+  return request({
     url: `members/contract/authentication`,
     method: Method.POST,
     needToken: true,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     data: params
   })
 }
-
-
-

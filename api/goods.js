@@ -1,24 +1,23 @@
 /**
- * 商品相关API
+ * 商品相关API (Refactored for Vue2/Vue3 Bridge)
  */
-
-import { http, Method } from "@/utils/request.js";
+import { request, Method } from "@/api/base.js";
 
 /**
- * 从ES中获取相关商品品牌名称，分类名称及属性
+ * 获取商品基础信息 (品牌、分类、属性)
  */
- export function getGoodsMessage(goodsId) {
-  return http.request({
+export async function getGoodsMessage(goodsId) {
+  return request({
     url: `/goods/goods/get/${goodsId}`,
     method: Method.GET,
   });
 }
 
 /**
- * 从ES中获取相关商品品牌名称，分类名称及属性
+ * 获取相关商品 (推荐/关联)
  */
-export function getGoodsRelated(params) {
-  return http.request({
+export async function getGoodsRelated(params) {
+  return request({
     url: `/goods/goods/es/related`,
     method: Method.GET,
     params,
@@ -26,36 +25,30 @@ export function getGoodsRelated(params) {
 }
 
 /**
- * 获取商品详情
- * @param skuId 商品ID
- * @returns {AxiosPromise}
+ * 获取商品 SKU 详情
  */
- export function getGoods(skuId, goodsId) {
-  return http.request({
+export async function getGoods(skuId, goodsId) {
+  return request({
     url: `/goods/goods/sku/${goodsId}/${skuId}`,
     method: Method.GET,
   });
 }
 
 /**
- * 获取商品分销
- * @param distributionId 商品分销ID
+ * 获取商品分销绑定信息
  */
- export function getGoodsDistribution(distributionId) {
-  return http.request({
+export async function getGoodsDistribution(distributionId) {
+  return request({
     url: `/distribution/distribution/bindingDistribution/${distributionId}`,
     method: Method.GET,
   });
 }
 
-
 /**
- * 获取商品列表
- * @param params
- * @returns {AxiosPromise}
+ * 分页搜索商品列表
  */
-export function getGoodsList(params) {
-  return http.request({
+export async function getGoodsList(params) {
+  return request({
     url: "/goods/goods/es",
     method: Method.GET,
     params,
@@ -64,27 +57,20 @@ export function getGoodsList(params) {
 
 /**
  * 获取上新商品列表
- * @param params
- * @returns {AxiosPromise}
  */
-export function getGoodsListUplog(params) {
-  return http.request({
+export async function getGoodsListUplog(params) {
+  return request({
     url: "goods/search/uplog",
     method: Method.GET,
     params,
   });
 }
 
-
-
 /**
- * 获取标签商品
- * @param storeId 卖家id
- * @param mark      标签 hot：热卖 new：新品 recommend：推荐
- * @param num       获取个数
+ * 获取标签商品 (热卖/新品/推荐)
  */
-export function getTagGoods(storeId, mark = "hot", num = 5) {
-  return http.request({
+export async function getTagGoods(storeId, mark = "hot", num = 5) {
+  return request({
     url: `goods/tags/${mark}/goods`,
     method: Method.GET,
     loading: false,
@@ -95,11 +81,12 @@ export function getTagGoods(storeId, mark = "hot", num = 5) {
     },
   });
 }
+
 /**
- * 获取标签商品
+ * 根据标签ID获取商品
  */
-export function getPlateformTagGoods(tag_id) {
-  return http.request({
+export async function getPlateformTagGoods(tag_id) {
+  return request({
     url: `goods/tags/byid/${tag_id}`,
     method: Method.GET,
     loading: false,
@@ -107,35 +94,31 @@ export function getPlateformTagGoods(tag_id) {
 }
 
 /**
- * 获取首页商品分类 左侧列表
- * @param parent_id
+ * 获取商品分类详情
  */
-export function getCategoryList(id) {
-  return http.request({
+export async function getCategoryList(id) {
+  return request({
     url: `/goods/category/get/${id}`,
     method: Method.GET,
     loading: false,
   });
 }
 
-
-
-
 /**
- * 获取当前会员的分销商信息 可根据分销商信息查询待提现金额以及冻结金额等信息
+ * 获取当前会员的分销信息
  */
-export function distribution() {
-  return http.request({
+export async function distribution() {
+  return request({
     url: `/distribution/distribution`,
     method: Method.GET,
   });
 }
 
 /**
- * 申请分销商
+ * 申请成为分销商
  */
-export function applyDistribution(params) {
-  return http.request({
+export async function applyDistribution(params) {
+  return request({
     url: `/distribution/distribution`,
     method: Method.POST,
     params,
@@ -143,10 +126,10 @@ export function applyDistribution(params) {
 }
 
 /**
- * 分销商提现
+ * 分销结算提现
  */
-export function cash(params) {
-  return http.request({
+export async function cash(params) {
+  return request({
     url: `/distribution/cash`,
     method: Method.POST,
     params,
@@ -154,22 +137,21 @@ export function cash(params) {
 }
 
 /**
- * 分销商提现历史
+ * 分销提现历史
  */
-export function cashLog(params) {
-  return http.request({
+export async function cashLog(params) {
+  return request({
     url: `/distribution/cash`,
     method: Method.GET,
     params
-
   });
 }
 
 /**
- * 获取分销商分页订单列表
+ * 分销订单列表
  */
-export function distributionOrderList(params) {
-  return http.request({
+export async function distributionOrderList(params) {
+  return request({
     url: `/distribution/distribution/distributionOrder`,
     method: Method.GET,
     params
@@ -177,20 +159,21 @@ export function distributionOrderList(params) {
 }
 
 /**
- * 获取分销商商品列表
+ * 获取分销商品列表
  */
-export function distributionGoods(params) {
-  return http.request({
+export async function distributionGoods(params) {
+  return request({
     url: `/distribution/goods`,
     method: Method.GET,
     params,
   });
 }
+
 /**
- * 选择分销商品 分销商品id
+ * 选择/检查分销商品
  */
-export function checkedDistributionGoods(params) {
-  return http.request({
+export async function checkedDistributionGoods(params) {
+  return request({
     url: `/distribution/goods/checked/${params.id}`,
     method: Method.GET,
     params
@@ -198,23 +181,22 @@ export function checkedDistributionGoods(params) {
 }
 
 /**
- * 获取 小程序码
+ * 获取小程序码
  */
- export function getMpCode(params){
-  return http.request({
-    url:`/passport/connect/miniProgram/mp/unlimited`,
-    method:Method.GET,
+export async function getMpCode(params) {
+  return request({
+    url: `/passport/connect/miniProgram/mp/unlimited`,
+    method: Method.GET,
     params
-  })
+  });
 }
 
 /**
- * 根据shortlink 获取页面参数
+ * 解析小程序场景码 (Shortlink)
  */
- export function getMpScene(id){
-  return http.request({
-    url:`/passport/connect/miniProgram/mp/unlimited/scene?id=${id}`,
-    method:Method.GET,
-
-  })
+export async function getMpScene(id) {
+  return request({
+    url: `/passport/connect/miniProgram/mp/unlimited/scene?id=${id}`,
+    method: Method.GET,
+  });
 }

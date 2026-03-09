@@ -1,27 +1,25 @@
-
-import {http, Method} from '@/utils/request.js';
+/**
+ * 积分/签到相关API (Refactored for Vue2/Vue3 Bridge)
+ */
+import { request, Method } from "@/api/base.js";
 
 /**
  * 签到
- * @param params
  */
-export function sign() {
-  return http.request({
+export async function sign() {
+  return request({
     url: '/members/sign',
     method: Method.POST,
     needToken: true,
   });
 }
 
-
-
 /**
- * 签到时间获取
- * @param params
+ * 获取签到记录
  */
-export function signTime(time) {
-  return http.request({
-    url: '/members/sign?time='+time,
+export async function signTime(time) {
+  return request({
+    url: '/members/sign?time=' + time,
     method: Method.GET,
     needToken: true,
   });

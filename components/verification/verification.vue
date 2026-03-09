@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import api from "@/config/api.js";
+import { getSlider, validSlider } from "@/api/common.js";
 import storage from "@/utils/storage.js";
 import uuid from "@/utils/uuid.modified.js";
 const phone = uni.getSystemInfoSync();
@@ -201,8 +201,7 @@ export default {
       this.moveCode = 0;
       this.isLoadingCode = false; // 重置加载状态
     },
-    // 获取验证图片
-    getCode() {
+    async getCode() {
       // 防止重复加载
       if (this.isLoadingCode) {
         console.log('⚠️ 验证码正在加载中，跳过重复请求');
@@ -214,124 +213,72 @@ export default {
       this.hasImg = "图片加载中...";
       console.log('🔄 开始获取验证码图片, business:', this.business);
       
+      const currentUuid = storage.getUuid() || uuid.v1();
       if (!storage.getUuid()) {
-        storage.setUuid(uuid.v1());
+        storage.setUuid(currentUuid);
       }
-      uni.request({
-        url: api.common + "/common/slider/" + this.business,
-        header: {
-          uuid: storage.getUuid(),
-        },
-        success: (res) => {
-          this.col = "#838383";
-          this.hasImg = "拖动滑块以完成拼图";
-          var data = res.data.result;
 
-          // base64的图片
-          this.img = data.backImage;
-          this.imgbk = data.slidingImage;
-          // 根据参数动态适应验证图片的高宽
-          this.imgbKH = data.randomY * 1.8 + "rpx";
-          this.originalHeight = data.originalHeight * 1.8 + "rpx";
-          this.originalWidth = data.originalWidth * 1.8 + "rpx";
-          this.sliderHeight = data.sliderHeight * 1.8 + "rpx";
-          this.sliderWidth = data.sliderWidth * 1.8 + "rpx";
-          // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
-          const currentPhone = uni.getSystemInfoSync();
-          const currentL = currentPhone.screenWidth / 750;
-          this.tl = 1 / (1.8 * currentL);
-          console.log('📏 屏幕宽度:', currentPhone.screenWidth, 'l:', currentL, 'tl:', this.tl);
-          // 无用信息
-          this.spcode = data.capcode;
-          // 验证令牌
-          this.key = data.key;
-          this.$store.state.verificationKey = data.key;
-          console.log('✅ 验证码图片加载成功, key:', data.key);
-          
-          this.isLoadingCode = false;
-        },
-        fail: (err) => {
-          console.error('❌ 验证码图片加载失败:', err);
-          this.hasImg = "加载失败，请点击刷新";
-          this.isLoadingCode = false;
-        },
-      });
+      try {
+        const data = await getSlider(this.business, currentUuid);
+        this.col = "#838383";
+        this.hasImg = "拖动滑块以完成拼图";
+
+        // base64的图片
+        this.img = data.backImage;
+        this.imgbk = data.slidingImage;
+        // 根据参数动态适应验证图片的高宽
+        this.imgbKH = data.randomY * 1.8 + "rpx";
+        this.originalHeight = data.originalHeight * 1.8 + "rpx";
+        this.originalWidth = data.originalWidth * 1.8 + "rpx";
+        this.sliderHeight = data.sliderHeight * 1.8 + "rpx";
+        this.sliderWidth = data.sliderWidth * 1.8 + "rpx";
+        
+        // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
+        const currentPhone = uni.getSystemInfoSync();
+        const currentL = currentPhone.screenWidth / 750;
+        this.tl = 1 / (1.8 * currentL);
+        console.log('📏 屏幕宽度:', currentPhone.screenWidth, 'tl:', this.tl);
+        
+        // 无用信息
+        this.spcode = data.capcode;
+        // 验证令牌
+        this.key = data.key;
+        this.$store.state.verificationKey = data.key;
+        console.log('✅ 验证码图片加载成功, key:', data.key);
+      } catch (err) {
+        console.error('❌ 验证码图片加载失败:', err);
+        this.hasImg = "加载失败，请点击刷新";
+      } finally {
+        this.isLoadingCode = false;
+      }
     },
-        end(e) {
-          console.log('🎯 滑块释放事件触发');
-          console.log('当前 moveCode:', this.moveCode, 'tl:', this.tl);
-          const xPos = parseInt(this.moveCode * this.tl);
-          console.log('计算后的 xPos:', xPos, '(moveCode * tl)');
-      
+    async end(e) {
+      console.log('🎯 滑块释放事件触发');
+      const xPos = parseInt(this.moveCode * this.tl);
+      console.log('计算后的 xPos:', xPos);
+  
       this.endLoad = false;
-      // 验证拼图位置是否正确
-      uni.request({
-        method: "POST",
-        url:
-          api.common +
-          "/common/slider/" +
-          this.business +
-          "?xPos=" +
-          xPos,
-        header: {
-          uuid: storage.getUuid(),
-        },
-        success: (res) => {
-          this.endLoad = true;
-          console.log('📥 滑块验证响应:', {
-            statusCode: res.statusCode,
-            success: res.data ? res.data.success : false,
-            result: res.data ? res.data.result : false,
-            message: res.data ? res.data.message : ''
-          });
-          
-          // 检查 HTTP 状态码和响应数据
-          const isSuccess = res.statusCode === 200 && res.data && (res.data.success === true || res.data.result === true);
-          
-          if (isSuccess) {
-            console.log('✅ 滑块验证成功，发送验证完成事件');
-            //验证成功后把key发送出去,后端会把验证信息存在缓存里
-            this.$emit("send", this.key);
-            this.hide();
-            this.vsr = true;
-            this.vsrtx = "已通过验证";
-          } else {
-            console.log('❌ 滑块验证失败');
-            // 显示后端返回的错误消息（如果有）
-            const errorMsg = (res.data && res.data.message) || "验证失败，请重试";
-            uni.showToast({
-              title: errorMsg,
-              duration: 2000,
-              icon: "none",
-            });
-            // 验证失败，重置加载状态后重新获取验证码
-            this.isLoadingCode = false;
-            this.getCode(); // 让滑块回到起始位置
-            if (this.movePv == 1) {
-              this.movePv = 0;
-            } else {
-              this.movePv = 1;
-            }
-          }
-        },
-        fail: (err) => {
-          console.error('❌ 滑块验证请求失败:', err);
-          this.endLoad = true;
-          this.isLoadingCode = false;
-          uni.showToast({
-            title: "连接服务器失败",
-            duration: 2000,
-            icon: "none",
-          });
-          // 重新获取验证码
-          this.getCode();
-          if (this.movePv == 1) {
-            this.movePv = 0;
-          } else {
-            this.movePv = 1;
-          }
-        },
-      });
+      try {
+        const result = await validSlider(this.business, storage.getUuid(), xPos);
+        console.log('✅ 滑块验证成功');
+        //验证成功后把key发送出去
+        this.$emit("send", this.key);
+        this.hide();
+        this.vsr = true;
+        this.vsrtx = "已通过验证";
+      } catch (err) {
+        console.log('❌ 滑块验证失败:', err);
+        uni.showToast({
+          title: "验证失败，请重试",
+          duration: 2000,
+          icon: "none",
+        });
+        // 验证失败，重新获取验证码
+        this.getCode(); 
+        this.movePv = this.movePv == 1 ? 0 : 1;
+      } finally {
+        this.endLoad = true;
+      }
     },
     // 绑定拼图位置
     moveChange(e) {

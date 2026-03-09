@@ -27,8 +27,8 @@ class LiLiWXPay {
       const paymentMethod = "WECHAT";
       const paymentClient = "MP";
       // 调用支付
-      initiatePay(paymentMethod, paymentClient, submitData).then((res) => {
-        let response = res.data.result;
+      initiatePay(paymentMethod, paymentClient, submitData).then((result) => {
+        let response = result;
         uni.hideLoading();
         uni.requestPayment({
           provider: "wxpay",
@@ -59,22 +59,23 @@ class LiLiWXPay {
             });
           },
         });
+      }).catch(err => {
+        uni.hideLoading();
+        uni.showToast({ title: err.message || '启动支付失败', icon: 'none' });
       });
     };
   }
 }
 
 function sendMessage(price) {
-
-
   //订阅消息
-  getWeChatMpMessage().then((res) => {
-    var message = res.data.result;
+  getWeChatMpMessage().then((result) => {
+    var message = result;
     var templateid = message.map((item) => item.code);
     uni.requestSubscribeMessage({
       tmplIds: templateid,
       success: (res) => {
-      
+
       },
       fail: (res) => {
         console.log('fail', res)
@@ -97,8 +98,12 @@ function sendMessage(price) {
         });
       },
     });
+  }).catch(err => {
+    console.error('Failed to get sub message:', err);
+    uni.redirectTo({
+      url: "/pages/cart/payment/success?paymentMethod=WECHAT&payPrice=" + price,
+    });
   });
-
 }
 
 export default LiLiWXPay;

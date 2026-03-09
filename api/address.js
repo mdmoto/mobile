@@ -1,17 +1,14 @@
 /**
- * 收货地址相关API
+ * 收货地址相关API (Refactored for Vue2/Vue3 Bridge)
  */
-
-import { http, Method } from "@/utils/request.js";
-
+import { request, Method } from "@/api/base.js";
 import api from "@/config/api.js";
 
 /**
  * 获取收货地址列表
- * @returns {AxiosPromise}
  */
-export function getAddressList(pageNumber, pageSize) {
-  return http.request({
+export async function getAddressList(pageNumber, pageSize) {
+  return request({
     url: "/member/address",
     method: Method.GET,
     needToken: true,
@@ -19,12 +16,11 @@ export function getAddressList(pageNumber, pageSize) {
   });
 }
 
-
 /**
- * 获取物流公司
+ * 获取物流公司列表
  */
-export function getLogistics() {
-  return http.request({
+export async function getLogistics() {
+  return request({
     url: "/other/logistics",
     method: Method.GET,
     needToken: true,
@@ -33,10 +29,10 @@ export function getLogistics() {
 }
 
 /**
- * 通过cityCode获取地区代码
+ * 通过 cityCode 获取地区代码
  */
-export function getAddressCode(cityCode, townName) {
-  return http.request({
+export async function getAddressCode(cityCode, townName) {
+  return request({
     url: api.common + "/common/region/region",
     method: Method.GET,
     needToken: true,
@@ -46,11 +42,9 @@ export function getAddressCode(cityCode, townName) {
 
 /**
  * 添加收货地址
- * @param params 地址参数
- * @returns {AxiosPromise}
  */
-export function addAddress(data) {
-  return http.request({
+export async function addAddress(data) {
+  return request({
     url: "/member/address",
     method: Method.POST,
     needToken: true,
@@ -60,13 +54,10 @@ export function addAddress(data) {
 }
 
 /**
- * 编辑地址
- * @param id 地址ID
- * @param params 地址参数
- * @returns {AxiosPromise}
+ * 编辑收货地址
  */
-export function editAddress(params) {
-  return http.request({
+export async function editAddress(params) {
+  return request({
     url: `/member/address`,
     method: Method.PUT,
     needToken: true,
@@ -77,24 +68,20 @@ export function editAddress(params) {
 
 /**
  * 删除收货地址
- * @param id
  */
-export function deleteAddress(id) {
-  return http.request({
+export async function deleteAddress(id) {
+  return request({
     url: `/member/address/delById/${id}`,
     method: Method.DELETE,
     needToken: true,
   });
 }
 
-
-
 /**
- * 根据ID获取会员收件地址
- * @param id
+ * 根据ID获取收货地址详情
  */
-export function getAddressDetail(id) {
-  return http.request({
+export async function getAddressDetail(id) {
+  return request({
     url: `/member/address/get/${id}`,
     method: Method.GET,
     loading: false,
@@ -103,10 +90,10 @@ export function getAddressDetail(id) {
 }
 
 /**
- *
+ * 获取默认收货地址
  */
-export function getAddressDefault() {
-  return http.request({
+export async function getAddressDefault() {
+  return request({
     url: `/member/address/get/default`,
     method: Method.GET,
     loading: false,

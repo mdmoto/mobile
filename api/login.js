@@ -1,78 +1,75 @@
-import { http } from "@/utils/request.js";
-
+/**
+ * 登录/通行证相关API (Refactored for Vue2/Vue3 Bridge)
+ */
+import { request, Method } from "@/api/base.js";
 import api from "@/config/api.js";
 
 /**
  * 通过短信重置密码
- * @param  mobile
+ * @param {Object} params { mobile }
  */
-export function resetByMobile(params) {
-  return http.request({
+export async function resetByMobile(params) {
+  return request({
     url: `/passport/member/resetByMobile`,
-    method: "POST",
+    method: Method.POST,
     params,
   });
 }
 
 /**
  * 绑定手机号码
- * @param  mobile
  */
-export function bindMobile(params) {
-  return http.request({
+export async function bindMobile(params) {
+  return request({
     url: `/passport/member/bindMobile`,
-    method: "POST",
+    method: Method.POST,
     params,
   });
 }
 
-//获取自动发券
-export function getAutoCoup(){
-  return http.request({
-    url:`/promotion/coupon/activity`,
-    method:"GET",
+/**
+ * 获取自动发券
+ */
+export async function getAutoCoup() {
+  return request({
+    url: `/promotion/coupon/activity`,
+    method: Method.GET,
     needToken: true,
   });
 }
 
 /**
  * 账号密码登陆
- * @params  password
- * @params  username
  */
- export function userLogin(params, clientType){
-  return http.request({
-    method: "POST",
-    url:`/passport/member/userLogin`,
+export async function userLogin(params, clientType) {
+  return request({
+    method: Method.POST,
+    url: `/passport/member/userLogin`,
     data: params,
     header: {
       "content-type": "application/x-www-form-urlencoded",
-	  clientType: clientType,
+      clientType: clientType,
     },
-  })
+  });
 }
-
 
 /**
  * 发送验证码
- * @param  mobile
  */
-export function sendMobile(mobile,type='LOGIN') {
-  return http.request({
+export async function sendMobile(mobile, type = 'LOGIN') {
+  return request({
     url: `${api.common}/common/sms/${type}/${mobile}`,
-    method: "GET",
+    method: Method.GET,
   });
 }
 
 /**
  * 短信登录
- * @param  mobile
- * @param  smsCode
  */
-export function smsLogin(params, clientType) {
-  return http.request({
+export async function smsLogin(params, clientType) {
+  return request({
     url: `/passport/member/smsLogin`,
-    method: "POST",
+    method: Method.POST,
     data: params,
     header: {
       "content-type": "application/x-www-form-urlencoded",
@@ -83,15 +80,11 @@ export function smsLogin(params, clientType) {
 
 /**
  * 注册
- * @param  email 邮箱
- * @param  code 验证码
- * @param  password 密码
- * @param  username 用户名
  */
-export function register(params, clientType) {
-  return http.request({
+export async function register(params, clientType) {
+  return request({
     url: `/passport/member/register`,
-    method: "POST",
+    method: Method.POST,
     data: params,
     header: {
       "content-type": "application/x-www-form-urlencoded",
@@ -102,27 +95,22 @@ export function register(params, clientType) {
 
 /**
  * 修改密码
- * @param  newPassword
- * @param  password
  */
-
-export function modifyPass(params) {
-  return http.request({
+export async function modifyPass(params) {
+  return request({
     url: `/passport/member/modifyPass`,
-    method: "PUT",
+    method: Method.PUT,
     params,
   });
 }
 
 /**
- * 修改密码
- * @param  newPassword
- * @param  password
+ * 重置密码
  */
-export function resetPassword(params) {
-  return http.request({
+export async function resetPassword(params) {
+  return request({
     url: `/passport/member/resetPassword`,
-    method: "POST",
+    method: Method.POST,
     params,
   });
 }
@@ -130,44 +118,55 @@ export function resetPassword(params) {
 /**
  * 刷新token
  */
-export function refreshTokenFn(refresh_token) {
-  return http.request({
+export async function refreshTokenFn(refresh_token) {
+  return request({
     url: `/passport/member/refresh/${refresh_token}`,
-    method: "GET",
+    method: Method.GET,
   });
 }
 
-// 获取密码状态
-export function logout () {
-  return http.request({
+/**
+ * 登出
+ */
+export async function logout() {
+  return request({
     url: '/passport/member/logout',
-    method: "POST",
+    method: Method.POST,
     needToken: true,
-  })
+  });
 }
 
-export function scannerCodeLogin(params){
-	return http.request({
-	  url: '/passport/member/app_scanner',
-	  method: "POST",
-	  params,
-	  needToken: true,
-	});
-}
-export function scannerCodeLoginConfirm(params){
-	return http.request({
-	  url: '/passport/member/app_confirm',
-	  method: "POST",
-	  params,
-	  needToken: true,
-	});
+/**
+ * App 扫码登录
+ */
+export async function scannerCodeLogin(params) {
+  return request({
+    url: '/passport/member/app_scanner',
+    method: Method.POST,
+    params,
+    needToken: true,
+  });
 }
 
-// 注销用户
-export function logoffConfirm() {
-	return http.request({
-		url: '/passport/member/cancellation',
-		method: "PUT",
-		needToken: true,
-	})
+/**
+ * App 扫码确认
+ */
+export async function scannerCodeLoginConfirm(params) {
+  return request({
+    url: '/passport/member/app_confirm',
+    method: Method.POST,
+    params,
+    needToken: true,
+  });
+}
+
+/**
+ * 注销用户
+ */
+export async function logoffConfirm() {
+  return request({
+    url: '/passport/member/cancellation',
+    method: Method.PUT,
+    needToken: true,
+  });
 }

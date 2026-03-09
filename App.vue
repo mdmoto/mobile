@@ -103,11 +103,9 @@ import { getMaoMallRates } from "@/api/maollar";
 		methods: {
 			async initMaoMallRates() {
 				try {
-					let res = await getMaoMallRates();
-					if (res.data.success) {
-						storage.setExchangeRates(res.data.result);
-						console.log("MaoMall rates updated:", res.data.result);
-					}
+					const result = await getMaoMallRates();
+					storage.setExchangeRates(result);
+					console.log("MaoMall rates updated:", result);
 				} catch (e) {
 					console.error("Failed to fetch MaoMall rates", e);
 				}

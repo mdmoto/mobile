@@ -1,17 +1,24 @@
-import { http, Method } from "@/utils/request.js";
+/**
+ * 首页/内容相关API (Refactored for Vue2/Vue3 Bridge)
+ */
+import { request, Method } from "@/api/base.js";
 
- export function toSpecial(data) {
-  return http.request({
+/**
+ * 获取专题
+ */
+export async function toSpecial(data) {
+  return request({
     url: `/other/pageData/getSpecial`,
     method: Method.GET,
     data
   });
 }
+
 /**
- * 专题内容
+ * 专题内容详情
  */
- export function getSpecial(id) {
-  return http.request({
+export async function getSpecial(id) {
+  return request({
     url: `/other/pageData/get/${id}`,
     method: Method.GET,
   });
@@ -20,21 +27,18 @@ import { http, Method } from "@/utils/request.js";
 /**
  * 获取广告图
  */
-export function getAdvertisement() {
-  return http.request({
+export async function getAdvertisement() {
+  return request({
     url: "/advertisement",
     method: Method.GET,
   });
 }
 
-
-
 /**
  * 获取首页商品分类
- * @param parent_id
  */
-export function getCategory(parent_id = 0) {
-  return http.request({
+export async function getCategory(parent_id = 0) {
+  return request({
     url: `goods/categories/${parent_id}/children`,
     method: Method.GET,
     loading: false,
@@ -43,10 +47,9 @@ export function getCategory(parent_id = 0) {
 
 /**
  * 获取热门关键词
- * @param num
  */
-export function getHotKeywords(count) {
-  return http.request({
+export async function getHotKeywords(count) {
+  return request({
     url: "/goods/goods/hot-words",
     method: Method.GET,
     loading: false,
@@ -55,14 +58,12 @@ export function getHotKeywords(count) {
 }
 
 /**
- * 获取楼层数据
- * @param client_type
- * @param page_type
+ * 获取首页楼层数据
  */
-export function getFloorData(params) {
-  return http.request({
+export async function getFloorData(params) {
+  return request({
     url: `/other/pageData/getIndex?clientType=H5`,
-    method: "get",
+    method: Method.GET,
     params
   });
 }
@@ -70,20 +71,20 @@ export function getFloorData(params) {
 /**
  * 获取店铺楼层数据
  */
-export function getFloorStoreData(params) {
-  return http.request({
+export async function getFloorStoreData(params) {
+  return request({
     url: `/other/pageData?pageClientType=H5`,
-    method: "get",
+    method: Method.GET,
     params
   });
 }
 
 /**
- * 获取获取首页分类数据
+ * 获取首页分类层级数据
  */
-export function getCategoryIndexData(parentId = 0) {
-  return http.request({
+export async function getCategoryIndexData(parentId = 0) {
+  return request({
     url: `/goods/category/get/${parentId}`,
-    method: "get",
+    method: Method.GET,
   });
 }

@@ -1,19 +1,15 @@
 /**
- * Created by Andste on 2018/5/2.
- * 用户认证相关API
+ * 用户认证/找回密码相关API (Refactored for Vue2/Vue3 Bridge)
  */
 import storage from '@/utils/storage.js';
-import {http, Method} from '@/utils/request.js';
+import { request, Method } from "@/api/base.js";
 import { md5 } from '@/utils/md5.js';
 
 /**
- * 普通登录
- * @param username
- * @param password
- * @param captcha
+ * 普通登录 (账号密码)
  */
-export function login(username, password, captcha) {
-  return http.request({
+export async function login(username, password, captcha) {
+  return request({
     url: 'passport/login',
     method: Method.POST,
     params: {
@@ -25,17 +21,11 @@ export function login(username, password, captcha) {
   });
 }
 
-
-
-
-
 /**
  * 验证账户信息
- * @param captcha
- * @param account
  */
-export function validAccount(captcha, account) {
-  return http.request({
+export async function validAccount(captcha, account) {
+  return request({
     url: 'passport/find-pwd',
     method: Method.GET,
     params: {
@@ -48,16 +38,14 @@ export function validAccount(captcha, account) {
 
 /**
  * 发送找回密码短信
- * @param uuid
- * @param captcha
  */
-export function sendFindPasswordSms(uuid,captcha) {
-  return http.request({
+export async function sendFindPasswordSms(uuid, captcha) {
+  return request({
     url: 'passport/find-pwd/send',
     method: Method.POST,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     data: {
-      uuid:uuid,
+      uuid: uuid,
       captcha,
     },
   });
@@ -65,11 +53,9 @@ export function sendFindPasswordSms(uuid,captcha) {
 
 /**
  * 校验找回密码验证码
- * @param uuid
- * @param sms_code
  */
-export function validFindPasswordSms(uuid, sms_code) {
-  return http.request({
+export async function validFindPasswordSms(uuid, sms_code) {
+  return request({
     url: 'passport/find-pwd/valid',
     method: Method.GET,
     params: {
@@ -80,18 +66,16 @@ export function validFindPasswordSms(uuid, sms_code) {
 }
 
 /**
- * 修改密码【找回密码用】
- * @param password
- * @param uuid
+ * 修改密码【找回密码流程】
  */
-export function changePassword(password, uuid) {
+export async function changePassword(password, uuid) {
   if (!uuid) {
     uuid = storage.getUuid();
   }
-  return http.request({
+  return request({
     url: 'passport/find-pwd/update-password',
     method: Method.PUT,
-	header:{'content-type':"application/x-www-form-urlencoded"},
+    header: { 'content-type': "application/x-www-form-urlencoded" },
     data: {
       uuid,
       password: md5(password),
@@ -99,13 +83,13 @@ export function changePassword(password, uuid) {
   });
 }
 
-
-
-// 保存生物认证登录
-export function setBiolofy(params) {
-	return http.request({
-		url: `passport/login/save/biology`,
-		method: 'POST',
-		params
-	})
+/**
+ * 保存生物认证登录信息
+ */
+export async function setBiolofy(params) {
+  return request({
+    url: `passport/login/save/biology`,
+    method: Method.POST,
+    params
+  });
 }

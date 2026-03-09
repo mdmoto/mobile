@@ -464,10 +464,12 @@ export function tipsToLogin(type) {
  * 获取用户信息并重新添加到缓存里面
  */
 export async function userInfo() {
-  let res = await getUserInfo();
-  if (res.data.success) {
-    storage.setUserInfo(res.data.result);
-    return res.data.result;
+  try {
+    const result = await getUserInfo();
+    storage.setUserInfo(result);
+    return result;
+  } catch (err) {
+    console.error('Failed to get user info:', err);
   }
 }
 

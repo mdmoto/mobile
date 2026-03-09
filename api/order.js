@@ -1,18 +1,13 @@
 /**
- * 订单相关API
+ * 订单相关API (Refactored for Vue2/Vue3 Bridge)
  */
-
-import { http, Method } from "@/utils/request.js";
-
-
-
+import { request, Method } from "@/api/base.js";
 
 /**
- * 选择发票
- * @param params
+ * 获取可用发票列表
  */
- export function getReceipt(params) {
-  return http.request({
+export async function getReceipt(params) {
+  return request({
     url: "/trade/carts/select/receipt",
     method: Method.GET,
     needToken: true,
@@ -21,11 +16,10 @@ import { http, Method } from "@/utils/request.js";
 }
 
 /**
- * 选择发票
- * @param id
+ * 获取发票详情
  */
-export function getReceiptDetail(id) {
-  return http.request({
+export async function getReceiptDetail(id) {
+  return request({
     url: `/trade/receipt/${id}`,
     method: Method.GET,
     needToken: true,
@@ -34,10 +28,9 @@ export function getReceiptDetail(id) {
 
 /**
  * 选择配送方式
- * @param params
  */
-export function selectedShipMethod(params) {
-  return http.request({
+export async function selectedShipMethod(params) {
+  return request({
     url: "/trade/carts/shippingMethod",
     method: Method.GET,
     needToken: true,
@@ -47,10 +40,9 @@ export function selectedShipMethod(params) {
 
 /**
  * 获取订单列表
- * @param params
  */
-export function getOrderList(params) {
-  return http.request({
+export async function getOrderList(params) {
+  return request({
     url: "/order/order",
     method: Method.GET,
     needToken: true,
@@ -60,10 +52,9 @@ export function getOrderList(params) {
 
 /**
  * 获取订单详情
- * @param orderSn 订单编号
  */
-export function getOrderDetail(orderSn) {
-  return http.request({
+export async function getOrderDetail(orderSn) {
+  return request({
     url: `/order/order/${orderSn}`,
     method: Method.GET,
     needToken: true,
@@ -72,11 +63,9 @@ export function getOrderDetail(orderSn) {
 
 /**
  * 取消订单
- * @param orderSn 订单编号
- * @param reason   取消原因
  */
-export function cancelOrder(orderSn, reason) {
-  return http.request({
+export async function cancelOrder(orderSn, reason) {
+  return request({
     url: `/order/order/${orderSn}/cancel`,
     method: Method.POST,
     needToken: true,
@@ -87,29 +76,24 @@ export function cancelOrder(orderSn, reason) {
 
 /**
  * 确认收货
- * @param orderSn 订单编号
  */
-export function confirmReceipt(orderSn) {
-  return http.request({
+export async function confirmReceipt(orderSn) {
+  return request({
     url: `/order/order/${orderSn}/receiving`,
     method: Method.POST,
     needToken: true,
   });
 }
 
-
-
 /**
- * 获取当前拼团订单的拼团分享信息
- * @param {*} parentOrderSn
- * @param {*} skuId
+ * 获取拼团分享信息
  */
-export function getPinTuanShare(parentOrderSn,skuId) {
-  return http.request({
+export async function getPinTuanShare(parentOrderSn, skuId) {
+  return request({
     url: `promotion/pintuan/share`,
     method: Method.GET,
     needToken: true,
-    params:{parentOrderSn,skuId}
+    params: { parentOrderSn, skuId }
   });
 }
 

@@ -1,24 +1,25 @@
 /**
- * 公共API
+ * 公共API (Refactored for Vue2/Vue3 Bridge)
  */
-import { http, Method } from "@/utils/request.js";
+import { request, Method } from "@/api/base.js";
 import api from "@/config/api.js";
 
 /**
  * 获取地区数据
- * @param id
  */
-export function getRegionsById(id = 0) {
-  return http.request({
+export async function getRegionsById(id = 0) {
+  return request({
     url: `${api.common}/common/region/item/${id}`,
     method: Method.GET,
     message: false,
   });
 }
 
-// 获取IM接口前缀
-export function getIMDetail() {
-  return http.request({
+/**
+ * 获取IM接口前缀
+ */
+export async function getIMDetail() {
+  return request({
     url: `${api.common}/IM`,
     method: Method.GET,
     message: false,
@@ -27,19 +28,38 @@ export function getIMDetail() {
 
 /**
  * 文件上传地址
- * @type {string}
  */
 export const upload = api.common + "/common/upload/file";
 
 /**
  * 发送邮箱验证码
- * @param email 邮箱地址
- * @param verificationEnums 验证场景 (REGISTER, LOGIN, etc.)
  */
-export function sendEmail(email, verificationEnums = 'REGISTER') {
-  return http.request({
+export async function sendEmail(email, verificationEnums = 'REGISTER') {
+  return request({
     url: `${api.common}/common/email/${verificationEnums}/${email}`,
     method: Method.GET,
     message: false,
+  });
+}
+
+/**
+ * 获取滑块验证码
+ */
+export async function getSlider(business, uuid) {
+  return request({
+    url: `${api.common}/common/slider/${business}`,
+    method: Method.GET,
+    header: { uuid },
+  });
+}
+
+/**
+ * 验证滑块
+ */
+export async function validSlider(business, uuid, xPos) {
+  return request({
+    url: `${api.common}/common/slider/${business}?xPos=${xPos}`,
+    method: Method.POST,
+    header: { uuid },
   });
 }
