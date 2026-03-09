@@ -21,18 +21,22 @@
       <!--  #endif -->
 	 
       <u-cell-item :title="$t('user.licenseInfo')" @click="navigateTo('/pages/mine/help/tips?type=LICENSE_INFORMATION')"></u-cell-item>
+      <u-cell-item :title="$t('user.legalNotice')" @click="navigateTo('/pages/mine/set/legalNotice')"></u-cell-item>
+      <u-cell-item :title="$t('user.refundPolicy')" @click="navigateTo('/pages/mine/help/tips?type=REFUND_POLICY')"></u-cell-item>
+      <u-cell-item :title="$t('user.shippingPolicy')" @click="navigateTo('/pages/mine/help/tips?type=SHIPPING_POLICY')"></u-cell-item>
       <u-cell-item :title="$t('auth.terms')" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')"></u-cell-item>
       <u-cell-item :title="$t('auth.privacy')" @click="navigateTo('/pages/mine/help/tips?type=PRIVACY_POLICY')"></u-cell-item>
       <u-cell-item :title="$t('user.about')" :border-bottom="false" @click="navigateTo('/pages/mine/help/about2')"></u-cell-item>
 
     </u-cell-group>
 
-    <view class="intro">
-      <view>{{config.customerServiceMobile ? `${$t('user.hotline')}：${config.customerServiceMobile}` :  ``}}</view>
-      <view style="margin:20rpx 0 0 0;">{{config.customerServiceEmail ? `${$t('user.email')}：${config.customerServiceEmail}` :  ``}}</view>
+    <view class="intro" style="text-align: center;">
+      <view>猫楽合同会社 (MAO MALL G.K.)</view>
+      <view style="margin:10rpx 0;">{{config.customerServiceMobile ? `${$t('user.hotline')}：${config.customerServiceMobile}` :  ``}}</view>
+      <view style="margin:10rpx 0;">{{config.customerServiceEmail ? `${$t('user.email')}：${config.customerServiceEmail}` :  ``}}</view>
 
       <view>
-        <view style="margin:20rpx 0; color:#003a8c;" @click="navigateTo('/pages/mine/help/tips?type=USER_AGREEMENT')">《{{config.name}}{{ $t('auth.terms') }}》</view>
+        <view style="margin:20rpx 0; color:#003a8c;" @click="navigateTo('/pages/mine/help/tips?type=PRIVACY_POLICY')">《{{config.name}}{{ $t('auth.privacy') }}》</view>
         <view>CopyRight ©{{config.name}} </view>
       </view>
     </view>
@@ -95,12 +99,12 @@ export default {
 
   methods: {
     async getVersion(platform) {
-      let type;
-      platform == "android" ? (type = "ANDROID") : (type = "IOS");
-
-      let res = await getAppVersion(type);
-      if (res.data.success) {
-        this.versionData = res.data.result;
+      const type = platform === "android" ? "ANDROID" : "IOS";
+      try {
+        const result = await getAppVersion(type);
+        this.versionData = result;
+      } catch (err) {
+        console.error('Failed to get app version:', err);
       }
     },
 

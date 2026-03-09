@@ -176,31 +176,36 @@ export default {
       } catch (e) {}
     },
 
-    getList() {
+    async getList() {
       let params = this.params;
-      uni.showLoading({
-        title: this.$t('common.loading'),
-      });
-      getPointsData(params).then((res) => {
-         if (this.$store.state.isShowToast){ uni.hideLoading() };
-        if (res.data.success) {
-          let data = res.data.result.records;
-          if (this.params.pageNumber === 1) this.pointList = [];
-          
-          this.pointList.push(...data);
-          if (data.length < 10) {
-            this.$set(this.count, "loadStatus", "noMore");
-          } else {
-            this.$set(this.count, "loadStatus", "more");
-          }
+      uni.showLoading({ title: this.$t('common.loading') });
+      
+      try {
+        const result = await getPointsData(params);
+        if (this.$store.state.isShowToast) { uni.hideLoading(); }
+        
+        let data = result.records;
+        if (this.params.pageNumber === 1) this.pointList = [];
+        
+        this.pointList.push(...data);
+        if (data.length < 10) {
+          this.$set(this.count, "loadStatus", "noMore");
+        } else {
+          this.$set(this.count, "loadStatus", "more");
         }
-      });
+      } catch (err) {
+        if (this.$store.state.isShowToast) { uni.hideLoading(); }
+        console.error('Failed to get points record:', err);
+      }
     },
 
-    initPointData() {
-      getMemberPointSum().then((res) => {
-        this.pointData = res.data.result;
-      });
+    async initPointData() {
+      try {
+        const result = await getMemberPointSum();
+        this.pointData = result;
+      } catch (err) {
+        console.error('Failed to init point data:', err);
+      }
     },
     
     maxExchange() {
@@ -218,9 +223,6 @@ export default {
           this.walletAddress = address;
           storage.setWalletAddress(this.walletAddress);
           uni.showToast({ title: '连接成功', icon: 'success' });
-        } else {
-          // 如果返回空，说明可能跳转到了 Phantom App 浏览器，
-          // 这种情况下当前页面会失去焦点，无需额外处理。
         }
       }).catch(err => {
         uni.hideLoading();
@@ -272,28 +274,26 @@ export default {
       uni.showModal({
         title: '确认兑换',
         content: `确定将 ${this.exchangeAmount} 积分兑换为 ${this.estimatedMao} $MAO 吗？\n该操作不可逆，将直接转账至：\n${this.walletAddress}`,
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
             uni.showLoading({ title: '兑换中...' });
             
-            applyMaoMallExchange({
-              points: this.exchangeAmount,
-              solanaWalletAddress: this.walletAddress
-            }).then(res => {
+            try {
+              await applyMaoMallExchange({
+                points: this.exchangeAmount,
+                solanaWalletAddress: this.walletAddress
+              });
+              
               uni.hideLoading();
-              if (res.data.success) {
-                uni.showToast({ title: '兑换成功', icon: 'success' });
-                this.exchangeAmount = "";
-                this.initPointData();
-                this.params.pageNumber = 1;
-                this.getList();
-              } else {
-                uni.showToast({ title: res.data.message || '兑换失败', icon: 'none' });
-              }
-            }).catch(err => {
+              uni.showToast({ title: '兑换成功', icon: 'success' });
+              this.exchangeAmount = "";
+              this.initPointData();
+              this.params.pageNumber = 1;
+              this.getList();
+            } catch (err) {
               uni.hideLoading();
-              uni.showToast({ title: '网络异常', icon: 'none' });
-            });
+              uni.showToast({ title: err.message || '兑换失败', icon: 'none' });
+            }
           }
         }
       });

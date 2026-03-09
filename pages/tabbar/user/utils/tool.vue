@@ -263,15 +263,21 @@ export default {
 		}
 
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		flex-wrap: wrap;
 		text-align: center;
 
 		.interact-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
 			font-size: $font-sm;
 			width: 25%;
-			height: 160rpx;
-			padding: 30rpx;
+			min-height: 160rpx;
+			padding: 40rpx 5rpx 20rpx 5rpx;
+			word-break: break-word;
+			line-height: 1.2;
 		}
 	}
 }

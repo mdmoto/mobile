@@ -31,26 +31,45 @@ export default {
           title: "店铺入驻协议",
           type: "STORE_REGISTER",
         },
+        REFUND_POLICY: {
+          title: "退换货政策",
+          type: "REFUND_POLICY",
+        },
+        SHIPPING_POLICY: {
+          title: "配送政策",
+          type: "SHIPPING_POLICY",
+        },
       },
     };
   },
   mounted() {},
   onLoad(option) {
-    console.log(this.way)
-    uni.setNavigationBarTitle({
-      title: this.way[option.type].title,
-    });
+    const typeMap = {
+      'USER_AGREEMENT': 'auth.terms',
+      'PRIVACY_POLICY': 'auth.privacy',
+      'LICENSE_INFORMATION': 'user.licenseInfo',
+      'ABOUT': 'user.about',
+      'STORE_REGISTER': 'deposit.userAgreement', // or similar
+      'REFUND_POLICY': 'user.refundPolicy',
+      'SHIPPING_POLICY': 'user.shippingPolicy'
+    };
+    
+    if (typeMap[option.type]) {
+      uni.setNavigationBarTitle({
+        title: this.$t(typeMap[option.type]),
+      });
+    }
     this.init(option);
   },
 
   methods: {
-    init(option) {
-      getArticleDetailByType(this.way[option.type].type).then((res) => {
-        if (res.data.success) {
-          this.res = res.data.result;
-          console.log(res)
-        }
-      });
+    async init(option) {
+      try {
+        const result = await getArticleDetailByType(this.way[option.type].type);
+        this.res = result;
+      } catch (error) {
+        console.error('Failed to load article detail:', error);
+      }
     },
   },
 };

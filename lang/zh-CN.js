@@ -175,6 +175,9 @@ export default {
         "functionDesc": "功能介绍",
         "checkUpdate": "检查更新",
         "licenseInfo": "证照信息",
+        "legalNotice": "特定商取引法に基づく表記",
+        "refundPolicy": "退款及退换货政策",
+        "shippingPolicy": "配送及物流政策",
         "hotline": "客服热线",
         "latestVersion": "当前版本已是最新版"
     },

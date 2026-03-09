@@ -306,6 +306,12 @@
 					}
 				},
 				{
+					"path": "set/legalNotice",
+					"style": {
+						"navigationBarTitleText": "特定商取引法に基づく表記"
+					}
+				},
+				{
 					"path": "set/setUp",
 					"style": {
 						"navigationBarTitleText": "设置"

@@ -67,6 +67,26 @@ Vue.mixin({
     currentLang() {
       return this.$i18n.locale;
     }
+  },
+  onShow() {
+    try {
+      const pages = getCurrentPages();
+      if (pages.length > 0) {
+        const route = pages[pages.length - 1].route;
+        const tabPages = [
+          'pages/tabbar/home/index',
+          'pages/tabbar/category/category',
+          'pages/tabbar/cart/cartList',
+          'pages/tabbar/user/my'
+        ];
+        if (tabPages.includes(route) && uni.setTabBarItem && this.$t) {
+          uni.setTabBarItem({ index: 0, text: this.$t('tabbar.home') });
+          uni.setTabBarItem({ index: 1, text: this.$t('tabbar.category') });
+          uni.setTabBarItem({ index: 2, text: this.$t('tabbar.cart') });
+          uni.setTabBarItem({ index: 3, text: this.$t('tabbar.mine') });
+        }
+      }
+    } catch (e) { }
   }
 })
 

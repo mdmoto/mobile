@@ -132,14 +132,13 @@
 			/**
 			 * 获取收银详情
 			 */
-			cashierData() {
+			async cashierData() {
 				let parms = {};
 
 				if (this.routerVal.recharge_sn) {
 					// 判断当前是否是充值
 					this.sn = this.routerVal.recharge_sn;
 					this.orderType = "RECHARGE";
-					
 				} else if (this.routerVal.trade_sn) {
 					this.sn = this.routerVal.trade_sn;
 					this.orderType = "TRADE";
@@ -151,78 +150,47 @@
 				parms.orderType = this.orderType;
 				parms.clientType = this.paymentType;
 
-			API_Trade.getCashierData(parms).then((res) => {
-				console.log('收银台数据响应:', res);
-				
-				if(res.data.success){
-					this.cashierParams = res.data.result;
-					console.log('收银台参数:', this.cashierParams);
-					console.log('支持的支付方式:', res.data.result.support);
-
+				try {
+					const result = await API_Trade.getCashierData(parms);
+					console.log('收银台数据:', result);
+					this.cashierParams = result;
+					
 					// #ifdef MP-WEIXIN
-					this.payList = res.data.result.support.filter((item) => {
-						return item != "ALIPAY";
-					});
+					this.payList = result.support.filter((item) => item != "ALIPAY");
 					// #endif
 
+					if (this.routerVal.recharge_sn) {
+						this.payList = result.support.filter((item) => item != "WALLET");
+					} else {
+						this.payList = result.support;
+					}
 					
-				  if(this.routerVal.recharge_sn){
-						this.payList = res.data.result.support.filter((item) => {
-						return item != "WALLET";
-					})
-					}
-					 else{
-						this.payList = res.data.result.support;
-					}
 					// #ifdef H5
-					//判断是否微信浏览器
 					var ua = window.navigator.userAgent.toLowerCase();
 					if (ua.match(/MicroMessenger/i) == 'micromessenger') {
-					
-						this.payList = res.data.result.support.filter((item) => {
-							return item != "ALIPAY";
-						});
-						// 充值的话仅保留微信支付
-						if(this.orderType == "RECHARGE"){
-							this.payList = res.data.result.support.filter((item) => {
-								return item == "WECHAT";
-							});
+						this.payList = result.support.filter((item) => item != "ALIPAY");
+						if (this.orderType == "RECHARGE") {
+							this.payList = result.support.filter((item) => item == "WECHAT");
 						}
-						
 					}
 					// #endif
-					
-				
-					
 
-					this.walletValue = res.data.result.walletValue;
-					this.autoCancel =
-						(res.data.result.autoCancel - new Date().getTime()) / 1000;
-					console.log('最终支付列表:', this.payList);
+					this.walletValue = result.walletValue;
+					this.autoCancel = (result.autoCancel - new Date().getTime()) / 1000;
+				} catch (err) {
+					console.error('获取收银台数据异常:', err);
+					if (err.code == 32000) {
+						setTimeout(() => {
+							uni.redirectTo({ url: `/pages/order/myOrder?status=0` });
+						}, 500);
+					} else {
+						uni.showToast({
+							title: err.message || '获取支付方式失败',
+							icon: 'none',
+							duration: 2000
+						});
+					}
 				}
-				else if(res.data.code == 32000){
-					setTimeout(()=>{
-						uni.redirectTo({
-						 url: `/pages/order/myOrder?status=0`
-					});
-					},500)
-					
-				} else {
-					console.error('获取收银台数据失败:', res.data);
-					uni.showToast({
-						title: res.data.message || '获取支付方式失败',
-						icon: 'none',
-						duration: 2000
-					});
-				}
-			}).catch((err) => {
-				console.error('获取收银台数据异常:', err);
-				uni.showToast({
-					title: '获取支付方式失败，请重试',
-					icon: 'none',
-					duration: 2000
-				});
-			});
 			},
 
 
@@ -260,52 +228,37 @@
 				// #ifdef APP-PLUS
 				//APP pay
 				// 初始化支付签名
-				await API_Trade.initiatePay(paymentMethod, paymentClient, params).then(
-					(signXml) => {
-						 if (this.$store.state.isShowToast){ uni.hideLoading() };
-						//如果支付异常
-						if (!signXml.data.success) {
-							uni.showToast({
-								title: signXml.data.message,
-								duration: 2000
-							});
-							return;
-						}
-						
-						let payForm = signXml.data.result;
-						
-						let paymentType = paymentMethod === "WECHAT" ? "wxpay" : "alipay";
-						
-						if(paymentMethod === "WALLET"){
-							uni.showToast({
-								icon: "none",
-								title: "支付成功!",
-							});
-							this.callback(paymentMethod)
-						}
-						else{
-							uni.requestPayment({
-								provider: paymentType,
-								orderInfo: payForm || '',
-								success: (e) => {
-									uni.showToast({
-										icon: "none",
-										title: "支付成功!",
-									});
-									this.callback(paymentMethod)
-								},
-								fail: (e) => {
-									console.log(this);
-									this.exception = e;
-									uni.showModal({
-										content: "支付失败,如果您已支付，请勿反复支付",
-										showCancel: false,
-									});
-								},
-							});
-						}
+				try {
+					const result = await API_Trade.initiatePay(paymentMethod, paymentClient, params);
+					if (this.$store.state.isShowToast) { uni.hideLoading() };
+					
+					let payForm = result;
+					let paymentType = paymentMethod === "WECHAT" ? "wxpay" : "alipay";
+					
+					if (paymentMethod === "WALLET") {
+						uni.showToast({ icon: "none", title: "支付成功!" });
+						this.callback(paymentMethod);
+					} else {
+						uni.requestPayment({
+							provider: paymentType,
+							orderInfo: payForm || '',
+							success: (e) => {
+								uni.showToast({ icon: "none", title: "支付成功!" });
+								this.callback(paymentMethod);
+							},
+							fail: (e) => {
+								this.exception = e;
+								uni.showModal({
+									content: "支付失败,如果您已支付，请勿反复支付",
+									showCancel: false,
+								});
+							},
+						});
 					}
-				);
+				} catch (err) {
+					if (this.$store.state.isShowToast) { uni.hideLoading() };
+					uni.showToast({ title: err.message || '支付异常', duration: 2000, icon: 'none' });
+				}
 				//APP pay
 				// #endif
 

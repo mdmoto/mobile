@@ -97,9 +97,9 @@
 						v-for="(item, index) in loginList" 
 						:key="index">
 						<u-icon 
-							v-if="item.title != 'Apple'" 
+							v-if="item.code != 'APPLE'" 
 							color="#fff" 
-							size="42" 
+							size="42"  
 							:name="item.icon"
 							@click="navigateLogin(item)">
 						</u-icon>

@@ -175,6 +175,9 @@ export default {
         "functionDesc": "機能紹介",
         "checkUpdate": "アップデート確認",
         "licenseInfo": "ライセンス情報",
+        "legalNotice": "特定商取引法に基づく表記",
+        "refundPolicy": "返品・返金ポリシー",
+        "shippingPolicy": "配送ポリシー",
         "hotline": "ホットライン",
         "latestVersion": "現在のバージョンは最新です"
     },

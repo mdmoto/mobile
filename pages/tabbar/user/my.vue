@@ -87,6 +87,8 @@ import tool from "@/pages/tabbar/user/utils/tool.vue";
 import { getCouponsNum, getFootprintNum } from "@/api/members.js";
 import { getUserWallet } from "@/api/members";
 import configs from '@/config/config'
+import storage from "@/utils/storage.js";
+
 export default {
   components: {
     tool,
@@ -300,23 +302,32 @@ body {
   }
 
   .order {
-    height: 140rpx;
+    min-height: 140rpx;
+    padding: 30rpx 3% 30rpx 3%;
     text-align: center;
     font-size: $font-sm;
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    padding: 0 3%;
+    align-items: flex-start;
     color: #999;
 
     .order-item {
       position: relative;
-      line-height: 2em;
-      width: 96rpx;
+      line-height: 1.2;
+      width: 20%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      word-break: break-word;
 
       :first-child {
         font-size: 48rpx;
         margin-bottom: 10rpx;
+      }
+      view:last-child {
+        margin-top: 8rpx;
+        padding: 0 4rpx;
       }
     }
   }
@@ -335,6 +346,9 @@ body {
   height: 56rpx;
   border-radius: 50%;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bag1 {

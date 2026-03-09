@@ -175,6 +175,9 @@ export default {
         "functionDesc": "Functions",
         "checkUpdate": "Check Update",
         "licenseInfo": "License Info",
+        "legalNotice": "Specified Commercial Transactions",
+        "refundPolicy": "Refund & Return Policy",
+        "shippingPolicy": "Shipping Policy",
         "hotline": "Hotline",
         "latestVersion": "Current version is the latest"
     },
