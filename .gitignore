@@ -16,3 +16,5 @@ node_modules/
 dist/
 unpackage/
 build_log.txt
+evidence/
+*.log
