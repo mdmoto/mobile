@@ -11,19 +11,27 @@ export function unitPrice(val, unit, location) {
   if (!val) val = 0;
 
   const currency = storage.getCurrency();
-  const rates = storage.getExchangeRates();
+  const rateData = storage.getExchangeRates();
+  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1 };
 
   let convertedPrice = val;
   let symbol = "¥";
 
+  // Existing logic assumes 'val' is the CNY price from backend
+  // We convert it to USD first, then to the target currency
+  const usdPrice = val / (rates.CNY || 7.24);
+
   if (currency === "USD") {
-    convertedPrice = val * (rates.CNY || 0.14);
+    convertedPrice = usdPrice;
     symbol = "$";
   } else if (currency === "JPY") {
-    let usd = val * (rates.CNY || 0.14);
-    convertedPrice = usd / (rates.JPY || 0.0065);
+    convertedPrice = usdPrice * (rates.JPY || 154);
     symbol = "¥";
+  } else if (currency === "EUR") {
+    convertedPrice = usdPrice * (rates.EUR || 0.92);
+    symbol = "€";
   } else {
+    convertedPrice = val; // Default back to original (CNY)
     symbol = "¥";
   }
 
@@ -42,18 +50,22 @@ export function unitPrice(val, unit, location) {
  */
 export function goodsFormatPrice(val) {
   if (typeof val == "undefined") {
-    return val;
+    return [0, 0];
   }
 
   const currency = storage.getCurrency();
-  const rates = storage.getExchangeRates();
+  const rateData = storage.getExchangeRates();
+  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1 };
+
+  const usdPrice = val / (rates.CNY || 7.24);
   let convertedPrice = val;
 
   if (currency === "USD") {
-    convertedPrice = val * (rates.CNY || 0.14);
+    convertedPrice = usdPrice;
   } else if (currency === "JPY") {
-    let usd = val * (rates.CNY || 0.14);
-    convertedPrice = usd / (rates.JPY || 0.0065);
+    convertedPrice = usdPrice * (rates.JPY || 154);
+  } else if (currency === "EUR") {
+    convertedPrice = usdPrice * (rates.EUR || 0.92);
   }
 
   let valNum = new Number(convertedPrice);
