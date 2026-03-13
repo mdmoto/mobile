@@ -42,9 +42,7 @@
           </div>
           <div class="goods-bottom">
             <div class="goods-price">
-              ¥<span
-                >{{ goodsFormatPrice(item.price)[0] }} </span
-              >.{{ goodsFormatPrice(item.price)[1] }}
+              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.{{ goodsFormatPrice(item.price)[1] }}
             </div>
           </div>
         </div>
@@ -73,9 +71,7 @@
           </div>
           <div class="goods-bottom">
             <div class="goods-price">
-              ¥<span
-                >{{ goodsFormatPrice(item.price)[0] }} </span
-              >.{{ goodsFormatPrice(item.price)[1] }}
+              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.{{ goodsFormatPrice(item.price)[1] }}
             </div>
           </div>
         </div>

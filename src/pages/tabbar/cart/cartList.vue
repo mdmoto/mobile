@@ -83,7 +83,7 @@
                 <view class="sp-price">
                   <!-- <div class="default-color" :class="{'main-color':Object.keys(skuItem.promotionMap).length ==0  }"> -->
                   <div class="main-color">
-                    ￥<span>{{ goodsFormatPrice(skuItem.goodsSku.price)[0] }}</span>
+                    <span>{{ unitPrice(skuItem.goodsSku.price, undefined, 'before') }}</span>
                     <span>.{{ goodsFormatPrice(skuItem.goodsSku.price)[1] }}</span>
                   </div>
                 </view>
@@ -130,14 +130,14 @@
             <div class="fullPrice">
               <span class="number" v-if="cartDetail && cartDetail.priceDetailDTO">
                 总计:
-                <span>¥{{ goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[0] }}</span>.<span>{{ goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[1] }}</span>
+                <span>{{ unitPrice(cartDetail.priceDetailDTO.flowPrice, undefined, 'before') }}</span>.<span>{{ goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[1] }}</span>
               </span>
               <span class="number" v-else>总计:0.00</span>
             </div>
             <div
               v-if="cartDetail.cartList && cartDetail.cartList.length!=0 && cartDetail.priceDetailDTO && cartDetail.priceDetailDTO.discountPrice!=0 "
               class="discountPrice">
-              <span>优惠减:￥{{(cartDetail.priceDetailDTO.goodsPrice - unitPrice(cartDetail.priceDetailDTO.flowPrice))}}
+              <span>优惠减:{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice) }}
               </span>
               <span class="discount-details" @click="discountDetails">优惠明细</span>
             </div>
@@ -151,16 +151,16 @@
           <div class="discount-way">
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>商品总额</span>
-              <span>￥{{unitPrice(cartDetail.priceDetailDTO.goodsPrice)}}</span>
+              <span>{{unitPrice(cartDetail.priceDetailDTO.goodsPrice)}}</span>
 
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>优惠券</span>
-              <span>-￥{{unitPrice(cartDetail.priceDetailDTO.couponPrice)}}</span>
+              <span>-{{unitPrice(cartDetail.priceDetailDTO.couponPrice)}}</span>
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>其他优惠</span>
-              <span>-￥{{unitPrice(cartDetail.priceDetailDTO.discountPrice)}}</span>
+              <span>-{{unitPrice(cartDetail.priceDetailDTO.discountPrice)}}</span>
             </div>
           </div>
         </div>

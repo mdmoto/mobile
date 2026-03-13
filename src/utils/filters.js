@@ -5,42 +5,55 @@ import config from '@/config/config';
 import Foundation from "./Foundation.js";
 
 /**
+ * 获取当前币种符号
+ */
+export function getSymbol() {
+  const currency = storage.getCurrency();
+  switch (currency) {
+    case "USD": return "$";
+    case "JPY": return "JP¥";
+    case "EUR": return "€";
+    case "CNY": return "¥";
+    default: return currency + " ";
+  }
+}
+
+/**
  * 金钱单位置换  2999 --> 2,999.00
  */
 export function unitPrice(val, unit, location) {
-  if (!val) val = 0;
+  if (val === undefined || val === null) val = 0;
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1 };
+  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1, EUR: 0.92 };
 
   let convertedPrice = val;
-  let symbol = "¥";
+  let symbol = getSymbol();
 
-  // Existing logic assumes 'val' is the CNY price from backend
-  // We convert it to USD first, then to the target currency
+  // Step 1: Convert CNY to USD (assuming val is CNY from DB)
   const usdPrice = val / (rates.CNY || 7.24);
 
+  // Step 2: Convert USD to Target
   if (currency === "USD") {
     convertedPrice = usdPrice;
-    symbol = "$";
   } else if (currency === "JPY") {
     convertedPrice = usdPrice * (rates.JPY || 154);
-    symbol = "¥";
   } else if (currency === "EUR") {
     convertedPrice = usdPrice * (rates.EUR || 0.92);
-    symbol = "€";
+  } else if (currency === "CNY") {
+    convertedPrice = val;
   } else {
-    convertedPrice = val; // Default back to original (CNY)
-    symbol = "¥";
+    const rate = rates[currency];
+    if (rate) convertedPrice = usdPrice * rate;
   }
 
   let price = Foundation.formatPrice(convertedPrice);
   if (location === "before") {
-    return price.substr(0, price.length - 3);
+    return (unit || symbol) + price.split(".")[0];
   }
   if (location === "after") {
-    return price.substr(-2);
+    return price.split(".")[1];
   }
   return (unit || symbol) + price;
 }
@@ -49,13 +62,13 @@ export function unitPrice(val, unit, location) {
  * 格式化价格  1999 --> [1999,00]
  */
 export function goodsFormatPrice(val) {
-  if (typeof val == "undefined") {
-    return [0, 0];
+  if (val === undefined || val === null) {
+    return ["0", "00"];
   }
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1 };
+  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1, EUR: 0.92 };
 
   const usdPrice = val / (rates.CNY || 7.24);
   let convertedPrice = val;
@@ -66,6 +79,11 @@ export function goodsFormatPrice(val) {
     convertedPrice = usdPrice * (rates.JPY || 154);
   } else if (currency === "EUR") {
     convertedPrice = usdPrice * (rates.EUR || 0.92);
+  } else if (currency === "CNY") {
+    convertedPrice = val;
+  } else {
+    const rate = rates[currency];
+    if (rate) convertedPrice = usdPrice * rate;
   }
 
   let valNum = new Number(convertedPrice);

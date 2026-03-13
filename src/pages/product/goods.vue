@@ -86,22 +86,16 @@
 
                     <span>
                       <span v-if="wholesaleList.length">
-                        <span>¥</span><span class="price">{{
-                          goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
-                        }}</span>.{{
+                        <span class="price">{{ unitPrice(wholesaleList[wholesaleList.length - 1].price, undefined, 'before') }}</span>.{{
                           goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
                         }}
                         ~
-                        <span>¥</span><span class="price">{{
-                          goodsFormatPrice(wholesaleList[0].price)[0]
-                        }}</span>.{{
+                        <span class="price">{{ unitPrice(wholesaleList[0].price, undefined, 'before') }}</span>.{{
                           goodsFormatPrice(wholesaleList[0].price)[1]
                         }}
                       </span>
                       <span v-else>
-                        <span>¥</span><span class="price">{{
-                          goodsFormatPrice(goodsDetail.price)[0]
-                        }}</span>.{{ goodsFormatPrice(goodsDetail.price)[1] }}
+                        <span class="price">{{ unitPrice(goodsDetail.price, undefined, 'before') }}</span>.{{ goodsFormatPrice(goodsDetail.price)[1] }}
                       </span>
                     </span>
                   </view>
@@ -110,7 +104,7 @@
                       暂无报价
                     </div>
                     <span v-else>
-                    ¥<span class="price">0 </span>.00
+                    <span class="price">{{ getSymbol() }}0 </span>.00
                     </span>
                   </view>
 

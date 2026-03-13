@@ -172,10 +172,7 @@
               <span class="nums">x{{ val.num }}</span>
             </div>
             <p class="goods-prices">
-              <span>￥</span>
-              <span class="goods-price">{{
-                goodsFormatPrice(val.purchasePrice)[0]
-              }}</span>
+              <span class="goods-price">{{ unitPrice(val.purchasePrice, undefined, 'before') }}</span>
               <span
                 >.{{
                   goodsFormatPrice(val.purchasePrice)[1]
@@ -254,7 +251,7 @@
           <u-col :span="9">商品合计</u-col>
           <u-col :span="3" textAlign="right">
             <span
-              >￥{{ unitPrice(orderMessage.priceDetailDTO.goodsPrice) }}</span
+              >{{ unitPrice(orderMessage.priceDetailDTO.goodsPrice) }}</span
             >
           </u-col>
         </u-row>
@@ -274,7 +271,7 @@
               >包邮</span
             >
             <span v-else
-              >￥{{
+              >{{
                 unitPrice(orderMessage.priceDetailDTO.freightPrice)
               }}</span
             >
@@ -298,7 +295,7 @@
           @click="GET_Discount()"
         >
           <span class="main-color"
-            >-￥{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
+            >-{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
           >
         </u-col>
         <!--  unitPrice(orderMessage.priceDetailDTO.couponPrice)  -->
@@ -316,7 +313,7 @@
             v-if="orderMessage.priceDetailDTO.couponPrice"
           >
             <span class="main-color">
-              -￥{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
+              -{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
             >
           </u-col>
           <u-col :span="3" textAlign="right" v-else>0.00</u-col>
@@ -327,7 +324,7 @@
           <u-col :span="6">活动优惠</u-col>
           <u-col :span="6" class="tr tipsColor" textAlign="right">
             <span v-if="orderMessage.priceDetailDTO.discountPrice"
-              >-￥{{
+              >-{{
                 unitPrice(orderMessage.priceDetailDTO.discountPrice)
               }}</span
             >
@@ -353,11 +350,10 @@
     <div class="box6 mp-iphonex-bottom" v-if="orderMessage.priceDetailDTO">
       <div class="tabbar-left">
         <div v-if="!orderMessage.priceDetailDTO.payPoint" class="number">
-          <span>¥</span>
           <span class="price">{{
-            goodsFormatPrice(
-              orderMessage.priceDetailDTO.flowPrice
-            )[0]
+            unitPrice(
+              orderMessage.priceDetailDTO.flowPrice, undefined, 'before'
+            )
           }}</span>
           <span
             >.{{
