@@ -43,7 +43,7 @@
               }}</view>
 
               <view class="goods-price">
-                <view class="price"> ￥{{ unitPrice(serviceDetail.flowPrice) }}</view>
+                <view class="price"> {{ unitPrice(serviceDetail.flowPrice) }}</view>
                 <view>
                   <view>申请售后数量：{{ serviceDetail.num }}</view>
                 </view>
@@ -122,20 +122,20 @@
       <view v-if="refundShow">
         <view class="detail-item">
           <view class="title">退款金额:</view>
-          <view class="value">{{
-            unitPrice(serviceDetail.flowPrice, "￥")
+          <view class="value">            {{
+            unitPrice(serviceDetail.flowPrice)
           }}</view>
         </view>
         <view class="detail-item" v-if="serviceDetail.agree_price">
           <view class="title">同意退款:</view>
-          <view class="value">{{
-            unitPrice(serviceDetail.agree_price, "￥")
+          <view class="value">            {{
+            unitPrice(serviceDetail.agree_price)
           }}</view>
         </view>
         <view class="detail-item" v-if="serviceDetail.actual_price">
           <view class="title">实际退款:</view>
-          <view class="value">{{
-            unitPrice(serviceDetail.actual_price, "￥")
+          <view class="value">            {{
+            unitPrice(serviceDetail.actual_price)
           }}</view>
         </view>
         <view class="detail-item" v-if="serviceDetail.actual_price">

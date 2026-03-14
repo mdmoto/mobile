@@ -149,7 +149,9 @@ export default {
         "service": "Help Center",
         "about": "About Us",
         "language": "Language",
+        "currencyCurrency": "Currency Settings",
         "currentLanguage": "Current Language",
+        "currentCurrency": "Current Currency",
         "notLoggedIn": "Not logged in",
         "clearCache": "Clear Cache",
         "securityCenter": "Security",
@@ -303,7 +305,8 @@ export default {
     "points": {
         "title": "My Meow Coins",
         "myPoints": "My Meow Coins",
-        "available": "Available Coins",
+        "available": "Available Meow Coins",
+        "usePoints": "Use Meow Coins",
         "total": "Total Earned",
         "used": "Used",
         "remaining": "Remaining Coins",
@@ -332,6 +335,7 @@ export default {
         "registerReward": "Registration Reward",
         "reviewReward": "Review Reward",
         "signed": "Signed",
+        "pointsActivities": "Points Activities",
         "signInTips": "Check in daily to earn multiple rewards",
         "signInSuccess": "Check-in Successful",
         "dailyRecord": "Daily Record",
@@ -390,6 +394,15 @@ export default {
         "withdrawFailed": "Exchange Failed"
     },
     "promotion": {
+        "fullMinus": "Full Minus",
+        "discount": "Discount",
+        "pointsActivities": "Points Activities",
+        "pointsExchange": "Points Exchange",
+        "bargainActivities": "Bargain Activities",
+        "minus": "Direct Discount",
+        "groupBuy": "Group Buy",
+        "halfPrice": "Second at Half Price",
+        "fullDiscount": "Full Discount",
         "joinGroup": "Pintuan",
         "noJoinGroup": "No group buying",
         "seckill": "Seckill",
@@ -407,7 +420,20 @@ export default {
         "bargainHelp": "Help friend bargain",
         "congratulationsBargain": "Congrats, you saved",
         "remaining": "Remaining",
-        "bargainSuccess": "Success"
+        "bargainSuccess": "Success",
+        "give": "Give ",
+        "coupon": "Coupon",
+        "points": "Points",
+        "gift": "Gift",
+        "freeFreight": "Free Shipping",
+        "participatingInPointsActivities": "Participating in points activities. ",
+        "clickToJoin": "Click here to join",
+        "participatingInBargainActivities": "Participating in bargain activities. ",
+        "limitBuy": "Limit {num} pieces",
+        "pintuanPeople": "{num} people Pintuan",
+        "getDiscount": "Get discount",
+        "buyNowWithDirectDiscount": "Buy now with direct discount",
+        "noPromotion": "No promotion activities"
     },
     "complaint": {
         "title": "Complaint",
@@ -444,5 +470,16 @@ export default {
         "placeholder": "Enter header",
         "notIssued": "Not issued",
         "view": "View Invoice"
+    },
+    "currency": {
+        "CNY": "Chinese Yuan (CNY)",
+        "USD": "US Dollar (USD)",
+        "JPY": "Japanese Yen (JPY)",
+        "EUR": "Euro (EUR)",
+        "GBP": "British Pound (GBP)",
+        "KRW": "South Korean Won (KRW)",
+        "HKD": "Hong Kong Dollar (HKD)",
+        "TWD": "New Taiwan Dollar (TWD)",
+        "SGD": "Singapore Dollar (SGD)"
     }
 };

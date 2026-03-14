@@ -11,7 +11,7 @@
                 ? "通过"
                 : "拒绝"
           }}</view>
-          <view class="price">+{{ unitPrice(item.price) }}</view>
+          <view class="price">+{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span></view>
         </view>
         <view class="log-item-view">
           <view>{{ item.createTime }}</view>
@@ -24,7 +24,7 @@
       <view class="log-item">
         <view class="log-item-view">
           <view class="title">{{ item.goodsName }}</view>
-          <view class="price">提成金额：+{{ unitPrice(item.rebate) }}</view>
+          <view class="price">提成金额：+{{ unitPrice(item.rebate, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.rebate, undefined, 'after') }}</span></view>
         </view>
         <view class="log-item-view">
           <view>创建时间：{{ item.createTime }}</view>

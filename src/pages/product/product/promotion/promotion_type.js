@@ -1,42 +1,42 @@
 const promotion = [
   {
-    title: "猫币活动",
+    title: "promotion.pointsActivities",
     value: "POINTS_GOODS",
   },
   {
-    title: "砍价活动",
+    title: "promotion.bargainActivities",
     value: "KANJIA",
   },
   {
-    title: "单品立减",
+    title: "promotion.minus",
     value: "MINUS",
   },
   {
-    title: "团购",
+    title: "promotion.groupBuy",
     value: "GROUPBUY",
   },
   {
-    title: "猫币换购",
+    title: "promotion.pointsExchange",
     value: "EXCHANGE",
   },
   {
-    title: "第二件半价",
+    title: "promotion.halfPrice",
     value: "HALF_PRICE",
   },
   {
-    title: "满减优惠",
+    title: "promotion.fullDiscount",
     value: "FULL_DISCOUNT",
   },
   {
-    title: "限时抢购",
+    title: "promotion.seckill",
     value: "SECKILL",
   },
   {
-    title: "拼团",
+    title: "promotion.joinGroup",
     value: "PINTUAN",
   },
   {
-    title: "优惠券",
+    title: "order.coupon",
     value: "COUPON",
   },
 ];

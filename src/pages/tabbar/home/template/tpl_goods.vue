@@ -42,7 +42,7 @@
           </div>
           <div class="goods-bottom">
             <div class="goods-price">
-              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.{{ goodsFormatPrice(item.price)[1] }}
+              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@
           </div>
           <div class="goods-bottom">
             <div class="goods-price">
-              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.{{ goodsFormatPrice(item.price)[1] }}
+              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
 import { getGoodsList } from "@/api/goods.js";
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 export default {
-  title: "商品分类以及商品",
+  title: "points.pointsGoods",
   components: {
     uniLoadMore,
   },

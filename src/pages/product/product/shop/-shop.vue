@@ -32,7 +32,7 @@
             {{ item.goodsName }}
           </view>
           <view class="item-price" v-if="item.price != undefined">
-            ￥<span class="item-price-blod">{{ goodsFormatPrice(item.price)[0] }}</span>.{{ goodsFormatPrice(item.price)[1] }}
+            {{ getSymbol() }}<span class="item-price-blod">{{ goodsFormatPrice(item.price)[0] }}</span>.{{ goodsFormatPrice(item.price)[1] }}
           </view>
         </view>
       </view>

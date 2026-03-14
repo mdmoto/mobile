@@ -17,7 +17,7 @@
         <view class="goods-info">
           <view class="goods-title u-line-2">{{ sku.goodsName }}</view>
           <view class="goods-price">
-            ￥{{ unitPrice(sku.flowPrice) }}
+            {{ unitPrice(sku.flowPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(sku.flowPrice, undefined, 'after') }}</span>
           </view>
         </view>
         <view class="goods-num">

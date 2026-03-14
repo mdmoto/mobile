@@ -5,35 +5,35 @@
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'FULL_DISCOUNT'">
 					<!-- 满减，折扣 -->
 					<div class="flex">
-						<view class="deg_tag">{{ promotionItem.title }}</view>
-						<div class="text proText">满{{ res[item].fullMoney }}元，立享优惠</div>
+						<view class="deg_tag">{{ $t(promotionItem.title) }}</view>
+						<div class="text proText">满{{ unitPrice(res[item].fullMoney) }}，立享优惠</div>
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'PINTUAN'">
 					<!-- 拼团 -->
 					<div class="flex">
-						<view class="deg_tag">{{ promotionItem.title }}</view>
+						<view class="deg_tag">{{ $t(promotionItem.title) }}</view>
 						<div class="text proText">{{ res[item].promotionName }}</div>
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'POINTS_GOODS'">
 					<!-- 猫币活动 -->
 					<div class="flex">
-						<view class="deg_tag">{{ promotionItem.title }}</view>
+						<view class="deg_tag">{{ $t(promotionItem.title) }}</view>
 						<div class="text proText">{{ res[item].promotionName }}</div>
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'KANJIA'">
 					<!-- 砍价活动 -->
 					<div class="flex">
-						<view class="deg_tag">{{ promotionItem.title }}</view>
+						<view class="deg_tag">{{ $t(promotionItem.title) }}</view>
 						<div class="text proText"></div>
 					</div>
 				</div>
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'SECKILL'">
 					<!-- 限时抢购 -->
 					<div class="flex">
-						<view class="deg_tag">{{ promotionItem.title }}</view>
+						<view class="deg_tag">{{ $t(promotionItem.title) }}</view>
 						<div class="text proText">{{ res[item].promotionName }}</div>
 					</div>
 				</div>
@@ -44,13 +44,13 @@
 					<div class="promotion_col coupon" v-if="couponList && promotionIndex == 1">
 						<!-- 优惠券 -->
 
-						<div><view class="deg_tag">优惠券</view></div>
+						<div><view class="deg_tag">{{ $t('order.coupon') }}</view></div>
 					</div>
 				</view>
 			</view>
 		</view>
 
-		<view v-if="this.res != null && Object.keys(res).length == 0">暂无促销信息</view>
+		<view v-if="this.res != null && Object.keys(res).length == 0">{{ $t('common.noData') }}</view>
 	</view>
 </template>
 

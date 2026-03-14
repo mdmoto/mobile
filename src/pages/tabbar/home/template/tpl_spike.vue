@@ -15,10 +15,10 @@
             />
           </div>
           <div class="item-price">
-            <span>￥120.00</span>
+            <span>{{ unitPrice(120) }}</span>
           </div>
           <div class="item-line-through">
-            <span>￥190.00</span>
+            <span>{{ unitPrice(190) }}</span>
           </div>
         </div>
       </div>

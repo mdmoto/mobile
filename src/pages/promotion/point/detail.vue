@@ -16,9 +16,9 @@
                 {{goodsData.goodsName}}
               </div>
               <div class="flex price-box">
-                <div class="purchase-price">{{ $t('points.myPoints') }}:<span>{{ unitPrice(pointDetail.points) }}</span>
+                <div class="purchase-price">{{ $t('points.myPoints') }}:<span>{{ pointDetail.points }}{{ $t('points.points') }}</span>
                 </div>
-                <div class="max-price">{{ $t('goods.originalPrice') }}:<span>￥{{ unitPrice(goodsData.price)}}</span>
+                <div class="max-price">{{ $t('goods.originalPrice') }}:<span>{{ unitPrice(goodsData.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(goodsData.price, undefined, 'after') }}</span></span>
 
                 </div>
               </div>

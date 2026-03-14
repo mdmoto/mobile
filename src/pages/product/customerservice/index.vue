@@ -21,7 +21,7 @@
 				token: params.token, //非必填
 				uid: params.uuid,   //用户唯一标识，如果没有则不填写，默认为空
 				title: params.storageName, //非必填，如果未填写，默认获取配置标题
-				isRMB: '', //商品是否显示人民币￥,默认显示，false不显示
+				isRMB: false, //商品是否显示人民币￥,默认显示，false不显示
 				data: {    //参数c1,c2,c3,c4,c5用于传递用户信息，参数d1,d2,d3,d4,d5,d6用于传递商品信息，默认为空
 				  c1: '',
 				  c2: '',

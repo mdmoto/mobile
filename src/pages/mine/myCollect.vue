@@ -20,7 +20,7 @@
 							<view class="goods-intro">
 								<view>{{ item.goodsName }}</view>
 								<view class="goods-sn">{{ item.goods_sn }}</view>
-								<view>￥{{ unitPrice(item.price) }}</view>
+								<view>{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span></view>
 							</view>
 						</view>
 					</u-swipe-action>

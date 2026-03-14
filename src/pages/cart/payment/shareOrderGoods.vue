@@ -3,7 +3,7 @@
     <div class='goods' v-if="selectedGoods">
       <image class="goods-image" :src="selectedGoods.thumbnail" />
       <p class="goodsName">{{selectedGoods.goodsName}}</p>
-      <div class="goodsPrice">{{ unitPrice(selectedGoods.promotionPrice || selectedGoods.price, '￥') }}</div>
+      <div class="goodsPrice">{{ unitPrice(selectedGoods.promotionPrice || selectedGoods.price) }}</div>
     </div>
     <div>
       <div class="tips">

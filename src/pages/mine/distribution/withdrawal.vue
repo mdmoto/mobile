@@ -4,15 +4,15 @@
       <view class="title">提现金额</view>
       <view class="content">
         <view class="price">
-          <span> ￥</span>
+          <span> {{ getSymbol() }}</span>
           <u-input v-model="price" placeholder="" type="number" />
         </view>
 
         <view class="all">
           <view @click="handleAll" :style="{ color: $mainColor }">全部</view>
           <view style="font-size: 24rpx; color: #999"
-            >可提现金额<span>{{ unitPrice(distributionData.canRebate) }}</span
-            >元</view
+            >可提现金额<span>{{ unitPrice(distributionData.canRebate, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(distributionData.canRebate, undefined, 'after') }}</span></span
+            ></view
           >
         </view>
       </view>

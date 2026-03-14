@@ -35,7 +35,7 @@
               </div>
               <div class="price">
                 <span>
-                  ￥
+                  {{ getSymbol() }}
                   <span class=" goods-price-bigshow">{{ formatPrice(16)[0] }}</span>
                   .{{ formatPrice(16)[1] }}
                 </span>

@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="pay-wrapper">
       <div class="pay-money">
-        ￥{{ unitPrice(Number(payPrice)) }}
+        {{ unitPrice(Number(payPrice)) }}
       </div>
       <div class="pay-btns">
         <div v-show="!from" @click="checkOrder">查看{{ this.orderType == "RECHARGE" ? '余额' : '订单' }}</div>

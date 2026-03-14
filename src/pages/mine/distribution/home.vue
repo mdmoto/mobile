@@ -3,9 +3,9 @@
 	
     <view class="nav-list">
       <view class="total">{{ $t('distribution.canWithdrawAmount') }}</view>
-      <view class="price">{{ unitPrice(distributionData.canRebate) }}</view>
+      <view class="price">{{ unitPrice(distributionData.canRebate, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(distributionData.canRebate, undefined, 'after') }}</span></view>
       <view class="frozen"
-        >{{ $t('distribution.frozenAmount') }}{{ unitPrice(distributionData.commissionFrozen) }}</view
+        >{{ $t('distribution.frozenAmount') }}{{ unitPrice(distributionData.commissionFrozen, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(distributionData.commissionFrozen, undefined, 'after') }}</span></view
       >
     </view>
     <view class="nav">

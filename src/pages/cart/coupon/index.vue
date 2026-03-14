@@ -24,9 +24,9 @@
         <view class="message">
           <view>
             <span v-if="item.couponType == 'DISCOUNT'">{{ item.discount }}折</span>
-            <span v-else>{{ item.price }}元</span>
+            <span v-else>{{ unitPrice(item.price) }}</span>
           </view>
-          <view>满{{ unitPrice(item.consumeThreshold) }}元可用</view>
+          <view>满{{ unitPrice(item.consumeThreshold) }}可用</view>
         </view>
         <view class="circle circle-top"></view>
         <view class="circle circle-bottom"></view>

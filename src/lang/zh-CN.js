@@ -24,7 +24,7 @@ export default {
         "distribution": "我的分销",
         "complaint": "我的投诉",
         "signIn": "签到",
-        "unitPrice": "元",
+        "unitPrice": "",
         "copy": "复制"
     },
     "tabbar": {
@@ -149,6 +149,7 @@ export default {
         "service": "联系客服",
         "about": "关于我们",
         "language": "语言设置",
+        "currencyCurrency": "币种设置",
         "currentLanguage": "当前语言",
         "notLoggedIn": "暂未登录",
         "clearCache": "清除缓存",
@@ -304,6 +305,7 @@ export default {
         "title": "我的猫币",
         "myPoints": "我的猫币",
         "available": "可用猫币",
+        "usePoints": "使用猫币",
         "total": "累计获得",
         "used": "已使用",
         "remaining": "剩余猫币",
@@ -332,6 +334,7 @@ export default {
         "registerReward": "注册奖励",
         "reviewReward": "评价奖励",
         "signed": "已签",
+        "pointsActivities": "猫币活动",
         "signInTips": "坚持每天连续签到可以获得多重奖励哦",
         "signInSuccess": "签到成功",
         "dailyRecord": "每日记录",
@@ -390,6 +393,15 @@ export default {
         "withdrawFailed": "兑换失败"
     },
     "promotion": {
+        "fullMinus": "满减",
+        "discount": "打折",
+        "pointsActivities": "猫币活动",
+        "pointsExchange": "猫币换购",
+        "bargainActivities": "砍价活动",
+        "minus": "单品立减",
+        "groupBuy": "团购",
+        "halfPrice": "第二件半价",
+        "fullDiscount": "满减优惠",
         "joinGroup": "拼团活动",
         "noJoinGroup": "暂无拼团活动",
         "seckill": "限时抢购",
@@ -407,7 +419,20 @@ export default {
         "bargainHelp": "帮好友砍一价",
         "congratulationsBargain": "恭喜您砍掉了",
         "remaining": "还剩",
-        "bargainSuccess": "砍价成功"
+        "bargainSuccess": "砍价成功",
+        "give": "赠送",
+        "coupon": "优惠券",
+        "points": "猫币",
+        "gift": "商品",
+        "freeFreight": "包邮服务",
+        "participatingInPointsActivities": "当前商品参与猫币活动。",
+        "clickToJoin": "点击此处参与活动",
+        "participatingInBargainActivities": "当前商品参与砍价活动。",
+        "limitBuy": "限购{num}件",
+        "pintuanPeople": "{num}人拼团",
+        "getDiscount": "立享优惠",
+        "buyNowWithDirectDiscount": "满{money} 立减现金",
+        "noPromotion": "暂无促销活动"
     },
     "complaint": {
         "title": "商品投诉",
@@ -444,5 +469,16 @@ export default {
         "placeholder": "请您填写发票抬头",
         "notIssued": "暂未开具",
         "view": "查看发票"
+    },
+    "currency": {
+        "CNY": "人民币 (CNY)",
+        "USD": "美元 (USD)",
+        "JPY": "日元 (JPY)",
+        "EUR": "欧元 (EUR)",
+        "GBP": "英镑 (GBP)",
+        "KRW": "韩元 (KRW)",
+        "HKD": "港币 (HKD)",
+        "TWD": "新台币 (TWD)",
+        "SGD": "新加坡元 (SGD)"
     }
 };

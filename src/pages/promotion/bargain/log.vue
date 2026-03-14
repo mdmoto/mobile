@@ -10,7 +10,7 @@
             {{item.goodsName}}
           </div>
           <div>
-            还剩<span class="surplusPrice">{{unitPrice(item.surplusPrice)}}元</span>
+            还剩<span class="surplusPrice">{{ unitPrice(item.surplusPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.surplusPrice, undefined, 'after') }}</span></span>
           </div>
 
           <div @click="navigateToBargainDetail(item)" v-if="item.status == 'START'" class="buy">

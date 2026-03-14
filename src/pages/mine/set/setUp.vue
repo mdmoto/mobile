@@ -24,6 +24,17 @@
         </view>
       </u-cell>
       
+      <!-- 货币设置 -->
+      <u-cell 
+        :title="$t('user.currencyCurrency')" 
+        :arrow="true" 
+        @click="showCurrencyPicker = true"
+      >
+        <view slot="right" class="current-lang">
+          <text class="lang-name">{{ currentCurrency }}</text>
+        </view>
+      </u-cell>
+      
       <!-- #ifdef APP-PLUS -->
       <u-cell :title="$t('user.clearCache')" :value="fileSizeString" @click="clearCache"></u-cell>
       <!-- #endif -->
@@ -46,6 +57,16 @@
       :default-selector="[currentLangIndex]"
       @confirm="changeLanguage"
     ></u-picker>
+
+    <!-- 货币选择器 -->
+    <u-picker
+      v-model="showCurrencyPicker"
+      mode="selector"
+      :range="currencyList"
+      range-key="name"
+      :default-selector="[currentCurrencyIndex]"
+      @confirm="changeCurrency"
+    ></u-picker>
     <view class="submit" v-if="userInfo.id" @click="quiteLoginOut">{{ $t('user.logout') }}</view>
   </view>
 </template>
@@ -53,6 +74,7 @@
 <script>
 import config from "@/config/config";
 import { setLanguage, getCurrentLanguage, getLanguageList } from '@/lang';
+import storage from "@/utils/storage";
 
 export default {
   data() {
@@ -64,7 +86,20 @@ export default {
       fileSizeString: "0B",
       // 多语言相关
       showLanguagePicker: false,
-      languageList: getLanguageList()
+      languageList: getLanguageList(),
+      // 货币相关
+      showCurrencyPicker: false,
+      currencyList: [
+        { name: this.$t("currency.CNY"), code: "CNY" },
+        { name: this.$t("currency.USD"), code: "USD" },
+        { name: this.$t("currency.JPY"), code: "JPY" },
+        { name: this.$t("currency.EUR"), code: "EUR" },
+        { name: this.$t("currency.GBP"), code: "GBP" },
+        { name: this.$t("currency.KRW"), code: "KRW" },
+        { name: this.$t("currency.HKD"), code: "HKD" },
+        { name: this.$t("currency.TWD"), code: "TWD" },
+        { name: this.$t("currency.SGD"), code: "SGD" }
+      ]
     };
   },
   
@@ -85,6 +120,14 @@ export default {
     currentLangFlag() {
       const lang = this.languageList.find(lang => lang.code === this.currentLang);
       return lang ? lang.flag : '🇨🇳';
+    },
+
+    currentCurrency() {
+      return storage.getCurrency();
+    },
+
+    currentCurrencyIndex() {
+      return this.currencyList.findIndex(item => item.code === this.currentCurrency);
     }
   },
 
@@ -102,6 +145,24 @@ export default {
         });
         
         // 1秒后重新加载页面使语言生效
+        setTimeout(() => {
+          uni.reLaunch({
+            url: '/pages/mine/set/setUp'
+          });
+        }, 1000);
+      }
+    },
+
+    // 切换货币
+    changeCurrency(index) {
+      const selected = this.currencyList[index[0]];
+      if (selected.code !== this.currentCurrency) {
+        storage.setCurrency(selected.code);
+        uni.showToast({
+          title: this.$t('message.operationSuccess'),
+          icon: 'success'
+        });
+        // 货币切换通常不需要全量重启，但为了确保所有过滤器更新，重新进入页面
         setTimeout(() => {
           uni.reLaunch({
             url: '/pages/mine/set/setUp'

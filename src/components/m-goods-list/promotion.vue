@@ -13,20 +13,20 @@
 						<view class="price-box">
 							<!-- 秒杀 / 拼团 -->
 							<div class="price" v-if="!type && item.price!=undefined">
-								¥<span>{{ goodsFormatPrice(item.price )[0] }} </span>.{{
-										goodsFormatPrice(item.price )[1]
-									}}
+								{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{
+										unitPrice(item.price, undefined, 'after')
+									}}</span>
 							</div>
 							<!-- 砍价 -->
 							<div class="price" v-if="type && item.purchasePrice!=undefined">
 								最低：
-								¥<span>{{ goodsFormatPrice(item.purchasePrice )[0] }} </span>.{{
-										goodsFormatPrice(item.purchasePrice )[1]
-									}}
+								{{ unitPrice(item.purchasePrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{
+										unitPrice(item.purchasePrice, undefined, 'after')
+									}}</span>
 							</div>
 							<!-- 兜底策略如果金额是0 -->
 							<div class="price" v-if="!item.price && !type">
-								¥<span>0 </span>.00
+								{{ unitPrice(0, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(0, undefined, 'after') }}</span>
 							</div>
 						</view>
 						<div>
@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div class='count-config' v-if="!type">
-						<span>即将恢复{{ item.originalPrice}}元</span>
+						<span>即将恢复{{ unitPrice(item.originalPrice, undefined, 'before') }}</span>
 					</div>
 				</div>
 			</div>

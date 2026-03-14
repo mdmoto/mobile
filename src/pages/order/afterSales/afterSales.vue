@@ -54,7 +54,7 @@
               <view class="goods-title u-line-2">{{ sku.name }}</view>
               <!-- 如果商品多个则不显示每个商品价格-->
               <view class="goods-price" v-if="order.orderItems.length <= 1">
-                ￥{{ unitPrice(order.flowPrice) }}
+                {{ unitPrice(order.flowPrice) }}
               </view>
             </view>
             <view class="goods-num">
@@ -177,7 +177,7 @@
           <!-- 多个商品显示订单总价格 -->
           <view class="cannot_apply">
             订单总金额:<span class="countMoney"
-              >￥{{ unitPrice(order.flowPrice) }}</span
+              >{{ unitPrice(order.flowPrice) }}</span
             >
           </view>
         </view>

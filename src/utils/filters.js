@@ -14,6 +14,11 @@ export function getSymbol() {
     case "JPY": return "JP¥";
     case "EUR": return "€";
     case "CNY": return "¥";
+    case "GBP": return "£";
+    case "KRW": return "₩";
+    case "HKD": return "HK$";
+    case "TWD": return "NT$";
+    case "SGD": return "S$";
     default: return currency + " ";
   }
 }
@@ -26,7 +31,17 @@ export function unitPrice(val, unit, location) {
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1, EUR: 0.92 };
+  const rates = rateData.rates || { 
+    CNY: 7.24, 
+    JPY: 154, 
+    USD: 1, 
+    EUR: 0.92, 
+    GBP: 0.79, 
+    KRW: 1320, 
+    HKD: 7.82, 
+    TWD: 31.5, 
+    SGD: 1.34 
+  };
 
   let convertedPrice = val;
   let symbol = getSymbol();
@@ -68,7 +83,17 @@ export function goodsFormatPrice(val) {
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { CNY: 7.24, JPY: 154, USD: 1, EUR: 0.92 };
+  const rates = rateData.rates || { 
+    CNY: 7.24, 
+    JPY: 154, 
+    USD: 1, 
+    EUR: 0.92, 
+    GBP: 0.79, 
+    KRW: 1320, 
+    HKD: 7.82, 
+    TWD: 31.5, 
+    SGD: 1.34 
+  };
 
   const usdPrice = val / (rates.CNY || 7.24);
   let convertedPrice = val;

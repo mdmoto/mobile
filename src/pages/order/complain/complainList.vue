@@ -15,8 +15,7 @@
         <view class="goods-info" @click="handleToGoods(item)">
           <view class="goods-title u-line-2">{{ item.goodsName }}</view>
           <view class="goods-price">
-            ￥{{ unitPrice(item.goodsPrice) }}
-            <!-- <span>+{{ '1' }}猫币</span> -->
+            {{ unitPrice(item.goodsPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.goodsPrice, undefined, 'after') }}</span>
           </view>
         </view>
         <view class="goods-num">
@@ -34,7 +33,7 @@
       </view>
     </view>
 
-    <u-empty v-if="empty" :style="{'marginTop':complaionDetail.total == 0 ? '200rpx':'0rpx'}" class="empty" style="" text="暂无投诉列表" mode="list"></u-empty>
+    <u-empty v-if="empty" :style="{'marginTop':complaionDetail.total == 0 ? '200rpx':'0rpx'}" class="empty" text="暂无投诉列表" mode="list"></u-empty>
 
     <u-modal show-cancel-button @confirm="handleClearConfirm" v-model="show" :content="content"></u-modal>
   </view>

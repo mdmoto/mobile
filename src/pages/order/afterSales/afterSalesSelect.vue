@@ -16,7 +16,7 @@
           <view class="goods-info">
             <view class="goods-title u-line-2">{{ item.name }}</view>
             <view class="goods-price">
-              <span v-if="sku.orderItems.length <= 1">￥{{ sku.flowPrice }}</span>
+              <span v-if="sku.orderItems.length <= 1">{{ unitPrice(sku.flowPrice) }}</span>
               <span class="num" v-else>购买数量{{item.num}}</span>
               <span v-if="sku.orderItems.length <= 1" class="num">购买数量: {{ item.num }}</span>
             </view>

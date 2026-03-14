@@ -5,7 +5,7 @@
 			<view class="goods-intro">
 				<view>{{goods.goodsName}}</view>
 				<view>{{goods.goods_sn}}</view>
-				<view>¥{{unitPrice(goods.goods_price)}}</view>
+				<view>{{ unitPrice(goods.goods_price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(goods.goods_price, undefined, 'after') }}</span></view>
 			</view>
 			<!-- <button>找相似</button> -->
 		</view>
@@ -16,10 +16,10 @@
 				<image :src="item.thumbnail" mode=""></image>
 				<view class="nowrap">{{item.name}}</view>
 				<view>
-					<text>￥{{unitPrice(item.price)}}
+					<text>{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
 					<!-- <text v-if="item.point">+{{item.point || 0}}猫币</text> -->
 					</text>
-					<text>￥{{item.mktprice}}</text>
+					<text>{{ unitPrice(item.mktprice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.mktprice, undefined, 'after') }}</span></text>
 				</view>
 				<view>
 					<text>已售{{item.buy_count}}件</text>

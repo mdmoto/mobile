@@ -11,10 +11,10 @@
             <img class="item-img" src="https://picsum.photos/id/268/200/200" alt />
           </div>
           <div class="item-price">
-            <span>20猫币</span>
+            <span>20{{ $t('points.points') }}</span>
           </div>
           <div class="item-line-through">
-            <span>30猫币</span>
+            <span>30{{ $t('points.points') }}</span>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
 <script>
 // TODO 后续版本开发此功能 尽情期待
 export default {
-  title:"猫币商品",
+  title: "points.pointsGoods",
   props: ["res"],
 };
 </script>

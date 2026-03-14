@@ -16,10 +16,10 @@
             <div class="item-position-tips">2人团</div>
           </div>
           <div class="item-price">
-            <span>￥120.00</span>
+            <span>{{ unitPrice(120) }}</span>
           </div>
           <div class="item-line-through">
-            <span>￥120.00</span>
+            <span>{{ unitPrice(120) }}</span>
           </div>
         </div>
       </div>

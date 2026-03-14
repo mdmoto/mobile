@@ -55,7 +55,7 @@
                 <view class="price" v-if="coupon.couponType == 'DISCOUNT'"
                   >{{ coupon.discount }}折</view
                 >
-                <view class="price" v-else>{{ coupon.price }}元</view>
+                <view class="price" v-else>{{ unitPrice(coupon.price) }}</view>
                 <view class="sub-price"
                   >满{{ unitPrice(coupon.consumeThreshold) }}可用</view
                 >

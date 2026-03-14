@@ -81,10 +81,10 @@
               <view class="goods-info" @click="gotoGoodsDetail(sku)">
                 <view class="goods-title u-line-2">{{ sku.goodsName }}</view>
                 <view class="goods-price">
-                  ￥{{ unitPrice(sku.goodsPrice) }}
+                  {{ unitPrice(sku.goodsPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(sku.goodsPrice, undefined, 'after') }}</span>
                   <!-- <span v-if="sku.point">+{{ sku.point }}猫币</span> -->
 				  <span style="font-size: 24rpx;margin-left: 14rpx;color: #ff9900;" v-if="sku.isRefund && sku.isRefund !== 'NO_REFUND'">
-				  {{refundPriceList(sku.isRefund)}} ({{ unitPrice(sku.refundPrice, "￥") }})
+				  {{refundPriceList(sku.isRefund)}} ({{ unitPrice(sku.refundPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(sku.refundPrice, undefined, 'after') }}</span>)
 				   </span>
                 </view>
               </view>
@@ -106,24 +106,24 @@
       <view>
         <view class="order-info-view">
           <view class="title">{{ $t('goods.totalPrice') }}：</view>
-          <view class="value">￥{{ unitPrice(order.goodsPrice) }}</view>
+          <view class="value">{{ unitPrice(order.goodsPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.goodsPrice, undefined, 'after') }}</span></view>
         </view>
         <view class="order-info-view" v-if="order.freightPrice">
           <view class="title">{{ $t('order.shippingFee') }}：</view>
-          <view class="value">￥{{ unitPrice(order.freightPrice) }}</view>
+          <view class="value">{{ unitPrice(order.freightPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.freightPrice, undefined, 'after') }}</span></view>
         </view>
         <view class="order-info-view" v-if="order.priceDetailDTO">
           <view class="title">{{ $t('user.coupon') }}：</view>
-          <view class="value main-color">-￥{{ unitPrice(order.priceDetailDTO.couponPrice) }}</view>
+          <view class="value main-color">-{{ unitPrice(order.priceDetailDTO.couponPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.priceDetailDTO.couponPrice, undefined, 'after') }}</span></view>
         </view>
         <view class="order-info-view">
           <view class="title">{{ $t('goods.promotion') }}：</view>
-          <view class="value main-color">-￥{{ unitPrice(order.discountPrice) }}</view>
+          <view class="value main-color">-{{ unitPrice(order.discountPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.discountPrice, undefined, 'after') }}</span></view>
         </view>
-        <!-- <view class="order-info-view" v-if="order.use_point">
-					<view class="title">使用猫币：</view>
+        <view class="order-info-view" v-if="order.use_point">
+					<view class="title">{{ $t('points.usePoints') }}：</view>
 					<view class="value">{{ order.use_point }}</view>
-				</view> -->
+				</view>
       </view>
     </view>
     <!-- 客户服务， 售后，取消订单，查看物流，投诉等 -->
@@ -203,7 +203,7 @@
           <text v-if="order.payStatus === 'PAID'">{{ $t('order.paidAmount') }}：</text>
           <text v-else>{{ $t('order.payableAmount') }}：</text>
 
-          <text class="price" v-if="order.priceDetailDTO">￥{{ unitPrice(order.priceDetailDTO.flowPrice) }}</text>
+          <text class="price" v-if="order.priceDetailDTO">{{ unitPrice(order.priceDetailDTO.flowPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.priceDetailDTO.flowPrice, undefined, 'after') }}</span></text>
         </view>
         <view>
           <!-- 全部 -->

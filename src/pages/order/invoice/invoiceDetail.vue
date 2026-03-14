@@ -8,7 +8,7 @@
             <view></view>
           </view>
         </view>
-        <view>{{unitPrice(order.receiptPrice, '￥')}}</view>
+        <view>{{ unitPrice(order.receiptPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.receiptPrice, undefined, 'after') }}</span></view>
       </view>
     </view>
     <view class="common-msg flex-center">

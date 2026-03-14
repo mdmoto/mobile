@@ -7,7 +7,7 @@
       <view class="title">{{ $t('deposit.rechargeAmount') }}</view>
       <view class="content">
         <view class="price">
-          <span> ￥</span>
+          <span> {{ getSymbol() }}</span>
           <u-input v-model="price" :placeholder="$t('deposit.rechargeAmount')" type="number" />
 					
         </view>

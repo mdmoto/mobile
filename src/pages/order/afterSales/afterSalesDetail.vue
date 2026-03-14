@@ -18,7 +18,7 @@
             <view class="goods-info">
               <view class="goods-title u-line-2">{{ item.name }}</view>
               <view class="goods-price">
-                <span>￥{{ applyInfo.applyRefundPrice }}</span>
+                <span>{{ unitPrice(applyInfo.applyRefundPrice) }}</span>
 
                 <span class="num">购买数量:{{ item.num }}</span>
               </view>

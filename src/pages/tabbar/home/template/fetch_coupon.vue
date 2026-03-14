@@ -35,11 +35,11 @@
                 >优惠金额：<span style="color: red; font-size: 32rpx">{{
                   unitPrice(item.price)
                 }}</span
-                >元</view
+                ></view
               >
               <view
                 >满<span style="color: red; font-size: 32rpx"
-                  >{{ unitPrice(item.consumeThreshold) }}元</span
+                  >{{ unitPrice(item.consumeThreshold) }}</span
                 >可用</view
               >
               <view v-if="item.scopeType == 'ALL' && item.storeId == '0'"

@@ -6,7 +6,7 @@
 				<view class="top">
 					<div class="price">
 						<span v-if="item.couponType == 'DISCOUNT'">{{ item.couponDiscount }}折</span>
-						<span v-if="item.couponType == 'PRICE'">￥{{ unitPrice(item.price) }}</span>
+						<span v-if="item.couponType == 'PRICE'">{{ unitPrice(item.price) }}</span>
 					</div>
 					<view class="text">
 						<div class="coupon-List-title">

@@ -4,21 +4,21 @@
       <view>
         <view v-if="prom.split('-')[0] == 'FULL_DISCOUNT'">
           <div class="res_prom_item" v-if="res[prom].fullMinus">
-            <u-tag text="满减" type="error"></u-tag>
+            <u-tag :text="$t('promotion.fullMinus')" type="error"></u-tag>
             <!-- TODO 后续将优化为可点击的商品以及优惠券显示明细 -->
             <span class="pro-text"
-              >满{{ res[prom].fullMoney }}元 立减现金
-              <span class="price">{{ res[prom].fullMinus }}元</span>
-              <span v-if="res[prom].couponFlag"> 赠送<span>优惠券</span></span>
-              <span v-if="res[prom].pointFlag"> 赠送{{ res[prom].point }}猫币</span>
-              <span v-if="res[prom].giftFlag"> 赠送商品</span>
-              <span v-if="res[prom].freeFreightFlag">赠送包邮服务</span>
+              >{{ $t('promotion.buyNowWithDirectDiscount', {money: unitPrice(res[prom].fullMoney)}) }}
+              <span class="price">{{ unitPrice(res[prom].fullMinus) }}</span>
+              <span v-if="res[prom].couponFlag"> {{ $t('promotion.give') }}<span>{{ $t('promotion.coupon') }}</span></span>
+              <span v-if="res[prom].pointFlag"> {{ $t('promotion.give') }}{{ res[prom].point }}{{ $t('points.points') }}</span>
+              <span v-if="res[prom].giftFlag"> {{ $t('promotion.give') }}{{ $t('promotion.gift') }}</span>
+              <span v-if="res[prom].freeFreightFlag">{{ $t('promotion.give') }}{{ $t('promotion.freeFreight') }}</span>
             </span>
           </div>
           <div class="res_prom_item" v-if="res[prom].fullRate && res[prom].fullRateFlag">
-            <u-tag text="打折" type="error"></u-tag>
+            <u-tag :text="$t('promotion.discount')" type="error"></u-tag>
             <span class="pro-text"
-              >满{{ res[prom].fullMoney }}元，立享<span class="price"
+              >满{{ unitPrice(res[prom].fullMoney) }}，{{ $t('promotion.getDiscount') }}<span class="price"
                 >{{ res[prom].fullRate }}折</span
               >优惠</span
             >
@@ -27,38 +27,36 @@
 
         <view v-if="prom.split('-')[0] == 'PINTUAN'">
           <div class="res_prom_item" v-if="res[prom].requiredNum">
-            <u-tag text="拼团" type="error"></u-tag>
+            <u-tag :text="$t('promotion.joinGroup')" type="error"></u-tag>
             <span class="pro-text"
-              >{{ res[prom].requiredNum }}人拼团 限购<span class="price"
-                >{{ res[prom].limitNum }}件</span
-              ></span
+              >{{ $t('promotion.pintuanPeople', {num: res[prom].requiredNum}) }} {{ $t('promotion.limitBuy', {num: res[prom].limitNum}) }}</span
             >
           </div>
         </view>
 
         <view v-if="prom.split('-')[0] == 'SECKILL'">
           <div class="res_prom_item">
-            <u-tag text="限时抢购" type="error"></u-tag>
-            <span class="pro-text">限时抢购</span>
+            <u-tag :text="$t('promotion.seckill')" type="error"></u-tag>
+            <span class="pro-text">{{ $t('promotion.seckill') }}</span>
           </div>
         </view>
 
         <view v-if="prom.split('-')[0] == 'POINTS_GOODS'">
           <div class="res_prom_item">
-            <u-tag text="猫币活动" type="error"></u-tag>
-            <span class="pro-text">当前商品参与猫币活动。<span @click="handClickToJoinPromotion(prom)" class="href">点击此处参与活动</span></span>
+            <u-tag :text="$t('points.pointsActivities')" type="error"></u-tag>
+            <span class="pro-text">{{ $t('promotion.participatingInPointsActivities') }}<span @click="handClickToJoinPromotion(prom)" class="href">{{ $t('promotion.clickToJoin') }}</span></span>
           </div>
         </view>
 
          <view v-if="prom.split('-')[0] == 'KANJIA'">
           <div class="res_prom_item">
-            <u-tag text="砍价活动" type="error"></u-tag>
-            <span class="pro-text">当前商品参与砍价活动。<span @click="handClickToJoinPromotion(prom)" class="href">点击此处参与活动</span></span>
+            <u-tag :text="$t('promotion.bargainActivities')" type="error"></u-tag>
+            <span class="pro-text">{{ $t('promotion.participatingInBargainActivities') }}<span @click="handClickToJoinPromotion(prom)" class="href">{{ $t('promotion.clickToJoin') }}</span></span>
           </div>
         </view>
       </view>
     </view>
-    <view v-if="!res">暂无促销活动</view>
+    <view v-if="!res">{{ $t('promotion.noPromotion') }}</view>
   </view>
 </template>
 <script>

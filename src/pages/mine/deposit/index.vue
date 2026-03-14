@@ -4,7 +4,7 @@
     <view class="wrapper-show-money">
       <view class="money-view">
         <h3>{{ $t('deposit.balance') }}</h3>
-        <view class="money">￥{{unitPrice(walletNum) }}</view>
+        <view class="money">{{unitPrice(walletNum, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(walletNum, undefined, 'after') }}</span></view>
 
       </view>
     </view>
@@ -19,9 +19,9 @@
                 <!-- <view class="-number">{{logItem.detail}}</view> -->
               </view>
               <view class="view-item-change">
-                <view class="-money green" v-if="logItem.serviceType == 'WALLET_PAY' || logItem.serviceType == 'WALLET_WITHDRAWAL'"> {{unitPrice(logItem.money)}} </view>
+                <view class="-money green" v-if="logItem.serviceType == 'WALLET_PAY' || logItem.serviceType == 'WALLET_WITHDRAWAL'"> {{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
                 <view class="-money" v-if="logItem.serviceType == 'WALLET_REFUND' || logItem.serviceType == 'WALLET_RECHARGE' || logItem.serviceType == 'WALLET_COMMISSION' ">
-                  +{{unitPrice(logItem.money)}} </view>
+                  +{{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
                 <view class="-time">{{logItem.createTime}}</view>
               </view>
             </view>

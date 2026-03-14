@@ -3,7 +3,7 @@
     <u-navbar :custom-back="back" :title="$t('deposit.title')"></u-navbar>
     <div class="box">
       <div class="deposit">{{ $t('deposit.balance') }}</div>
-      <div class="money">￥{{unitPrice(walletNum) }}</div>
+      <div class="money">{{unitPrice(walletNum, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(walletNum, undefined, 'after') }}</span></div>
       <div class="operation-btns">
         <div class="operation-btn light" @click="navigateTo('/pages/mine/deposit/withdrawal')">{{ $t('deposit.withdraw') }}</div>
         <div class="operation-btn" @click="navigateTo('/pages/mine/deposit/recharge')">{{ $t('deposit.recharge') }}</div>

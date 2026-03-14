@@ -54,7 +54,7 @@
                 {{ i.goodsName ? i.goodsName : i.name }}
               </div>
               <div class="item-price">
-                <span>￥{{ i.price ? i.price : i.originalPrice }}</span>
+                <span>{{ unitPrice(i.price ? i.price : i.originalPrice) }}</span>
               </div>
             </div>
           </div>

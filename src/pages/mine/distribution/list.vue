@@ -82,7 +82,7 @@
               <!-- 商品金额 -->
               <view class="-item-price" @click="handleNavgationGoods(item)">
                 佣金:
-                <span> ￥{{ unitPrice(item.commission) }}</span>
+                <span> {{ unitPrice(item.commission, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.commission, undefined, 'after') }}</span></span>
               </view>
               <!-- 比率佣金 -->
               <view class="-item-bottom">
@@ -92,7 +92,7 @@
                   <span>{{ "5.00%" }}</span>
                 </view> -->
                   <view class="-item-yj">
-                    <span>￥{{ unitPrice(item.price) }}</span>
+                    <span>{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span></span>
                   </view>
                 </view>
                 <view>
@@ -243,8 +243,7 @@ export default {
         this.res.container.title = `${goods.goodsName}`;
         this.res.bottom.code = `data:image/png;base64,${callback}`;
         this.res.bottom.price = this.unitPrice(
-          goods.price,
-          "￥"
+          goods.price
         );
         this.res.bottom.desc = `${goods.goodsName}`;
         this.res.bottom.img = `${goods.thumbnail}`;

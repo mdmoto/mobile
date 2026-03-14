@@ -15,9 +15,9 @@
 					</div>
 					<view class="price-box" @click="navigateToDetailPage(item)">
 						<div class="price" v-if="item.price!=undefined">
-							¥<span>{{ goodsFormatPrice(item.price )[0] }} </span>.{{
-	            goodsFormatPrice(item.price )[1]
-	          }}
+							{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{
+	            unitPrice(item.price, undefined, 'after')
+	          }}</span>
 						</div>
 					</view>
 					<div class="promotion" @click="navigateToDetailPage(item)">
@@ -60,9 +60,9 @@
 						<div class="title clamp3" @click="navigateToDetailPage(item)">{{ item.goodsName }}</div>
 						<view class="price-box" @click="navigateToDetailPage(item)">
 							<div class="price" v-if="item.price!=undefined">
-								¥<span>{{ goodsFormatPrice(item.price )[0] }} </span>.{{
-			            goodsFormatPrice(item.price )[1]
-			          }}
+								{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{
+			            unitPrice(item.price, undefined, 'after')
+			          }}</span>
 							</div>
 						</view>
 						<div class="promotion" @click="navigateToDetailPage(item)">

@@ -172,12 +172,9 @@
               <span class="nums">x{{ val.num }}</span>
             </div>
             <p class="goods-prices">
-              <span class="goods-price">{{ unitPrice(val.purchasePrice, undefined, 'before') }}</span>
-              <span
-                >.{{
-                  goodsFormatPrice(val.purchasePrice)[1]
-                }}</span
-              >
+              <span class="goods-price">{{ unitPrice(val.purchasePrice, undefined, 'before') }}</span><span style="font-size: 24rpx">.{{
+                  unitPrice(val.purchasePrice, undefined, 'after')
+                }}</span>
             </p>
           </div>
         </div>
@@ -250,9 +247,7 @@
         <u-row>
           <u-col :span="9">商品合计</u-col>
           <u-col :span="3" textAlign="right">
-            <span
-              >{{ unitPrice(orderMessage.priceDetailDTO.goodsPrice) }}</span
-            >
+            <span>{{ unitPrice(orderMessage.priceDetailDTO.goodsPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(orderMessage.priceDetailDTO.goodsPrice, undefined, 'after') }}</span></span>
           </u-col>
         </u-row>
       </div>
@@ -272,8 +267,8 @@
             >
             <span v-else
               >{{
-                unitPrice(orderMessage.priceDetailDTO.freightPrice)
-              }}</span
+                unitPrice(orderMessage.priceDetailDTO.freightPrice, undefined, 'before')
+              }}.<span style="font-size: 24rpx">{{ unitPrice(orderMessage.priceDetailDTO.freightPrice, undefined, 'after') }}</span></span
             >
           </u-col>
         </u-row>
@@ -295,7 +290,7 @@
           @click="GET_Discount()"
         >
           <span class="main-color"
-            >-{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
+            >-{{ unitPrice(orderMessage.priceDetailDTO.couponPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(orderMessage.priceDetailDTO.couponPrice, undefined, 'after') }}</span></span
           >
         </u-col>
         <!--  unitPrice(orderMessage.priceDetailDTO.couponPrice)  -->
@@ -313,10 +308,10 @@
             v-if="orderMessage.priceDetailDTO.couponPrice"
           >
             <span class="main-color">
-              -{{ unitPrice(orderMessage.priceDetailDTO.couponPrice) }}</span
+              -{{ unitPrice(orderMessage.priceDetailDTO.couponPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(orderMessage.priceDetailDTO.couponPrice, undefined, 'after') }}</span></span
             >
           </u-col>
-          <u-col :span="3" textAlign="right" v-else>0.00</u-col>
+          <u-col :span="3" textAlign="right" v-else>{{ unitPrice(0, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(0, undefined, 'after') }}</span></u-col>
         </u-row>
       </div>
       <div>
@@ -325,10 +320,10 @@
           <u-col :span="6" class="tr tipsColor" textAlign="right">
             <span v-if="orderMessage.priceDetailDTO.discountPrice"
               >-{{
-                unitPrice(orderMessage.priceDetailDTO.discountPrice)
-              }}</span
+                unitPrice(orderMessage.priceDetailDTO.discountPrice, undefined, 'before')
+              }}.<span style="font-size: 24rpx">{{ unitPrice(orderMessage.priceDetailDTO.discountPrice, undefined, 'after') }}</span></span
             >
-            <span v-else>0.00</span>
+            <span v-else>{{ unitPrice(0, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(0, undefined, 'after') }}</span></span>
           </u-col>
         </u-row>
       </div>
@@ -354,20 +349,19 @@
             unitPrice(
               orderMessage.priceDetailDTO.flowPrice, undefined, 'before'
             )
-          }}</span>
-          <span
+          }}</span><span style="font-size: 24rpx"
             >.{{
-              goodsFormatPrice(
-                orderMessage.priceDetailDTO.flowPrice
-              )[1]
+              unitPrice(
+                orderMessage.priceDetailDTO.flowPrice, undefined, 'after'
+              )
             }}
           </span>
         </div>
         <span v-else class="number"
           ><span style="margin-right: 10rpx">{{
-            unitPrice(orderMessage.priceDetailDTO.payPoint)
+            unitPrice(orderMessage.priceDetailDTO.payPoint, '', 'before')
           }}</span
-          >猫币</span
+          >{{ $t('points.points') }}</span>
         >
       </div>
       <div class="navRiv" @click="createTradeFun()">

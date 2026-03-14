@@ -25,8 +25,8 @@
                 </u-image>
                 <view class="index-item-title">{{ item.goodsName }}</view>
                 <view class="index-item-price flex flex-a-c flex-j-sb">
-                  <div class="point"><span>{{ item.points }}</span>猫币</div> 
-                  <span class="tipsMkt">¥{{ unitPrice(item.originalPrice) }}</span>
+                  <div class="point"><span>{{ item.points }}</span>{{ $t('points.points') }}</div> 
+                  <span class="tipsMkt">{{ unitPrice(item.originalPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.originalPrice, undefined, 'after') }}</span></span>
                 </view>
               </view>
             </view>

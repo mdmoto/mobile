@@ -17,9 +17,9 @@
               </div>
               <div class="flex price-box">
                 <div class="purchase-price">
-                  当前:<span>￥{{ activityData.surplusPrice == 0 ? this.bargains.purchasePrice :  unitPrice(activityData.surplusPrice)}}</span>
+                  当前:<span>{{ activityData.surplusPrice == 0 ? unitPrice(this.bargains.purchasePrice, undefined, 'before') :  unitPrice(activityData.surplusPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ activityData.surplusPrice == 0 ? unitPrice(this.bargains.purchasePrice, undefined, 'after') :  unitPrice(activityData.surplusPrice, undefined, 'after') }}</span></span>
                 </div>
-                <div class="max-price">原价:<span>￥{{ unitPrice(bargainDetail.price)}}</span>
+                <div class="max-price">原价:<span>{{ unitPrice(bargainDetail.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(bargainDetail.price, undefined, 'after') }}</span></span>
 
                 </div>
               </div>
@@ -31,8 +31,8 @@
             <u-line-progress class="line" :active-color="lightColor" striped striped-active :percent="totalPercent">
             </u-line-progress>
             <div class="flex tips">
-              <div>已砍{{cutPrice}}元</div>
-              <div>还剩{{activityData.surplusPrice}}元</div>
+              <div>已砍{{ unitPrice(cutPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(cutPrice, undefined, 'after') }}</span></div>
+              <div>还剩{{ unitPrice(activityData.surplusPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(activityData.surplusPrice, undefined, 'after') }}</span></div>
             </div>
           </div>
           <!-- 参与砍价 -->
@@ -64,7 +64,7 @@
                 <div>{{noPassByName(item.kanjiaMemberName)}}</div>
                 <div>使出吃的奶劲儿</div>
               </div>
-              <div class="save">砍掉：<span>￥{{unitPrice(item.kanjiaPrice)}}</span></div>
+              <div class="save">砍掉：<span>{{ unitPrice(item.kanjiaPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.kanjiaPrice, undefined, 'after') }}</span></span></div>
             </div>
           </div>
         </div>
@@ -84,8 +84,8 @@
       <u-modal title="恭喜您砍掉了" v-model="Bargaining" mask-close-able :show-confirm-button="false"
         :title-style="{color: lightColor}">
         <view class="slot-content">
-          <u-count-to :start-val="0" ref="uCountTo" font-size="100" :color="lightColor" :end-val="kanjiaPrice"
-            :decimals="2" :autoplay="autoplay"></u-count-to><span class="price">元</span>
+          <span class="price">{{ getSymbol() }}</span><u-count-to :start-val="0" ref="uCountTo" font-size="100" :color="lightColor" :end-val="kanjiaPrice"
+            :decimals="2" :autoplay="autoplay"></u-count-to>
         </view>
       </u-modal>
       <!-- 帮砍 -->

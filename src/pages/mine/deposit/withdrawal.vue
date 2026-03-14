@@ -14,18 +14,18 @@
 	  <view class="title">{{ $t('deposit.withdrawAmount') }}</view>
 	  <view class="content">
 		<view class="price">
-	      <span> ￥</span>
+	      <span> {{ getSymbol() }}</span>
 	      <u-input v-model="price" :placeholder="$t('deposit.withdrawAmount')" type="number" />
 	    </view>
 	
 	    <view class="all">
 	      <view @click="handleAll" :style="{ color: $mainColor }">{{ $t('deposit.all') }}</view>
-	      <view style="font-size: 24rpx; color: #999">{{ $t('deposit.availableAmount') }}<span>{{ unitPrice(walletNum) }}</span>元</view>
+	      <view style="font-size: 24rpx; color: #999">{{ $t('deposit.availableAmount') }}<span>{{ unitPrice(walletNum, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(walletNum, undefined, 'after') }}</span></span></view>
 	    </view>
 	
 	  </view>
 	  <view class="tips">
-	    {{ $t('deposit.minWithdraw') }} {{ minPrice }} 元
+ 	    {{ $t('deposit.minWithdraw') }} {{ unitPrice(minPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(minPrice, undefined, 'after') }}</span>
 	  </view>
 	</view>
 	<view class="-list" v-if="type === 'ALI'">

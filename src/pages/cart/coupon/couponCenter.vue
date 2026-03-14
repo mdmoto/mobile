@@ -13,9 +13,9 @@
 								<view>
 									<!--判断当前优惠券类型  couponType  PRICE || DISCOUNT -->
 									<span v-if="item.couponType == 'DISCOUNT'">{{ item.couponDiscount }}折</span>
-									<span v-else>{{ item.price }}元</span>
+									<span v-else>{{ unitPrice(item.price) }}</span>
 								</view>
-								<view>满{{ unitPrice(item.consumeThreshold) }}元可用</view>
+								<view>满{{ unitPrice(item.consumeThreshold) }}可用</view>
 							</view>
 							<view class="circle circle-top"></view>
 							<view class="circle circle-bottom"></view>

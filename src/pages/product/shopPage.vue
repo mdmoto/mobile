@@ -68,13 +68,13 @@
                 <span v-if="item.couponType == 'DISCOUNT'"
                   >{{ item.couponDiscount }}折</span
                 >
-                <span v-else>{{ item.price }}元</span>
+                <span v-else>{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span></span>
               </view>
             </view>
             <view class="xian"></view>
             <view class="text">
               <text>{{ "领取优惠券" }}</text>
-              <text>满{{ unitPrice(item.consumeThreshold) }}元可用</text>
+              <text>满{{ unitPrice(item.consumeThreshold, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.consumeThreshold, undefined, 'after') }}</span>可用</text>
             </view>
           </view>
         </view>

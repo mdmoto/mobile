@@ -19,7 +19,7 @@
                     class="u-group-flex-left-span"
                     v-if="detail.promotionPrice != undefined"
                   >
-                    ￥
+                    {{ getSymbol() }}
                     <span class="flex-price">
                       {{ goodsFormatPrice(detail.promotionPrice)[0] }}.{{
                         goodsFormatPrice(detail.promotionPrice)[1]
@@ -28,7 +28,7 @@
                   </span>
                   <view class="u-group-flex" v-if="detail.price != undefined">
                     <span class="old-price"
-                      >￥{{ goodsFormatPrice(detail.price)[0] }}.{{
+                      >{{ getSymbol() }}{{ goodsFormatPrice(detail.price)[0] }}.{{
                         goodsFormatPrice(detail.price)[1]
                       }}</span
                     >
@@ -42,7 +42,7 @@
                     <span
                       class="flex-price"
                       v-if="promotion.groupbuy_goods_vo.price != undefined"
-                      >￥{{ goodsFormatPrice(promotion.groupbuy_goods_vo.price)[0] }}.{{
+                      >{{ getSymbol() }}{{ goodsFormatPrice(promotion.groupbuy_goods_vo.price)[0] }}.{{
                         goodsFormatPrice(promotion.groupbuy_goods_vo.price)[1]
                       }}</span
                     >
@@ -52,7 +52,7 @@
                     <span
                       class="old-price"
                       v-if="promotion.groupbuy_goods_vo.original_price != undefined"
-                      >￥{{
+                      >{{ getSymbol() }}{{
                         goodsFormatPrice(promotion.groupbuy_goods_vo.original_price)[0]
                       }}.{{
                         goodsFormatPrice(promotion.groupbuy_goods_vo.original_price)[1]
@@ -67,13 +67,13 @@
                     class="u-group-flex-left-span"
                     v-if="detail.promotionPrice != undefined"
                   >
-                    ￥<span class="flex-price">
+                    {{ getSymbol() }}<span class="flex-price">
                       {{ goodsFormatPrice(detail.promotionPrice)[0] }}.</span
                     >{{ goodsFormatPrice(detail.promotionPrice)[1] }}
                   </span>
                   <view class="u-group-flex" v-if="detail.price != undefined">
                     <span class="old-price"
-                      >￥{{ goodsFormatPrice(detail.price)[0] }}.{{
+                      >{{ getSymbol() }}{{ goodsFormatPrice(detail.price)[0] }}.{{
                         goodsFormatPrice(detail.price)[1]
                       }}</span
                     >

@@ -41,7 +41,7 @@
 										<view v-if="order.orderItems.length <= 1" class="goods-title u-line-2">
 											{{ order.groupName }}</view>
 										<view v-if="order.orderItems.length <= 1" class="goods-price">
-											￥{{ unitPrice(order.flowPrice) }}
+											{{ unitPrice(order.flowPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.flowPrice, undefined, 'after') }}</span>
 										</view>
 									</view>
 									<view v-if="order.orderItems.length <= 1" class="goods-num">
@@ -54,7 +54,7 @@
 									<!-- 等待付款 -->
 									<div v-if="order.payStatus === 'PAID'">{{ $t('order.paidAmount') }}:</div>
 									<div v-else>{{ $t('order.payableAmount') }}:</div>
-									<div class="price">￥{{ unitPrice(order.flowPrice) }}</div>
+									<div class="price">{{ unitPrice(order.flowPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(order.flowPrice, undefined, 'after') }}</span></div>
 								</view>
 								<view class="goods-btn flex flex-a-c">
 									<!-- 全部 -->

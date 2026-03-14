@@ -17,7 +17,7 @@
             <view class="goods-info">
               <view class="goods-title u-line-2">{{ sku.name }}</view>
               <view class="goods-price">
-                <span>￥{{ unitPrice(sku.price) }}</span>
+                <span>{{ unitPrice(sku.price) }}</span>
                 <span class="num">购买数量: {{ sku.num }} </span>
               </view>
             </view>

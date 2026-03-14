@@ -29,7 +29,7 @@
 									<view class="myTracks-item-title-desc"> </view>
 								</view>
 								<view class="myTracks-item-price">
-									￥{{ unitPrice(item.price) }}
+									{{ unitPrice(item.price, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
 								</view>
 							</view>
 						</view>

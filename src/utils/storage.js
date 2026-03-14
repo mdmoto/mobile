@@ -153,8 +153,20 @@ export default {
   setExchangeRates(val) {
     uni.setStorageSync('exchange_rates', val);
   },
-  // 获取汇率列表
+  // 获取汇率列表 (方向: 1 USD -> X Target)
   getExchangeRates() {
-    return uni.getStorageSync('exchange_rates') || { CNY: 0.14, JPY: 0.0065, USD: 1.0 };
+    return uni.getStorageSync('exchange_rates') || { 
+      rates: { 
+        CNY: 7.24, 
+        JPY: 154, 
+        USD: 1.0, 
+        EUR: 0.92, 
+        GBP: 0.79, 
+        KRW: 1320, 
+        HKD: 7.82, 
+        TWD: 31.5, 
+        SGD: 1.34 
+      } 
+    };
   }
 };

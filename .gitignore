@@ -18,3 +18,4 @@ unpackage/
 build_log.txt
 evidence/
 *.log
+src/static/js/*.js
