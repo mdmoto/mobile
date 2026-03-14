@@ -26,7 +26,7 @@
       
       <!-- 货币设置 -->
       <u-cell 
-        :title="$t('user.currencyCurrency')" 
+        :title="$t('user.currencyCurrency') || '币种设置'" 
         :arrow="true" 
         @click="showCurrencyPicker = true"
       >

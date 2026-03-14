@@ -16,7 +16,11 @@
       </view>
       <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
       
-      <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
+      <!-- 币种快捷切换 -->
+      <view class="currency-picker-pill" @click.stop="showCurrencyPicker = true">
+        <text class="currency-code">{{ currentCurrency }}</text>
+        <u-icon name="arrow-down-fill" color="#fff" size="20"></u-icon>
+      </view>
     </view>
     
     <!-- 猫币，预存款，优惠券 -->
@@ -75,6 +79,16 @@
 
     <tool />
 
+    <!-- 货币选择器 -->
+    <u-picker
+      v-model="showCurrencyPicker"
+      mode="selector"
+      :range="currencyList"
+      range-key="name"
+      :default-selector="[currentCurrencyIndex]"
+      @confirm="changeCurrency"
+    ></u-picker>
+
   </view>
 </template>
 <script>
@@ -99,6 +113,18 @@ export default {
       couponNum: "",
       footNum: "",
       walletNum: "",
+      showCurrencyPicker: false,
+      currencyList: [
+        { name: this.$t("currency.CNY"), code: "CNY" },
+        { name: this.$t("currency.USD"), code: "USD" },
+        { name: this.$t("currency.JPY"), code: "JPY" },
+        { name: this.$t("currency.EUR"), code: "EUR" },
+        { name: this.$t("currency.GBP"), code: "GBP" },
+        { name: this.$t("currency.KRW"), code: "KRW" },
+        { name: this.$t("currency.HKD"), code: "HKD" },
+        { name: this.$t("currency.TWD"), code: "TWD" },
+        { name: this.$t("currency.SGD"), code: "SGD" }
+      ]
     };
   },
   onLoad() { },
@@ -110,6 +136,14 @@ export default {
       this.walletNum = 0;
       this.couponNum = 0;
       this.footNum = 0;
+    }
+  },
+  computed: {
+    currentCurrency() {
+      return storage.getCurrency();
+    },
+    currentCurrencyIndex() {
+      return this.currencyList.findIndex(item => item.code === this.currentCurrency);
     }
   },
   onPullDownRefresh() {
@@ -153,6 +187,22 @@ export default {
         this.footNum = res[1].data.result;
         this.walletNum = res[2].data.result.memberWallet;
       });
+    },
+    // 切换货币
+    changeCurrency(index) {
+      const selected = this.currencyList[index[0]];
+      if (selected.code !== this.currentCurrency) {
+        storage.setCurrency(selected.code);
+        uni.showToast({
+          title: this.$t('message.operationSuccess'),
+          icon: 'success'
+        });
+        setTimeout(() => {
+          uni.reLaunch({
+            url: '/pages/tabbar/user/my'
+          });
+        }, 1000);
+      }
     },
   },
 };
@@ -228,6 +278,26 @@ body {
     ::v-deep  .u-icon,
     .u-icon {
       margin-top: 106rpx;
+    }
+
+    .currency-picker-pill {
+      position: absolute;
+      right: 30rpx;
+      top: calc(var(--status-bar-height) + 100rpx);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 6rpx 20rpx;
+      border-radius: 100rpx;
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
+      z-index: 10;
+      
+      .currency-code {
+        color: #fff;
+        font-size: 26rpx;
+        font-weight: bold;
+      }
     }
   }
 
