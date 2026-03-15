@@ -259,7 +259,12 @@ export default {
   
       this.endLoad = false;
       try {
-        const result = await validSlider(this.business, storage.getUuid(), xPos);
+        const res = await validSlider(this.business, storage.getUuid(), xPos);
+        console.log('📥 滑块验证结果:', res);
+        
+        // 如果是 Axios/Promise 形式，通常直接返回结果或在拦截器处理
+        // 如果是 uni.request 封装的，可能需要检查 statusCode
+        
         console.log('✅ 滑块验证成功');
         //验证成功后把key发送出去
         this.$emit("send", this.key);
@@ -268,12 +273,15 @@ export default {
         this.vsrtx = "已通过验证";
       } catch (err) {
         console.log('❌ 滑块验证失败:', err);
+        const errorMsg = (err.data && err.data.message) || "验证失败，请重试";
         uni.showToast({
-          title: "验证失败，请重试",
+          title: errorMsg,
           duration: 2000,
           icon: "none",
         });
-        // 验证失败，重新获取验证码
+        // 验证失败，重置滑动位置并重新获取验证码
+        this.moveX = 0;
+        this.moveCode = 0;
         this.getCode(); 
         this.movePv = this.movePv == 1 ? 0 : 1;
       } finally {
@@ -284,11 +292,6 @@ export default {
     moveChange(e) {
       this.moveX = e.detail.x;
       this.moveCode = e.detail.x;
-      console.log('🎯 滑块移动:', {
-        moveX: this.moveX,
-        moveCode: this.moveCode,
-        detail: e.detail
-      });
     },
   },
 };
