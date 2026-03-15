@@ -149,7 +149,7 @@ export default {
         "service": "Help Center",
         "about": "About Us",
         "language": "Language",
-        "currencyCurrency": "Currency Settings",
+        "currency": "Currency",
         "currentLanguage": "Current Language",
         "currentCurrency": "Current Currency",
         "notLoggedIn": "Not logged in",

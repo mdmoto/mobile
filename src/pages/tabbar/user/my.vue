@@ -15,8 +15,6 @@
         <view class="user-name">{{ $t('user.login') }}/{{ $t('user.register') }}</view>
       </view>
       <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
-      
-      <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
     </view>
     
     <!-- 猫币，预存款，优惠券 -->
@@ -103,8 +101,8 @@ export default {
   },
   onLoad() { },
   onShow() {
-    this.userInfo = this.isLogin() || {};
-    if (this.isLogin("auth")) {
+    this.userInfo = this.$options.filters.isLogin() || {};
+    if (this.$options.filters.isLogin("auth")) {
       this.getUserOrderNum();
     } else {
       this.walletNum = 0;
@@ -185,8 +183,6 @@ body {
     color: #ffffff;
     display: flex;
     justify-content: space-between;
-
-
     .head-1 {
       text-align: center;
       width: 152rpx;

@@ -149,7 +149,7 @@ export default {
         "service": "联系客服",
         "about": "关于我们",
         "language": "语言设置",
-        "currencyCurrency": "币种设置",
+        "currency": "货币设置",
         "currentLanguage": "当前语言",
         "notLoggedIn": "暂未登录",
         "clearCache": "清除缓存",

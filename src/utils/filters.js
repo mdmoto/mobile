@@ -5,76 +5,84 @@ import config from '@/config/config';
 import Foundation from "./Foundation.js";
 
 /**
+ * 币种符号映射 (根据用户要求：仅显示符号，不带英文字母)
+ */
+const symbolMap = {
+  CNY: "¥",
+  USD: "$",
+  JPY: "¥",
+  EUR: "€",
+  GBP: "£",
+  KRW: "₩",
+  THB: "฿",
+  SAR: "SR",
+  HKD: "$",
+  MYR: "RM",
+  SGD: "$",
+  TWD: "NT$",
+};
+
+/**
  * 获取当前币种符号
  */
-export function getSymbol() {
+export function currencySymbol() {
   const currency = storage.getCurrency();
-  switch (currency) {
-    case "USD": return "$";
-    case "JPY": return "JP¥";
-    case "EUR": return "€";
-    case "CNY": return "¥";
-    case "GBP": return "£";
-    case "KRW": return "₩";
-    case "HKD": return "HK$";
-    case "TWD": return "NT$";
-    case "SGD": return "S$";
-    default: return currency + " ";
-  }
+  return symbolMap[currency] || "¥";
 }
 
 /**
- * 金钱单位置换  2999 --> 2,999.00
+ * 获取支持的币种列表
+ */
+export function getCurrencyList() {
+  return [
+    { code: 'USD', name: 'US Dollar', symbol: '$' },
+    { code: 'CNY', name: '简体中文', symbol: '¥' },
+    { code: 'JPY', name: '日本語', symbol: '¥' },
+    { code: 'EUR', name: 'Euro', symbol: '€' },
+    { code: 'KRW', name: '한국어', symbol: '₩' },
+    { code: 'THB', name: 'ภาษาไทย', symbol: '฿' },
+    { code: 'SAR', name: 'العربية', symbol: 'SR' },
+  ];
+}
+
+/**
+ * 金钱格式化与转换
+ * @param val 原始价格 (通常为 CNY)
+ * @param unit 自定义符号
+ * @param location 输出位置控制
  */
 export function unitPrice(val, unit, location) {
   if (val === undefined || val === null) val = 0;
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { 
-    CNY: 7.24, 
-    JPY: 154, 
-    USD: 1, 
-    EUR: 0.92, 
-    GBP: 0.79, 
-    KRW: 1320, 
-    HKD: 7.82, 
-    TWD: 31.5, 
-    SGD: 1.34 
-  };
+  // 根据后端返回结构，可能是直接对象也可能是 {rates: {}}
+  const rates = rateData.rates || rateData || { CNY: 7.24, JPY: 154, USD: 1.0 };
 
-  let convertedPrice = val;
-  let symbol = getSymbol();
+  let symbol = symbolMap[currency] || "¥";
 
-  // Step 1: Convert CNY to USD (assuming val is CNY from DB)
+  // 计算逻辑：CNY -> USD (基准) -> Target
+  // 汇率格式：1 USD = X Local (例如 CNY: 7.24)
   const usdPrice = val / (rates.CNY || 7.24);
-
-  // Step 2: Convert USD to Target
-  if (currency === "USD") {
-    convertedPrice = usdPrice;
-  } else if (currency === "JPY") {
-    convertedPrice = usdPrice * (rates.JPY || 154);
-  } else if (currency === "EUR") {
-    convertedPrice = usdPrice * (rates.EUR || 0.92);
-  } else if (currency === "CNY") {
-    convertedPrice = val;
-  } else {
-    const rate = rates[currency];
-    if (rate) convertedPrice = usdPrice * rate;
+  let convertedPrice = usdPrice;
+  if (currency !== 'USD') {
+    const rate = rates[currency] || 1.0;
+    convertedPrice = usdPrice * rate;
   }
 
   let price = Foundation.formatPrice(convertedPrice);
+  
   if (location === "before") {
-    return (unit || symbol) + price.split(".")[0];
+    return (unit || symbol) + price.substr(0, price.length - 3);
   }
   if (location === "after") {
-    return price.split(".")[1];
+    return price.substr(-2);
   }
   return (unit || symbol) + price;
 }
 
 /**
- * 格式化价格  1999 --> [1999,00]
+ * 格式化价格返回数组 [整数, 小数]
  */
 export function goodsFormatPrice(val) {
   if (val === undefined || val === null) {
@@ -83,38 +91,18 @@ export function goodsFormatPrice(val) {
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || { 
-    CNY: 7.24, 
-    JPY: 154, 
-    USD: 1, 
-    EUR: 0.92, 
-    GBP: 0.79, 
-    KRW: 1320, 
-    HKD: 7.82, 
-    TWD: 31.5, 
-    SGD: 1.34 
-  };
+  const rates = rateData.rates || rateData || { CNY: 7.24, JPY: 154, USD: 1.0 };
 
   const usdPrice = val / (rates.CNY || 7.24);
-  let convertedPrice = val;
-
-  if (currency === "USD") {
-    convertedPrice = usdPrice;
-  } else if (currency === "JPY") {
-    convertedPrice = usdPrice * (rates.JPY || 154);
-  } else if (currency === "EUR") {
-    convertedPrice = usdPrice * (rates.EUR || 0.92);
-  } else if (currency === "CNY") {
-    convertedPrice = val;
-  } else {
-    const rate = rates[currency];
-    if (rate) convertedPrice = usdPrice * rate;
+  let convertedPrice = usdPrice;
+  if (currency !== 'USD') {
+    const rate = rates[currency] || 1.0;
+    convertedPrice = usdPrice * rate;
   }
 
   let valNum = new Number(convertedPrice);
   return valNum.toFixed(2).split(".");
 }
-
 
 /**
  * 将内容复制到粘贴板
@@ -408,7 +396,7 @@ export function quiteLoginOut() {
   uni.showModal({
     title: "提示",
     content: "是否退出登录？",
-    confirmColor: config.mainColor, // use config instead of Vue.prototype
+    confirmColor: config.mainColor,
     async success(res) {
       if (res.confirm) {
         storage.setAccessToken("");

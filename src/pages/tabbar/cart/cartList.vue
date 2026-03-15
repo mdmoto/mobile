@@ -83,7 +83,8 @@
                 <view class="sp-price">
                   <!-- <div class="default-color" :class="{'main-color':Object.keys(skuItem.promotionMap).length ==0  }"> -->
                   <div class="main-color">
-                    <span>{{ unitPrice(skuItem.goodsSku.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(skuItem.goodsSku.price, undefined, 'after') }}</span>
+                    {{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(skuItem.goodsSku.price)[0] }}</span>
+                    <span>.{{ $options.filters.goodsFormatPrice(skuItem.goodsSku.price)[1] }}</span>
                   </div>
                 </view>
                 <view>
@@ -129,14 +130,14 @@
             <div class="fullPrice">
               <span class="number" v-if="cartDetail && cartDetail.priceDetailDTO">
                 总计:
-                <span>{{ unitPrice(cartDetail.priceDetailDTO.flowPrice, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(cartDetail.priceDetailDTO.flowPrice, undefined, 'after') }}</span>
+                <span>{{ $options.filters.currencySymbol() }}{{ $options.filters.goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[0] }}</span>.<span>{{ $options.filters.goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[1] }}</span>
               </span>
               <span class="number" v-else>总计:{{ unitPrice(0, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(0, undefined, 'after') }}</span></span>
             </div>
             <div
               v-if="cartDetail.cartList && cartDetail.cartList.length!=0 && cartDetail.priceDetailDTO && cartDetail.priceDetailDTO.discountPrice!=0 "
               class="discountPrice">
-              <span>优惠减:{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice, undefined, 'after') }}</span>
+              <span>优惠减:{{(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice) | unitPrice}}
               </span>
               <span class="discount-details" @click="discountDetails">优惠明细</span>
             </div>
@@ -150,16 +151,16 @@
           <div class="discount-way">
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>商品总额</span>
-              <span>{{unitPrice(cartDetail.priceDetailDTO.goodsPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice, undefined, 'after') }}</span></span>
+              <span>{{cartDetail.priceDetailDTO.goodsPrice | unitPrice}}</span>
 
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>优惠券</span>
-              <span>-{{unitPrice(cartDetail.priceDetailDTO.couponPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(cartDetail.priceDetailDTO.couponPrice, undefined, 'after') }}</span></span>
+              <span>-{{cartDetail.priceDetailDTO.couponPrice | unitPrice}}</span>
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>其他优惠</span>
-              <span>-{{unitPrice(cartDetail.priceDetailDTO.discountPrice, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(cartDetail.priceDetailDTO.discountPrice, undefined, 'after') }}</span></span>
+              <span>-{{cartDetail.priceDetailDTO.discountPrice | unitPrice}}</span>
             </div>
           </div>
         </div>
