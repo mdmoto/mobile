@@ -100,7 +100,7 @@
 
           <text class="cu-tag round" @click="getCode">刷新拼图</text>
           <text class="my-neirong-sm cuIcon-safe" style="color: #c1c1c1"
-            >Lili-FRAMEWORK</text
+            >MaoMall-FRAMEWORK</text
           >
         </view>
       </view>
