@@ -532,14 +532,15 @@ export function getPages(val) {
 /**
  * 跳转到登录页面
  */
-export function navigateToLogin(type = "navigateTo") {
+export function navigateToLogin(type) {
+  const jumpType = (typeof type === "string" && type) || "navigateTo";
   // #ifdef MP-WEIXIN
-  uni[type]({
+  uni[jumpType]({
     url: "/pages/passport/wechatMPLogin",
   });
   // #endif
   // #ifndef MP-WEIXIN
-  uni[type]({
+  uni[jumpType]({
     url: "/pages/passport/login",
   });
   //  #endif
