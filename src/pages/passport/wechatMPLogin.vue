@@ -25,12 +25,14 @@
 					<div @click="backToHome" class="btn-callback">暂不登录</div>
 				</view>
 				<div class="privacy">
-            <u-checkbox shape="circle" v-model="checked" :active-color="lightColor">
-              <div class="flex">
-                阅读并同意<navigator class="light-color" url="/pages/mine/help/tips?type=PRIVACY_POLICY">《隐私协议》</navigator>
-                <navigator class="light-color" url="/pages/mine/help/tips?type=USER_AGREEMENT">《用户协议》</navigator>
-              </div>
-            </u-checkbox>
+				<u-checkbox-group v-model="checkedArr" @change="checkedChange">
+					<u-checkbox shape="circle" name="agreed" :active-color="lightColor">
+						<div class="flex">
+							阅读并同意<navigator class="light-color" url="/pages/mine/help/tips?type=PRIVACY_POLICY">《隐私协议》</navigator>
+							<navigator class="light-color" url="/pages/mine/help/tips?type=USER_AGREEMENT">《用户协议》</navigator>
+						</div>
+					</u-checkbox>
+				</u-checkbox-group>
         </div>
 			</div>
 		</view>
@@ -55,6 +57,7 @@
 			return {
 				lightColor:this.$lightColor,
 				checked:false,
+				checkedArr: [], // uview-plus checkbox group array
         configs:config,
 				// 是否展示手机号码授权弹窗，默认第一步不展示，要先获取用户基础信息
 				phoneAuthPopup: false,
@@ -102,6 +105,10 @@
 			 * 2.解决方法： 尝试在回退的时候判断地址，让回退多一级这样就避免了
 			 */
 
+			// 协议勾选切换
+			checkedChange(val) {
+				this.checked = val.length > 0;
+			},
 			back() {
 				whetherNavigate("wx");
 			},

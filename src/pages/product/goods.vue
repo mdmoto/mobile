@@ -86,22 +86,22 @@
 
                     <span>
                       <span v-if="wholesaleList.length">
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
+                        <span>{{ currencySymbol() }}</span><span class="price">{{
+                          goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
                         }}</span>.{{
-                          $options.filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
+                          goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
                         }}
                         ~
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(wholesaleList[0].price)[0]
+                        <span>{{ currencySymbol() }}</span><span class="price">{{
+                          goodsFormatPrice(wholesaleList[0].price)[0]
                         }}</span>.{{
-                          $options.filters.goodsFormatPrice(wholesaleList[0].price)[1]
+                          goodsFormatPrice(wholesaleList[0].price)[1]
                         }}
                       </span>
                       <span v-else>
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(goodsDetail.price)[0]
-                        }}</span>.{{ $options.filters.goodsFormatPrice(goodsDetail.price)[1] }}
+                        <span>{{ currencySymbol() }}</span><span class="price">{{
+                          goodsFormatPrice(goodsDetail.price)[0]
+                        }}</span>.{{ goodsFormatPrice(goodsDetail.price)[1] }}
                       </span>
                     </span>
                   </view>
@@ -110,7 +110,7 @@
                       暂无报价
                     </div>
                     <span v-else>
-                    {{ $options.filters.currencySymbol() }}<span class="price">0 </span>.00
+                    {{ currencySymbol() }}<span class="price">0 </span>.00
                     </span>
                   </view>
 
@@ -227,11 +227,11 @@
         <!-- 拼团结算 -->
         <view class="detail-btn" v-else-if="isGroup">
           <view class="to-store-car pt-buy to-store-btn" @click="shutMask(4, 'buy')">
-            <view>{{ goodsDetail.price | unitPrice }}</view>
+            <view>{{ unitPrice(goodsDetail.price) }}</view>
             <view>单独购买</view>
           </view>
           <view class="to-buy pt-buy to-store-btn" @click="toAssembleBuyNow">
-            <view>{{ goodsDetail.promotionPrice | unitPrice }}</view>
+            <view>{{ unitPrice(goodsDetail.promotionPrice) }}</view>
             <view>拼团价格</view>
           </view>
         </view>

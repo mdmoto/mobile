@@ -1,12 +1,12 @@
 <template>
-  <div class="layout">
+  <div class="layout" v-if="res && res.list && res.list[0]">
     <u-sticky>
       <div class="goods-cell-title">
         <div
           class="goods-item-title"
           :class="{ 'selected-title': selected.index == index }"
           @click="handleClickTitle(title, index)"
-          v-for="(title, index) in res.list[0].titleWay"
+          v-for="(title, index) in titleWaySafe"
           :key="index"
         >
           <h4 class="h4">{{ title.title }}</h4>
@@ -17,13 +17,14 @@
     <div class="goods-list">
       <div
         v-if="
-          item.___index != undefined
+          item &&
+          (item.___index != undefined
             ? selected.index == item.___index
-            : selected.val == item.type
+            : selected.val == item.type)
         "
         @click="handleClick(item)"
         class="goods-item"
-        v-for="(item, item_index) in res.list[0].listWay"
+        v-for="(item, item_index) in listWaySafe"
         :key="item_index"
       >
         <div class="goods-img">
@@ -49,7 +50,14 @@
       </div>
 
       <div
-        v-if="res.list[0].titleWay[selected.index].bindCategory && goodsData.length"
+        v-if="
+          res.list &&
+          res.list[0] &&
+          res.list[0].titleWay &&
+          res.list[0].titleWay[selected.index] &&
+          res.list[0].titleWay[selected.index].bindCategory &&
+          goodsData.length
+        "
         v-for="(item, index) in goodsData"
         :key="index"
         class="goods-item"
@@ -87,10 +95,27 @@
 <script>
 import { getGoodsList } from "@/api/goods.js";
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
+import { unitPrice as unitPriceFn } from "@/utils/filters.js";
+import { modelNavigateTo } from "./tpl.js";
 export default {
   title: "points.pointsGoods",
   components: {
     uniLoadMore,
+  },
+  computed: {
+    module0() {
+      if (!this.res || !this.res.list || !this.res.list[0]) return null;
+      return this.res.list[0];
+    },
+    titleWaySafe() {
+      const m = this.module0;
+      return (m && Array.isArray(m.titleWay) ? m.titleWay : []);
+    },
+    listWaySafe() {
+      const m = this.module0;
+      const list = (m && Array.isArray(m.listWay) ? m.listWay : []);
+      return list.filter(Boolean);
+    },
   },
   data() {
     return {
@@ -114,15 +139,15 @@ export default {
     res: {
       handler(val) {
         // 监听父级的值 如果有值将值赋给selected
-        if (val) {
+        if (val && val.list && val.list[0]) {
           // 如果第一个标签页绑定为商品
-          this.selected.val = this.res.list[0].listWay[0] ? this.res.list[0].listWay[0].type: '';
+          this.selected.val = this.listWaySafe[0] ? this.listWaySafe[0].type : '';
           // 如果第一个标签为绑定为分类
-          if (this.res.list[0].titleWay[0].bindCategory) {
+          if (this.titleWaySafe[0] && this.titleWaySafe[0].bindCategory) {
             this.params.pageNumber = 1;
             this.goodsData = [];
             this.isInitialLoad = true; // 初始加载
-            this.initGoods(this.res.list[0].titleWay[0]);
+            this.initGoods(this.titleWaySafe[0]);
           }
         }
       },
@@ -164,10 +189,11 @@ export default {
     uni.$off('onReachBottom')
   },
   methods: {
+    unitPrice(val, unit, location) {
+      return unitPriceFn(val, unit, location);
+    },
     handleClick(item) {
-      uni.navigateTo({
-        url: `/pages/product/goods?id=${item.id}&goodsId=${item.goodsId}`,
-      });
+      modelNavigateTo(item);
     },
     closeGoods(val, index) {
       this.res.list[0].listWay.splice(index, 1);
@@ -202,17 +228,26 @@ export default {
       
       try {
         const res = await getGoodsList(this.params);
-        if (res.data.success) {
-          this.goodsResult = res.data.result;
-          const result = res.data.result.records || [];
+        const pageResult = (res && (res.result || (res.data && res.data.result))) || res;
+        if (!pageResult) {
+          throw new Error("Empty goods list response");
+        }
+
+        this.goodsResult = pageResult;
+        const result = pageResult.records || [];
           
           // 追加新数据
           this.goodsData.push(...result);
           
           // 更新加载状态
           if (this.enableBottomLoad) {
-            if (this.goodsData.length >= this.goodsResult.totalElements) {
+            const totalElements =
+              this.goodsResult.totalElements ?? this.goodsResult.total ?? this.goodsResult.totalCount;
+
+            if (typeof totalElements === "number" && this.goodsData.length >= totalElements) {
               this.loadStatus = 'noMore'; // 没有更多了
+            } else if (result.length < this.params.pageSize) {
+              this.loadStatus = 'noMore'; // 本页不足，认为没有更多
             } else {
               this.loadStatus = 'more'; // 可以加载更多
             }
@@ -223,22 +258,10 @@ export default {
             pageSize: this.params.pageSize,
             pageNumber: this.params.pageNumber,
             loadedCount: this.goodsData.length,
-            totalElements: this.goodsResult.totalElements,
+            totalElements: this.goodsResult.totalElements ?? this.goodsResult.total ?? this.goodsResult.totalCount,
             loadStatus: this.loadStatus,
             newRecordsCount: result.length
           });
-        } else {
-          console.error('商品数据加载失败:', res.data);
-          // 加载失败时重置状态
-          if (this.enableBottomLoad) {
-            this.loadStatus = 'more';
-          }
-          uni.showToast({
-            title: res.data.message || '加载失败，请重试',
-            icon: 'none',
-            duration: 2000
-          });
-        }
       } catch (error) {
         console.error('商品数据加载异常:', error);
         // 加载异常时重置状态

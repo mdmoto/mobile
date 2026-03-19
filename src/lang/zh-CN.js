@@ -217,7 +217,12 @@ export default {
         "sellerEntry": "店铺入驻",
         "sharingTips": "请邀请用户扫描二维码或者将地址复制转发给其他用户",
         "close": "关闭",
-        "pickUpAddress": "自提点地址"
+        "pickUpAddress": "自提点地址",
+        "country": "国家/地区",
+        "selectCountry": "请选择国家/地区",
+        "postalCode": "邮政编码",
+        "inputPostalCode": "请输入邮政编码",
+        "regionPlaceholder": "请输入所在省/州、城市或地区"
     },
     "auth": {
         "loginTitle": "登录",

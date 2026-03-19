@@ -133,8 +133,8 @@
 
 			<!-- 隐私协议（移到最底部） -->
 			<div class="flex privacy-section" v-show="current != 1">
-				<u-checkbox-group :icon-size="20" width="40rpx">
-					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
+				<u-checkbox-group v-model="privacyArr" @change="privacyChange" :icon-size="20">
+					<u-checkbox shape="circle" name="agreed" active-color="#FF5E00"></u-checkbox>
 				</u-checkbox-group>
 				<div class="tips">
 					{{ $t('deposit.loginPrivacyDesc') }}<span @click="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
@@ -219,6 +219,7 @@
 				enableFetchCode: false,
 				enableUserBtnColor: false,
 				enablePrivacy: false, //隐私政策
+				privacyArr: [], // uview-plus checkbox group array
 				mobile: "", //手机号
 				code: "", //验证码
 				inputStyle: {
@@ -336,6 +337,10 @@
 				},
 			},
 
+		// 隐私政策切换
+		privacyChange(val) {
+			this.enablePrivacy = val.length > 0;
+		},
 		async flage(val) {
 			if (val) {
 				if (this.$refs.uCode.canGetCode) {

@@ -47,7 +47,7 @@
             </div>
           </div>
           <!-- 我要开团 -->
-          <div class="start" v-if="activityData.memberId != $options.filters.isLogin().id" @click="startOpenGroup">我要开团
+          <div class="start" v-if="activityData.memberId != isLogin().id" @click="startOpenGroup">我要开团
           </div>
         </div>
       </div>

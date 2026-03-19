@@ -26,7 +26,7 @@
       
       <!-- 货币设置 -->
       <u-cell 
-        :title="$t('user.currencyCurrency') || '币种设置'" 
+        :title="$t('user.currency') || '币种设置'" 
         :arrow="true" 
         @click="showCurrencyPicker = true"
       >
@@ -50,22 +50,30 @@
     
     <!-- 语言选择器 -->
     <u-picker
-      v-model="showLanguagePicker"
-      mode="selector"
-      :range="languageList"
-      range-key="name"
-      :default-selector="[currentLangIndex]"
+      :show="showLanguagePicker"
+      :columns="[languageList]"
+      key-name="name"
+      value-name="code"
+      :defaultIndex="[Math.max(currentLangIndex, 0)]"
+      closeOnClickOverlay
       @confirm="changeLanguage"
+      @cancel="showLanguagePicker = false"
+      @close="showLanguagePicker = false"
+      @update:show="showLanguagePicker = $event"
     ></u-picker>
 
     <!-- 货币选择器 -->
     <u-picker
-      v-model="showCurrencyPicker"
-      mode="selector"
-      :range="currencyList"
-      range-key="name"
-      :default-selector="[currentCurrencyIndex]"
+      :show="showCurrencyPicker"
+      :columns="[currencyList]"
+      key-name="name"
+      value-name="code"
+      :defaultIndex="[Math.max(currentCurrencyIndex, 0)]"
+      closeOnClickOverlay
       @confirm="changeCurrency"
+      @cancel="showCurrencyPicker = false"
+      @close="showCurrencyPicker = false"
+      @update:show="showCurrencyPicker = $event"
     ></u-picker>
     <view class="submit" v-if="userInfo.id" @click="quiteLoginOut">{{ $t('user.logout') }}</view>
   </view>
@@ -133,8 +141,10 @@ export default {
 
   methods: {
     // 切换语言
-    changeLanguage(index) {
-      const selectedLang = this.languageList[index[0]];
+    changeLanguage(payload) {
+      this.showLanguagePicker = false;
+      const selectedLang = payload && payload.value && payload.value[0];
+      if (!selectedLang) return;
       
       if (selectedLang.code !== this.currentLang) {
         setLanguage(selectedLang.code);
@@ -154,8 +164,10 @@ export default {
     },
 
     // 切换货币
-    changeCurrency(index) {
-      const selected = this.currencyList[index[0]];
+    changeCurrency(payload) {
+      this.showCurrencyPicker = false;
+      const selected = payload && payload.value && payload.value[0];
+      if (!selected) return;
       if (selected.code !== this.currentCurrency) {
         storage.setCurrency(selected.code);
         uni.showToast({
@@ -181,16 +193,28 @@ export default {
      /**
 	   * 退出登录
 	   */
-	  quiteLoginOut() {
-      this.quiteLoginOut();
-	  },
+    quiteLoginOut() {
+      storage.removeUserInfo();
+      storage.removeAccessToken();
+      uni.reLaunch({
+        url: "/pages/tabbar/user/my",
+      });
+    },
   
 	/**
 	 * 用户注销
 	 */
-	logoff(){
-		this.logoff();
-	},
+    logoff() {
+      uni.showActionSheet({
+        itemList: [this.$t("user.confirmLogoff")],
+        success: (res) => {
+          if (res.tapIndex == 0) {
+            // 这里应调用后端注销接口，暂先执行退出登录逻辑
+            this.quiteLoginOut();
+          }
+        },
+      });
+    },
 
     /**
      * 读取当前缓存

@@ -16,9 +16,8 @@
 						@click="delTracks" @open="open" :options="options">
 						
 						<view class="myTracks-item">
-							<u-checkbox-group v-if="isEdit" class="store-line-check">
-								<u-checkbox shape="circle" :active-color="lightColor" v-model="item.checked"
-                @change="checkboxChangeDP(item)"></u-checkbox>
+							<u-checkbox-group v-if="isEdit" @update:modelValue="val => { item.checked = val.length > 0; checkboxChangeDP(item); }" :modelValue="item.checked ? ['checked'] : []" class="store-line-check">
+								<u-checkbox shape="circle" :active-color="lightColor" name="checked"></u-checkbox>
 							</u-checkbox-group>
 							<view class="myTracks-item-img" @click.stop="navigateToDetail(item)">
 								<image :src="item.thumbnail"></image>

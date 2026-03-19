@@ -291,14 +291,17 @@ export default {
       this.form[key] = images;
     },
     getPickerParentValue(e) {
+      const items = Array.isArray(e) ? e : (e && (e.value || e.values || e.detail)) || [];
+      if (!Array.isArray(items) || items.length === 0) return;
+
       this.form.storeAddressIdPath = [];
-      console.log(e)
+      console.log(items)
       let name = "";
-      e.forEach((item, index) => {
+      items.forEach((item, index) => {
         if (item.id) {
           // 遍历数据
           this.form.storeAddressIdPath.push(item.id);
-          if (index == e.length - 1) {
+          if (index == items.length - 1) {
             name += item.localName;
           } else {
             name += item.localName + ",";
@@ -307,7 +310,7 @@ export default {
         }
       });
 
-      this.form.storeCenter = e[e.length-1].center
+      this.form.storeCenter = items[items.length - 1].center
     },
     // 显示三级地址联动
     showPicker() {

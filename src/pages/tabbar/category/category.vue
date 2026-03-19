@@ -74,8 +74,9 @@ export default {
      */
     async loadData() {
       let list = await getCategoryList(0);
-      this.tabList = list.data.result;
-      this.currentId = list.data.result[0].id;
+      const payload = (list && (list.result || (list.data && list.data.result))) || list;
+      this.tabList = Array.isArray(payload) ? payload : [];
+      this.currentId = this.tabList[0] ? this.tabList[0].id : 0;
       this.loadListContent(0);
     },
 

@@ -81,6 +81,7 @@ import { getCouponsNum, getFootprintNum } from "@/api/members.js";
 import { getUserWallet } from "@/api/members";
 import configs from '@/config/config'
 import storage from "@/utils/storage.js";
+import { isLogin as isLoginFn, unitPrice as unitPriceFn, navigateToLogin as navigateToLoginFn } from "@/utils/filters.js";
 
 export default {
   components: {
@@ -101,8 +102,10 @@ export default {
   },
   onLoad() { },
   onShow() {
-    this.userInfo = this.$options.filters.isLogin() || {};
-    if (this.$options.filters.isLogin("auth")) {
+    console.log('MaoMall_Patch_2026_03_19_Deployment');
+    // filters.js functions are injected as globalProperties in src/main.js (e.g. this.isLogin / this.unitPrice)
+    this.userInfo = this.isLogin() || {};
+    if (this.isLogin("auth")) {
       this.getUserOrderNum();
     } else {
       this.walletNum = 0;
@@ -125,6 +128,15 @@ export default {
 
   mounted() { },
   methods: {
+    isLogin(val) {
+      return isLoginFn(val);
+    },
+    unitPrice(val, unit, location) {
+      return unitPriceFn(val, unit, location);
+    },
+    navigateToLogin(type) {
+      return navigateToLoginFn(type);
+    },
     /**
      * 统一跳转接口,拦截未登录路由
      * navigator标签现在默认没有转场动画，所以用view
@@ -137,7 +149,7 @@ export default {
     userDetail() {
       this.userInfo.id
         ? this.navigateTo("/pages/mine/set/personMsg")
-        : this.navigateToLogin();;
+        : this.navigateToLogin();
     },
     async getUserOrderNum() {
       uni.stopPullDownRefresh();

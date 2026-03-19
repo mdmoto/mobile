@@ -15,12 +15,16 @@
     
     <!-- 语言选择器 -->
     <u-picker
-      v-model="showPicker"
-      mode="selector"
-      :range="languageList"
-      range-key="name"
-      :default-selector="[currentLangIndex]"
+      :show="showPicker"
+      :columns="[languageList]"
+      key-name="name"
+      value-name="code"
+      :defaultIndex="[Math.max(currentLangIndex, 0)]"
+      closeOnClickOverlay
       @confirm="handleLanguageChange"
+      @cancel="showPicker = false"
+      @close="showPicker = false"
+      @update:show="showPicker = $event"
     ></u-picker>
   </view>
 </template>
@@ -59,8 +63,10 @@ export default {
   },
   
   methods: {
-    handleLanguageChange(index) {
-      const selectedLang = this.languageList[index[0]]
+    handleLanguageChange(payload) {
+      this.showPicker = false
+      const selectedLang = payload && payload.value && payload.value[0]
+      if (!selectedLang) return
       
       if (selectedLang.code !== this.currentLang) {
         // 切换语言
@@ -107,4 +113,3 @@ export default {
   }
 }
 </style>
-

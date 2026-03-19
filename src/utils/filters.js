@@ -55,9 +55,17 @@ export function unitPrice(val, unit, location) {
   if (val === undefined || val === null) val = 0;
 
   const currency = storage.getCurrency();
-  const rateData = storage.getExchangeRates();
-  // 根据后端返回结构，可能是直接对象也可能是 {rates: {}}
-  const rates = rateData.rates || rateData || { CNY: 7.24, JPY: 154, USD: 1.0 };
+  const rateData = storage.getExchangeRates() || {};
+  
+  // 极致防御：确保 rates 始终是一个有效的对象，且包含基础汇率
+  let rates = { CNY: 7.24, JPY: 154, USD: 1.0 };
+  if (rateData && typeof rateData === 'object' && !Array.isArray(rateData)) {
+      // 兼容两种结构：直接是 {} 或者是 {rates: {}}
+      const source = rateData.rates || rateData;
+      if (source && typeof source === 'object' && source.CNY) {
+          rates = source;
+      }
+  }
 
   let symbol = symbolMap[currency] || "¥";
 
@@ -90,8 +98,15 @@ export function goodsFormatPrice(val) {
   }
 
   const currency = storage.getCurrency();
-  const rateData = storage.getExchangeRates();
-  const rates = rateData.rates || rateData || { CNY: 7.24, JPY: 154, USD: 1.0 };
+  const rateData = storage.getExchangeRates() || {};
+  
+  let rates = { CNY: 7.24, JPY: 154, USD: 1.0 };
+  if (rateData && typeof rateData === 'object' && !Array.isArray(rateData)) {
+      const source = rateData.rates || rateData;
+      if (source && typeof source === 'object' && source.CNY) {
+          rates = source;
+      }
+  }
 
   const usdPrice = val / (rates.CNY || 7.24);
   let convertedPrice = usdPrice;

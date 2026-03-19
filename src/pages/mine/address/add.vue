@@ -25,8 +25,8 @@
         <u-form-item :label="$t('address.addressAlias')" label-width="130">
           <u-input v-model="form.alias" :placeholder="$t('address.inputAddressAlias')" />
         </u-form-item>
-        <u-checkbox-group shape="circle" size="30">
-          <u-checkbox :active-color="lightColor" v-model="form.isDefault">{{ $t('address.setDefaultAddress') }}</u-checkbox>
+        <u-checkbox-group shape="circle" size="30" @update:modelValue="val => { form.isDefault = val.length > 0; }" :modelValue="form.isDefault ? ['default'] : []">
+          <u-checkbox :active-color="lightColor" name="default">{{ $t('address.setDefaultAddress') }}</u-checkbox>
         </u-checkbox-group>
 
         <div class="saveBtn" @click="save">{{ $t('common.save') }}</div>

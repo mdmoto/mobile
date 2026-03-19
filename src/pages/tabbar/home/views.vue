@@ -119,16 +119,26 @@ export default {
     init () {
       this.pageData = "";
       getFloorData().then((res) => {
-        if (res.data.success) {
-          const result = JSON.parse(res.data.result.pageData)
+        // api/base.js bridge: success path usually returns the "result" object directly.
+        const payload = (res && (res.result || (res.data && res.data.result))) || res;
+        const rawPageData = payload && payload.pageData;
+        if (!rawPageData) {
+          this.pageData = "";
+          return;
+        }
+
+        try {
+          const result = typeof rawPageData === "string" ? JSON.parse(rawPageData) : rawPageData;
           this.pageData = result;
-          if (result.list.length) {
-            // 如果最后一个装修模块是商品模块的话 默认启用自动加载
+          if (result && Array.isArray(result.list) && result.list.length) {
             const lastModule = result.list[result.list.length - 1];
             if (lastModule && lastModule.type == 'goods') {
               this.enableLoad = true;
             }
           }
+        } catch (e) {
+          console.error("Failed to parse floor pageData", e, rawPageData);
+          this.pageData = "";
         }
       });
     },

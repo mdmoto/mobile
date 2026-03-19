@@ -125,9 +125,10 @@ export default {
       let data = new Date();
       let now = data.getDate();
       getAutoCoup().then((res) => {
-        console.log(res);
-        if (res.data.success) {
-          this.coupList.push(...res.data.result);
+        const payload = (res && (res.result || (res.data && res.data.result))) || res;
+        const list = Array.isArray(payload) ? payload : (payload && payload.records) || [];
+        if (list && list.length >= 0) {
+          this.coupList.push(...list);
           if (this.coupList != "") {
             this.enableShowCoupon = true;
           } else {

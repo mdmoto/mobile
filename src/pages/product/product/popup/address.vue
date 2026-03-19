@@ -80,23 +80,21 @@ export default {
     /**获取地址 */
     getShippingAddress() {
       if (this.isLogin("auth")) {
-        API_Address.getAddressList(1, 50).then((res) => {
-          if (res.data.success) {
-            this.addressDetail = res.data.result.records;
-            let addr = res.data.result.records.filter((item) => {
-              return item.isDefault == 1;
-            });
+        API_Address.getAddressList(1, 50)
+          .then((res) => {
+            const pageResult = (res && (res.result || (res.data && res.data.result))) || res;
+            const records = (pageResult && pageResult.records) || [];
+            this.addressDetail = records;
 
-            if (addr[0]) {
-              this.checked = addr[0];
+            let defaults = records.filter((item) => item.isDefault === true || item.isDefault === 1);
+            if (defaults[0]) {
+              this.checked = defaults[0];
               this.$emit("deliveryData", this.checked);
             }
-            // addr[0] ? "" : (addr = res.data);
-
-            // /**获取默认地址是否有货 */
-            // this.clickAddress(addr[0]);
-          }
-        });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
     },
 

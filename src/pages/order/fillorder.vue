@@ -8,12 +8,12 @@
     >
       <div class="user-box flex">
         <div class="flex-8">
-          <div v-if="!address.id">请选择地址</div>
+          <div v-if="!address.id">{{ $t('address.selectShippingAddress') }}</div>
           <div v-else>
             <div class="user-address">
               <!-- 省市区 -->
               <div class="flex flex-a-c">
-                <span class="default" v-if="address.isDefault">默认</span>
+                <span class="default" v-if="address.isDefault">{{ $t('address.defaultTag') }}</span>
                 <div
                   class="address-list"
                   v-if="address.consigneeAddressPath.length != 0"
@@ -25,6 +25,7 @@
                   >
                     {{ item }}
                   </span>
+                  <span v-if="address.postalCode" style="margin-left: 10rpx; color: #999;">({{address.postalCode}})</span>
                 </div>
               </div>
               <!-- 详细地址 -->
@@ -59,7 +60,7 @@
                 <div></div>
               </div>
             </div>
-            <div v-else>请选择自提点</div>
+            <div v-else>{{ $t('address.pickUpAddress') }}</div>
           </div>
           <u-icon name="arrow-right" style="color: #bababa"></u-icon>
         </div>
@@ -214,6 +215,19 @@
             }}
           </u-col>
         </u-row>
+        <!-- 国际物流计费 -->
+        <div class="logistics-quotes" v-if="orderMessage.logisticsQuotes && orderMessage.logisticsQuotes.length > 0">
+          <div class="quote-title">物流试算建议 (4PX)</div>
+          <div class="quote-item flex" v-for="(quote, qIndex) in orderMessage.logisticsQuotes" :key="qIndex">
+            <div class="flex-8">
+              <view class="quote-name">{{quote.serviceName}}</view>
+              <view class="quote-desc" v-if="quote.estimatedDays">预计时效: {{quote.estimatedDays}}天</view>
+            </div>
+            <div class="quote-price main-color">
+              {{quote.currency}} {{quote.amount.toFixed(2)}}
+            </div>
+          </div>
+        </div>
         <u-row>
           <u-col :offset="0" :span="4" class="tl" style="text-align: left"
             >备注信息</u-col
@@ -756,10 +770,12 @@ export default {
     getUserAddress() {
       // 如果没有商品选择地址的话 则选择 默认地址
       API_Address.getAddressDefault().then((res) => {
-        if (res.data.result) {
-          res.data.result.consigneeAddressPath =
-            res.data.result.consigneeAddressPath.split(",");
-          this.address = res.data.result;
+        const address = (res && (res.result || (res.data && res.data.result))) || res;
+        if (address) {
+          if (typeof address.consigneeAddressPath === "string") {
+            address.consigneeAddressPath = address.consigneeAddressPath.split(",");
+          }
+          this.address = address;
         }
       });
     },

@@ -19,16 +19,8 @@
         :key="index">
         <view class="tab">
           <view class="store-line">
-            <u-checkbox-group class="store-line-check">
-              <!-- #ifndef MP-WEIXIN -->
-              <u-checkbox shape="circle" :active-color="lightColor" v-model="item.checked"
-                @change="checkboxChangeDP(item)"></u-checkbox>
-              <!-- #endif -->
-              <!-- 微信小程序这里 v-model出现问题，改用:value -->
-              <!-- #ifdef MP-WEIXIN -->
-              <u-checkbox shape="circle" :active-color="lightColor" :value="item.checked"
-                @change="checkboxChangeDP(item)"></u-checkbox>
-              <!-- #endif -->
+            <u-checkbox-group @update:modelValue="val => { item.checked = val.length > 0; checkboxChangeDP(item); }" :modelValue="item.checked ? ['checked'] : []" class="store-line-check">
+              <u-checkbox shape="circle" :active-color="lightColor" name="checked"></u-checkbox>
             </u-checkbox-group>
             <span class="store-name wes store-line-desc" @click.stop="navigateToStore(item)">{{
               item.storeName
@@ -55,16 +47,8 @@
           <view class="goods-row" :class="{ invalid: isInvalid(skuItem) }">
             <view class="goods-config">
               <view>
-                <u-checkbox-group v-if="skuItem.invalid == 0 && !skuItem.errorMessage">
-                  <!-- #ifndef MP-WEIXIN -->
-                  <u-checkbox shape="circle" :active-color="lightColor" class="c-left" v-model="skuItem.checked"
-                    @change="checkboxChange(skuItem)"></u-checkbox>
-                  <!-- #endif -->
-                  <!-- 微信小程序这里 v-model出现问题，改用:value -->
-                  <!-- #ifdef MP-WEIXIN -->
-                  <u-checkbox shape="circle" :active-color="lightColor" class="c-left" :value="skuItem.checked"
-                    @change="checkboxChange(skuItem)"></u-checkbox>
-                  <!-- #endif -->
+                <u-checkbox-group v-if="skuItem.invalid == 0 && !skuItem.errorMessage" @update:modelValue="val => { skuItem.checked = val.length > 0; checkboxChange(skuItem); }" :modelValue="skuItem.checked ? ['checked'] : []">
+                  <u-checkbox shape="circle" :active-color="lightColor" class="c-left" name="checked"></u-checkbox>
                 </u-checkbox-group>
                 <span class="invalid" v-else style="font-size: 24rpx">失效</span>
               </view>
@@ -83,8 +67,8 @@
                 <view class="sp-price">
                   <!-- <div class="default-color" :class="{'main-color':Object.keys(skuItem.promotionMap).length ==0  }"> -->
                   <div class="main-color">
-                    {{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(skuItem.goodsSku.price)[0] }}</span>
-                    <span>.{{ $options.filters.goodsFormatPrice(skuItem.goodsSku.price)[1] }}</span>
+                    {{ currencySymbol() }}<span>{{ goodsFormatPrice(skuItem.goodsSku.price)[0] }}</span>
+                    <span>.{{ goodsFormatPrice(skuItem.goodsSku.price)[1] }}</span>
                   </div>
                 </view>
                 <view>
@@ -123,21 +107,22 @@
     <!-- 结账 -->
     <div class="box box6">
       <view class="navL">
-        <u-checkbox shape="circle" :active-color="lightColor" v-model="checkout" @change="checkOut()" label-size="24">全选
-        </u-checkbox>
+        <u-checkbox-group @update:modelValue="val => { checkout = val.length > 0; checkOut(); }" :modelValue="checkout ? ['all'] : []">
+          <u-checkbox shape="circle" :active-color="lightColor" name="all" label-size="24">全选</u-checkbox>
+        </u-checkbox-group>
         <span class="price">
           <div class="prices">
             <div class="fullPrice">
               <span class="number" v-if="cartDetail && cartDetail.priceDetailDTO">
                 总计:
-                <span>{{ $options.filters.currencySymbol() }}{{ $options.filters.goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[0] }}</span>.<span>{{ $options.filters.goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[1] }}</span>
+                <span>{{ currencySymbol() }}{{ goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[0] }}</span>.<span>{{ goodsFormatPrice(cartDetail.priceDetailDTO.flowPrice)[1] }}</span>
               </span>
               <span class="number" v-else>总计:{{ unitPrice(0, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(0, undefined, 'after') }}</span></span>
             </div>
             <div
               v-if="cartDetail.cartList && cartDetail.cartList.length!=0 && cartDetail.priceDetailDTO && cartDetail.priceDetailDTO.discountPrice!=0 "
               class="discountPrice">
-              <span>优惠减:{{(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice) | unitPrice}}
+              <span>优惠减:{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice - cartDetail.priceDetailDTO.flowPrice) }}
               </span>
               <span class="discount-details" @click="discountDetails">优惠明细</span>
             </div>
@@ -151,16 +136,16 @@
           <div class="discount-way">
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>商品总额</span>
-              <span>{{cartDetail.priceDetailDTO.goodsPrice | unitPrice}}</span>
+              <span>{{ unitPrice(cartDetail.priceDetailDTO.goodsPrice) }}</span>
 
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>优惠券</span>
-              <span>-{{cartDetail.priceDetailDTO.couponPrice | unitPrice}}</span>
+              <span>-{{ unitPrice(cartDetail.priceDetailDTO.couponPrice) }}</span>
             </div>
             <div class="discount-item" v-if="cartDetail.priceDetailDTO">
               <span>其他优惠</span>
-              <span>-{{cartDetail.priceDetailDTO.discountPrice | unitPrice}}</span>
+              <span>-{{ unitPrice(cartDetail.priceDetailDTO.discountPrice) }}</span>
             </div>
           </div>
         </div>

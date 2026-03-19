@@ -113,7 +113,8 @@
 					let params = {}
 					params.messageId = v.memberId
 					editMessages(v.id, params).then(res => {
-						if (res.data.success) {
+						// api/base.js bridge: editMessages returns result directly on success
+						if (res) {
                             console.log( this.lists)
                             this.lists.forEach((item,index)=>{
                                 console.log(item)
@@ -162,13 +163,14 @@
 				
 				messages(this.params).then(res => {
 					console.log(res)
-					if (res.data.success) {
+					const pageResult = (res && (res.result || (res.data && res.data.result))) || res;
+					if (pageResult) {
 						this.showLoading = false
-						if (res.data.result.records == '') {
+						if (pageResult.records == '') {
 							console.log(11111)
 							this.status = "nomore"
 						}
-						res.data.result.records.forEach(item => {
+						;(pageResult.records || []).forEach(item => {
 							this.lists.push(item)
 							let obj = {};
 							this.lists = this.lists.reduce(

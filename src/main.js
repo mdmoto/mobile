@@ -35,9 +35,26 @@ export function createApp() {
   });
 
   // Global properties
+  app.config.globalProperties.$config = config;
   app.config.globalProperties.$mainColor = config.mainColor;
   app.config.globalProperties.$lightColor = config.lightColor;
   app.config.globalProperties.$aiderLightColor = config.aiderLightColor;
+
+  // Global Error Handler (Dev-only)
+  app.config.errorHandler = (err, instance, info) => {
+    console.error('[Global Error]:', err);
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        uni.showModal({
+          title: 'Debug: Runtime Error',
+          content: `${err && err.message ? err.message : String(err)}\nAt: ${info}`,
+          showCancel: false
+        });
+      } catch (_) {
+        // ignore
+      }
+    }
+  };
 
   return {
     app,

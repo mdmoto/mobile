@@ -15,8 +15,8 @@
 					</div>
 					<view class="price-box" @click="navigateToDetailPage(item)">
 						<div class="price" v-if="item.price!=undefined">
-							{{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(item.price )[0] }} </span>.{{
-	            $options.filters.goodsFormatPrice(item.price )[1]
+							{{ currencySymbol() }}<span>{{ goodsFormatPrice(item.price )[0] }} </span>.{{
+	            goodsFormatPrice(item.price )[1]
 	          }}
 						</div>
 					</view>
@@ -60,8 +60,8 @@
 						<div class="title clamp3" @click="navigateToDetailPage(item)">{{ item.goodsName }}</div>
 						<view class="price-box" @click="navigateToDetailPage(item)">
 							<div class="price" v-if="item.price!=undefined">
-								{{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(item.price )[0] }} </span>.{{
-			            $options.filters.goodsFormatPrice(item.price )[1]
+								{{ currencySymbol() }}<span>{{ goodsFormatPrice(item.price )[0] }} </span>.{{
+			            goodsFormatPrice(item.price )[1]
 			          }}
 							</div>
 						</view>

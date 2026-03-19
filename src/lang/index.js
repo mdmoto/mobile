@@ -46,7 +46,8 @@ function getLanguage() {
 }
 
 const i18n = createI18n({
-  legacy: false, // Vue 3 uses non-legacy mode
+  legacy: true, // Switch to legacy mode for Options API compatibility
+  globalInjection: true, // Enable global $t injection
   locale: getLanguage(),
   fallbackLocale: 'en-US',
   messages: {
@@ -65,13 +66,17 @@ const i18n = createI18n({
 
 // 切换语言的方法
 export function setLanguage(lang) {
-  i18n.global.locale.value = lang // Vue 3 uses .value for reactive locale
+  if (i18n.mode === 'legacy') {
+    i18n.global.locale = lang
+  } else {
+    i18n.global.locale.value = lang
+  }
   uni.setStorageSync('app_language', lang)
   console.log('[i18n] 语言已切换为:', lang)
 }
 
 export function getCurrentLanguage() {
-  return i18n.global.locale.value
+  return i18n.mode === 'legacy' ? i18n.global.locale : i18n.global.locale.value
 }
 
 export function getLanguageList() {

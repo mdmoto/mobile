@@ -1,19 +1,17 @@
 <template>
   <view class="address">
 
-    <u-empty class="empty" v-if="addressList.length == 0" text="暂无收货地址" mode="address"></u-empty>
+    <u-empty class="empty" v-if="addressList.length == 0" :text="$t('address.noAddress')" mode="address"></u-empty>
     <view class="list" v-else>
       <view class="item c-content" v-for="(item, index) in addressList" :key="index">
         <view class="basic" @click="selectAddressData(item)">
           <text>{{ item.name }}</text>
           <text>{{ item.mobile }}</text>
-          <text class="default" v-show="item.isDefault">默认</text>
+          <text class="default" v-show="item.isDefault">{{ $t('address.defaultTag') }}</text>
           <view>
             <div class="region">
-              <span v-if="item.consigneeAddressPath[0]">{{item.consigneeAddressPath[0]}}</span>
-              <span v-if="item.consigneeAddressPath[1]">{{item.consigneeAddressPath[1]}}</span>
-              <span v-if="item.consigneeAddressPath[2]">{{item.consigneeAddressPath[2]}}</span>
-              <span v-if="item.consigneeAddressPath[3]">{{item.consigneeAddressPath[3]}}</span>
+              <span v-for="(path, pIndex) in item.consigneeAddressPath" :key="pIndex">{{path}} </span>
+              <span v-if="item.postalCode" style="margin-left: 10rpx; color: #999;">({{item.postalCode}})</span>
               <span>{{ item.detail }}</span>
             </div>
           </view>
@@ -22,13 +20,13 @@
           <view class="relative" @click="setDefault(item)">
             <view v-if="item.isDefault" class="alifont icon-xuanzhong"></view>
             <text v-else class="unchecked"></text>
-            <text>{{ item.isDefault ? "默认地址" : "设为默认" }}</text>
+            <text>{{ item.isDefault ? $t('address.defaultAddress') : $t('address.setDefault') }}</text>
           </view>
           <view class="relative">
             <view class="alifont icon-bianji-copy"></view>
-            <text class="mr-40" @click="addAddress(item.id)">编辑</text>
+            <text class="mr-40" @click="addAddress(item.id)">{{ $t('common.edit') }}</text>
             <view class="alifont icon-lajitong"></view>
-            <text @click="removeAddress(item.id)">删除</text>
+            <text @click="removeAddress(item.id)">{{ $t('common.delete') }}</text>
           </view>
         </view>
       </view>
@@ -36,7 +34,7 @@
     </view>
     <button type="default" class="btn" @click="addAddress('')">
       <u-icon name="plus-circle"></u-icon>
-      添加新收货人
+      {{ $t('address.addNewConsignee') }}
     </button>
     <u-action-sheet :list="removeList" :tips="tips" v-model="showAction" @click="deleteAddressMessage"></u-action-sheet>
   </view>
@@ -52,11 +50,11 @@ export default {
       showAction: false, //是否显示下栏框
       removeList: [
         {
-          text: "确定",
+          text: this.$t('common.confirm'),
         },
       ],
       tips: {
-        text: "确定要删除该收货人信息吗？",
+        text: this.$t('address.confirmDeleteConsignee'),
       },
       removeId: "", //删除的地址id
       routerVal: "",
@@ -95,13 +93,23 @@ export default {
         this.params.pageNumber,
         this.params.pageSize
       ).then((res) => {
-        res.data.result.records.forEach((item) => {
-          item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+        // 兼容 api/base.js bridge：成功时通常直接返回 result
+        const pageResult = (res && (res.result || (res.data && res.data.result))) || res;
+        const records = (pageResult && pageResult.records) || [];
+        records.forEach((item) => {
+          if (typeof item.consigneeAddressPath === "string") {
+            item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+          }
         });
-        this.addressList = res.data.result.records;
-        console.log(this.addressList);
+        this.addressList = records;
 
-         if (this.$store.state.isShowToast){ uni.hideLoading() };
+        if (this.$store.state.isShowToast) {
+          uni.hideLoading();
+        }
+      }).catch((err) => {
+        console.error(err);
+        uni.hideLoading();
+        uni.showToast({ title: err.msg || err.message || "加载失败", icon: "none" });
       });
     },
     //删除地址
@@ -110,21 +118,18 @@ export default {
       this.showAction = true;
     },
     deleteAddressMessage() {
-      API_Address.deleteAddress(this.removeId).then((res) => {
-        if (res.statusCode == 200) {
+      API_Address.deleteAddress(this.removeId)
+        .then(() => {
           uni.showToast({
             icon: "none",
-            title: "删除成功",
+            title: this.$t('message.deleteSuccess'),
           });
           this.getAddressList();
-        } else {
-          uni.showToast({
-            icon: "none",
-            title: res.data.message,
-            duration: 2000,
-          });
-        }
-      });
+        })
+        .catch((err) => {
+          console.error(err);
+          uni.showToast({ title: err.msg || err.message || "删除失败", icon: "none" });
+        });
     },
     //新建。编辑地址
     addAddress(id) {
@@ -154,7 +159,7 @@ export default {
 
       API_Address.editAddress(item).then((res) => {
         uni.showToast({
-          title: "设置默认地址成功",
+          title: this.$t('address.setDefaultSuccess'),
           icon: "none",
         });
         this.getAddressList();

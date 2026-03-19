@@ -344,14 +344,17 @@ export default {
       this.form[key].push(images[0]);
     },
     getPickerParentValue(e) {
+      const items = Array.isArray(e) ? e : (e && (e.value || e.values || e.detail)) || [];
+      if (!Array.isArray(items)) return;
+
       this.form.companyAddressIdPath = [];
 
       let name = "";
-      e.forEach((item, index) => {
+      items.forEach((item, index) => {
         if (item.id) {
           // 遍历数据
           this.form.companyAddressIdPath.push(item.id);
-          if (index == e.length - 1) {
+          if (index == items.length - 1) {
             name += item.localName;
           } else {
             name += item.localName + ",";

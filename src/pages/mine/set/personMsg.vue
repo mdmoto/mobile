@@ -17,7 +17,16 @@
 
       <u-form-item :label="$t('user.birthday')" label-width="150" right-icon="arrow-right">
         <div style="width: 100%;" @click="showBirthday = true">{{ birthday || $t('user.pleaseSelectBirthday') }}</div>
-       <u-picker v-model="showBirthday" mode="time" :confirm-color="lightColor" @confirm="selectTime"></u-picker>
+       <u-datetime-picker
+         :show="showBirthday"
+         v-model="birthdayValue"
+         mode="date"
+         :confirm-color="lightColor"
+         closeOnClickOverlay
+         @confirm="selectBirthday"
+         @cancel="showBirthday = false"
+         @close="showBirthday = false"
+       ></u-datetime-picker>
       </u-form-item>
       <u-form-item :label="$t('user.city')" label-width="150" :placeholder="$t('user.pleaseSelectCity')" right-icon="arrow-right">
         <div style="width: 100%;" @click="clickRegion">{{ form.___path || $t('user.pleaseSelectCity') }}</div>
@@ -48,6 +57,8 @@ import city from "@/components/m-city/m-city.vue";
 export default {
   components: { "m-city": city },
   data() {
+    const birthdayStr = storage.getUserInfo().birthday || "";
+    const birthdayMs = birthdayStr ? new Date(String(birthdayStr).replace(/-/g, "/")).getTime() : Date.now();
     return {
       lightColor: this.$lightColor, //高亮颜色
       form: {
@@ -62,6 +73,7 @@ export default {
 		username: storage.getUserInfo().username,
       },
       birthday: storage.getUserInfo().birthday || "", //生日
+      birthdayValue: isNaN(birthdayMs) ? Date.now() : birthdayMs,
       photo: [
         { text: this.$t('user.takePhoto'), color: this.$mainColor },
         { text: this.$t('user.chooseFromAlbum'), color: this.$mainColor },
@@ -82,22 +94,26 @@ export default {
 	   * 退出登录
 	   */
 	  quiteLoginOut() {
-      this.quiteLoginOut();
+      // Use global filter implementation to avoid accidental recursion
+      this.$filters.quiteLoginOut();
 	  },
 	  
     /**
      * 选择地址回调
      */
     getPickerParentValue(e) {
+      const items = Array.isArray(e) ? e : (e && (e.value || e.values || e.detail)) || [];
+      if (!Array.isArray(items)) return;
+
       this.form.region = [];
       this.form.regionId = [];
       let name = "";
 
-      e.forEach((item, index) => {
+      items.forEach((item, index) => {
         if (item.id) {
           this.form.region.push(item.localName);
           this.form.regionId.push(item.id);
-          if (index == e.length - 1) {
+          if (index == items.length - 1) {
             name += item.localName;
           } else {
             name += item.localName + ",";
@@ -166,9 +182,17 @@ export default {
     /**
      * 选择时间
      */
-    selectTime(time) {
-      this.form.birthday = `${time.year}-${time.month}-${time.day}`;
-      this.birthday = `${time.year} - ${time.month} - ${time.day}`;
+    selectBirthday(payload) {
+      this.showBirthday = false;
+      const value = payload && payload.value;
+      if (!value) return;
+      this.birthdayValue = value;
+      const d = new Date(value);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      this.form.birthday = `${yyyy}-${mm}-${dd}`;
+      this.birthday = `${yyyy} - ${mm} - ${dd}`;
     },
 	
 	navigateTo(username) {

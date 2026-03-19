@@ -266,6 +266,8 @@ export default {
 		align-items: flex-start;
 		flex-wrap: wrap;
 		text-align: center;
+		gap: 0 !important;
+		justify-content: flex-start !important;
 
 		.interact-item {
 			display: flex;
@@ -273,7 +275,8 @@ export default {
 			align-items: center;
 			justify-content: flex-start;
 			font-size: $font-sm;
-			width: 25%;
+			width: 25% !important;
+			box-sizing: border-box;
 			min-height: 160rpx;
 			padding: 40rpx 5rpx 20rpx 5rpx;
 			word-break: break-word;

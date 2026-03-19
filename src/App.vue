@@ -100,11 +100,26 @@ import { getMaoMallRates } from "@/api/maollar";
 			...mapMutations(["login"]),
 			async initMaoMallRates() {
 				try {
-					const result = await getMaoMallRates();
-					storage.setExchangeRates(result);
-					console.log("MaoMall rates updated:", result);
+					const res = await getMaoMallRates();
+					// 核心修复：极致安全的剥壳，确保进入 storage 的只有汇率 JSON 本身
+					// 兼容：完整 response 容器、response.data、或 response.data.result
+					let finalRates = null;
+					if (res && res.data && res.data.rates) {
+						finalRates = res.data; // 接口直接返回在 data 里的情况
+					} else if (res && res.data && res.data.result && res.data.result.rates) {
+						finalRates = res.data.result; // 带 result 壳子的情况
+					} else if (res && res.rates) {
+						finalRates = res; // 已经剥过壳的情况
+					}
+
+					if (finalRates && finalRates.rates) {
+						storage.setExchangeRates(finalRates);
+						console.log("MaoMall rates successfully calibrated:", finalRates.base);
+					} else {
+						console.error("Invalid rates structure received:", res);
+					}
 				} catch (e) {
-					console.error("Failed to fetch MaoMall rates", e);
+					console.error("Critical failure during MaoMall rates initialization:", e);
 				}
 			},
 			/**

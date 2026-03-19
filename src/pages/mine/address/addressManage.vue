@@ -9,10 +9,8 @@
           <text class="default" v-show="item.isDefault">{{ $t('address.defaultTag') }}</text>
           <view>
             <div class="region">
-              <span v-if="item.consigneeAddressPath[0]">{{item.consigneeAddressPath[0]}}</span>
-              <span v-if="item.consigneeAddressPath[1]">{{item.consigneeAddressPath[1]}}</span>
-              <span v-if="item.consigneeAddressPath[2]">{{item.consigneeAddressPath[2]}}</span>
-              <span v-if="item.consigneeAddressPath[3]">{{item.consigneeAddressPath[3]}}</span>
+              <span v-for="(path, pIndex) in item.consigneeAddressPath" :key="pIndex">{{path}} </span>
+              <span v-if="item.postalCode" style="margin-left: 10rpx; color: #999;">({{item.postalCode}})</span>
               <span>{{ item.detail }}</span>
             </div>
           </view>
@@ -98,12 +96,22 @@ export default {
         this.params.pageNumber,
         this.params.pageSize
       ).then((res) => {
-        res.data.result.records.forEach((item) => {
-          item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+        const pageResult = (res && (res.result || (res.data && res.data.result))) || res;
+        const records = (pageResult && pageResult.records) || [];
+        records.forEach((item) => {
+          if (typeof item.consigneeAddressPath === "string") {
+            item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+          }
         });
-        this.addressList = res.data.result.records;
+        this.addressList = records;
 
-         if (this.$store.state.isShowToast){ uni.hideLoading() };
+        if (this.$store.state.isShowToast) {
+          uni.hideLoading();
+        }
+      }).catch((err) => {
+        console.error(err);
+        uni.hideLoading();
+        uni.showToast({ title: err.msg || err.message || "加载失败", icon: "none" });
       });
     },
     //删除地址
@@ -113,21 +121,18 @@ export default {
     },
     // 删除地址
     deleteAddressMessage() {
-      API_Address.deleteAddress(this.removeId).then((res) => {
-        if (res.statusCode == 200) {
+      API_Address.deleteAddress(this.removeId)
+        .then(() => {
           uni.showToast({
             icon: "none",
             title: this.$t('message.deleteSuccess'),
           });
           this.getAddressList();
-        } else {
-          uni.showToast({
-            icon: "none",
-            title: res.data.message,
-            duration: 2000,
-          });
-        }
-      });
+        })
+        .catch((err) => {
+          console.error(err);
+          uni.showToast({ title: err.msg || err.message || "删除失败", icon: "none" });
+        });
     },
     //新建。编辑地址
     addAddress(id) {

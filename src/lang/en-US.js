@@ -218,7 +218,12 @@ export default {
         "sellerEntry": "Seller Entry",
         "sharingTips": "Copy and share this link with others",
         "close": "Close",
-        "pickUpAddress": "Pick-up Address"
+        "pickUpAddress": "Pick-up Address",
+        "country": "Country/Region",
+        "selectCountry": "Select Country/Region",
+        "postalCode": "Postal Code",
+        "inputPostalCode": "Enter Postal Code",
+        "regionPlaceholder": "Province/State, City, or District"
     },
     "auth": {
         "loginTitle": "Login",
