@@ -209,9 +209,9 @@
             @click="shippingFlag = true"
           >
             {{
-              shippingMethod.find((e) => {
+              (shippingMethod.find((e) => {
                 return e.value == shippingText;
-              }).label
+              }) || {}).label || ""
             }}
           </u-col>
         </u-row>
@@ -1234,5 +1234,53 @@ page {
 
 .goods-item {
   margin: 20rpx 0;
+}
+
+.logistics-quotes {
+  background: #fdf6ec; // Subtle background for suggestion
+  padding: 16rpx 24rpx;
+  margin: 16rpx 0;
+  border-radius: 12rpx;
+  border: 1rpx solid #faecd8;
+
+  .quote-title {
+    font-size: 26rpx;
+    font-weight: bold;
+    color: #e6a23c;
+    margin-bottom: 12rpx;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: "✈️";
+      margin-right: 8rpx;
+    }
+  }
+
+  .quote-item {
+    padding: 12rpx 0;
+    border-bottom: 1rpx dashed #faecd8;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .quote-name {
+      font-size: 24rpx;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .quote-desc {
+      font-size: 20rpx;
+      color: #909399;
+      margin-top: 2rpx;
+    }
+
+    .quote-price {
+      font-size: 26rpx;
+      font-weight: bold;
+    }
+  }
 }
 </style>
