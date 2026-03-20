@@ -1,4 +1,12 @@
 import { createSSRApp } from "vue";
+window.onerror = function(message, source, lineno, colno, error) {
+  console.log("TOP_LEVEL_ERROR_DETECTED:", { message, source, lineno, colno, error });
+  return false;
+};
+window.onunhandledrejection = function(event) {
+  console.log("UNHANDLED_REJECTION:", event.reason);
+};
+
 // Diagnostic Heartbeat
 if (typeof window !== "undefined") {
   console.log("MaoMall_Startup_Heartbeat_2026_03_20");
