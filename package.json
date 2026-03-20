@@ -1,13 +1,14 @@
 {
   "name": "maollar-uniapp",
   "version": "1.0.0",
-  "description": "MaoMall - 一站购全球, 消费即投资",
+  "description": "MaoMall - \u4e00\u7ad9\u8d2d\u5168\u7403, \u6d88\u8d39\u5373\u6295\u8d44",
   "main": "main.js",
   "scripts": {
     "dev:h5": "uni",
     "build:h5": "uni build",
     "dev:mp-weixin": "uni -p mp-weixin",
-    "build:mp-weixin": "uni build -p mp-weixin"
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "postinstall": "node fix-node-modules.js && node fix-node-modules-surgical.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
