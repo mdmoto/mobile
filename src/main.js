@@ -9,7 +9,20 @@ window.onunhandledrejection = function(event) {
 
 // Diagnostic Heartbeat
 if (typeof window !== "undefined") {
-  console.log("MaoMall_Startup_Heartbeat_2026_03_20");
+  
+if (typeof window !== "undefined") {
+  console.log("MaoMall_Startup_Heartbeat_2026_03_20_v2");
+  // Proactive check of methods
+  const testUni = typeof uni !== "undefined" ? uni : window.uni;
+  if (testUni) {
+    console.log("uni.navigateTo type:", typeof testUni.navigateTo);
+    console.log("uni.request type:", typeof testUni.request);
+    console.log("uni.redirectTo type:", typeof testUni.redirectTo);
+  } else {
+    console.log("uni is COMPLETELY MISSING");
+  }
+}
+
   console.log("NODE_ENV:", process.env.NODE_ENV);
   console.log("uni exists:", typeof uni !== "undefined");
   if (typeof uni !== "undefined") {
