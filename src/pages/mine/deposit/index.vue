@@ -13,18 +13,20 @@
       <swiper class="swiper-box"  :current="swiperCurrent">
         <swiper-item class="swiper-item" v-for="index in list.length" :key="index">
           <scroll-view class="scroll-v view-wrapper" enableBackToTop="true" scroll-with-animation scroll-y @scrolltolower="loadMore">
-            <view v-if="depositData.length!=0" class="view-item" v-for="(logItem, logIndex) in depositData" :key="logIndex">
-              <view class="view-item-detail">
-                <view class="-title">{{logItem.detail}}</view>
-                <!-- <view class="-number">{{logItem.detail}}</view> -->
-              </view>
-              <view class="view-item-change">
-                <view class="-money green" v-if="logItem.serviceType == 'WALLET_PAY' || logItem.serviceType == 'WALLET_WITHDRAWAL'"> {{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
-                <view class="-money" v-if="logItem.serviceType == 'WALLET_REFUND' || logItem.serviceType == 'WALLET_RECHARGE' || logItem.serviceType == 'WALLET_COMMISSION' ">
-                  +{{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
-                <view class="-time">{{logItem.createTime}}</view>
-              </view>
-            </view>
+	            <template v-if="depositData.length!=0">
+								<view class="view-item" v-for="(logItem, logIndex) in depositData" :key="logIndex">
+	              	<view class="view-item-detail">
+	                	<view class="-title">{{logItem.detail}}</view>
+	                	<!-- <view class="-number">{{logItem.detail}}</view> -->
+	              	</view>
+	              	<view class="view-item-change">
+	                	<view class="-money green" v-if="logItem.serviceType == 'WALLET_PAY' || logItem.serviceType == 'WALLET_WITHDRAWAL'"> {{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
+	                	<view class="-money" v-if="logItem.serviceType == 'WALLET_REFUND' || logItem.serviceType == 'WALLET_RECHARGE' || logItem.serviceType == 'WALLET_COMMISSION' ">
+	                  	+{{unitPrice(logItem.money, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(logItem.money, undefined, 'after') }}</span> </view>
+	                	<view class="-time">{{logItem.createTime}}</view>
+	              	</view>
+	            	</view>
+							</template>
 
             <u-empty v-if="depositData.length==0" mode="history" text="暂无记录" />
       

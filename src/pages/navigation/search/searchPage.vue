@@ -33,9 +33,11 @@
 				<view class="keyword-block" v-if="oldKeywordList.length > 0">
 					<view class="keyword-list-header"><view class="u-tips">搜索历史</view></view>
 					<div class="oldKeyList">
-						<div class="oldKeyItem" v-if="keyword" v-for="(keyword, index) in oldKeywordList" :key="index" @click="doSearch(keyword)">
-							<span>{{ keyword }}</span>
-						</div>
+						<template v-for="(keyword, index) in oldKeywordList" :key="index">
+							<div class="oldKeyItem" v-if="keyword" @click="doSearch(keyword)">
+								<span>{{ keyword }}</span>
+							</div>
+						</template>
 
 						<div @click="showMore" v-if="oldKeywordIndex > loadIndex" class="oldKeyItem">展示更多</div>
 					</div>
