@@ -3,6 +3,7 @@ import { getUserInfo } from "@/api/members";
 import storage from "@/utils/storage.js";
 import config from '@/config/config';
 import Foundation from "./Foundation.js";
+import { uniNavigateTo, uniRedirectTo } from "./nav.js";
 
 /**
  * 币种符号映射 (根据用户要求：仅显示符号，不带英文字母)
@@ -533,16 +534,16 @@ export function getPages(val) {
  * 跳转到登录页面
  */
 export function navigateToLogin(type) {
-  const jumpType = (typeof type === "string" && type) || "navigateTo";
   // #ifdef MP-WEIXIN
-  uni[jumpType]({
-    url: "/pages/passport/wechatMPLogin",
-  });
+  uniNavigateTo("/pages/passport/wechatMPLogin");
   // #endif
   // #ifndef MP-WEIXIN
-  uni[jumpType]({
-    url: "/pages/passport/login",
-  });
+  const jumpType = (typeof type === "string" && type) || "navigateTo";
+  if (jumpType === "redirectTo") {
+    uniRedirectTo("/pages/passport/login");
+  } else {
+    uniNavigateTo("/pages/passport/login");
+  }
   //  #endif
 }
 

@@ -1,4 +1,14 @@
 import { createSSRApp } from "vue";
+// Diagnostic Heartbeat
+if (typeof window !== "undefined") {
+  console.log("MaoMall_Startup_Heartbeat_2026_03_20");
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log("uni exists:", typeof uni !== "undefined");
+  if (typeof uni !== "undefined") {
+    console.log("uni methods:", Object.keys(uni).filter(k => typeof uni[k] === "function").slice(0, 10));
+  }
+}
+
 import { Buffer } from 'buffer';
 import process from 'process';
 

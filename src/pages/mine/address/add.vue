@@ -7,18 +7,32 @@
           {{ $t('address.selectShippingAddress') }}
         </view>
 				<!-- #endif -->
+        <u-form-item :label="$t('address.country')" label-width="130" prop="countryCode">
+          <u-input v-model="form.countryName" type="select" @click="countryShow = true" :placeholder="$t('address.selectCountry')" />
+          <u-select v-model="countryShow" :list="countryList" @confirm="countryConfirm"></u-select>
+        </u-form-item>
+
         <u-form-item class="border" :label="$t('address.name')" label-width="130" prop="name">
           <u-input v-model="form.name" clearable :placeholder="$t('address.inputConsigneeName')" />
         </u-form-item>
 
         <u-form-item :label="$t('address.phone')" label-width="130" prop="mobile">
-          <u-input v-model="form.mobile" type="number" maxlength="11" :placeholder="$t('address.inputMobile')" />
+          <u-input v-model="form.mobile" :placeholder="$t('address.inputMobile')" />
         </u-form-item>
-        <u-form-item :label="$t('address.region')" label-width="130" prop="___path">
-          <div  @click="showPicker" >
+
+        <u-form-item :label="$t('address.postalCode')" label-width="130" :required="isPostalCodeRequired" prop="postalCode">
+          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode')" />
+        </u-form-item>
+
+        <u-form-item v-if="form.countryCode === 'CN'" :label="$t('address.region')" label-width="130" prop="___path">
+          <div @click="showPicker">
             {{ form.___path || $t('address.selectRegionPlaceholder') }}
           </div>
         </u-form-item>
+        <u-form-item v-else :label="$t('address.region')" label-width="130" prop="___path">
+          <u-input v-model="form.___path" :placeholder="$t('address.regionPlaceholder')" />
+        </u-form-item>
+
         <u-form-item class="detailAddress" :label="$t('address.detail')" label-width="130" prop="detail">
           <u-input type="textarea" v-model="form.detail" maxlength="100" height="150" :placeholder="$t('address.detailAddressPlaceholder')" />
         </u-form-item>
@@ -51,6 +65,12 @@ export default {
   },
   onShow() {
     // 判断当前系统权限定位是否开启
+  },
+  computed: {
+    isPostalCodeRequired() {
+      const required = new Set(["US","CA","JP","KR","AU","AE","SA","QA","KW","OM","BH","TH","VN"]);
+      return required.has(this.form.countryCode);
+    },
   },
   methods: {
     // 关闭地图
@@ -142,28 +162,58 @@ export default {
       this.mapFlag = !this.mapFlag; //关闭地图
     },
 
+    // 国家确认
+    countryConfirm(e) {
+      const items = Array.isArray(e) ? e : (e && (e.value || e.values || e.detail)) || [];
+      const first = Array.isArray(items) ? items[0] : items;
+      if (!first) return;
+
+      this.form.countryCode = first.value || first.code || first.countryCode || "CN";
+      this.form.countryName = first.label || first.name || first.countryName || this.form.countryCode;
+
+      // 切换国家时清空地区
+      this.form.___path = "";
+      this.form.consigneeAddressIdPath = [];
+      this.form.consigneeAddressPath = [];
+      this.form.postalCode = "";
+    },
+
     // 保存当前 地址
     save() {
       this.$refs.uForm.validate((valid) => {
         if (valid) {
-          let pages = getCurrentPages(); //获取页面栈
-          let beforePage = pages[pages.length - 2]; //上个页面
+          // 准备提交的数据（避免响应式对象被污染）
+          let submitData = JSON.parse(JSON.stringify(this.form));
+
+          // 处理区域路径：后端接收逗号分隔字符串
+          if (submitData.countryCode === "CN") {
+            if (Array.isArray(submitData.consigneeAddressPath)) {
+              submitData.consigneeAddressPath = submitData.consigneeAddressPath.join(",");
+            }
+            if (Array.isArray(submitData.consigneeAddressIdPath)) {
+              submitData.consigneeAddressIdPath = submitData.consigneeAddressIdPath.join(",");
+            }
+          } else {
+            // 国际地址：自由文本写入 consigneeAddressPath，ID 路径清空
+            submitData.consigneeAddressPath = submitData.___path || "";
+            submitData.consigneeAddressIdPath = "";
+          }
+
+          delete submitData.___path;
+          delete submitData.countryName;
 
           // 如果没有id则为新增地址
-          if (!this.form.id) {
-            // 删除没有的数据
-            delete this.form.___path;
-            addAddress(this.form).then((res) => {
+          if (!submitData.id) {
+            addAddress(submitData).then((res) => {
               if (res.data.success) {
                 uni.navigateBack();
               }
             });
           } else {
             // 修改地址
-            delete this.form.___path;
-            delete this.form.updateBy;
-            delete this.form.updateTime;
-            editAddress(this.form).then((res) => {
+            delete submitData.updateBy;
+            delete submitData.updateTime;
+            editAddress(submitData).then((res) => {
               if (res.data.success) {
                 uni.navigateBack();
               }
@@ -175,12 +225,15 @@ export default {
 
     // 三级地址联动回调
     getpickerParentValue(e) {
+      const items = Array.isArray(e) ? e : (e && (e.value || e.values || e.detail)) || [];
+      if (!Array.isArray(items)) return;
+
       // 将需要绑定的地址设置为空，并赋值
       this.form.consigneeAddressIdPath = [];
       this.form.consigneeAddressPath = [];
       let name = "";
 
-      e.forEach((item, index) => {
+      items.forEach((item, index) => {
         if (item.id) {
           // 遍历数据
           this.form.consigneeAddressIdPath.push(item.id);
@@ -188,14 +241,14 @@ export default {
           name += item.localName;
           this.form.___path = name;
         }
-        if (index == e.length - 1) {
+        if (index == items.length - 1) {
           //如果是最后一个
-          let _town = item.children.filter((_child) => {
-            return _child.id == item.id;
-          });
-
-          this.form.lat = _town[0].center.split(",")[1];
-          this.form.lon = _town[0].center.split(",")[0];
+          const children = (item && Array.isArray(item.children)) ? item.children : [];
+          const _town = children.filter((_child) => _child.id == item.id);
+          if (_town[0] && _town[0].center) {
+            this.form.lat = _town[0].center.split(",")[1];
+            this.form.lon = _town[0].center.split(",")[0];
+          }
         }
       });
     },
@@ -211,10 +264,30 @@ export default {
       lightColor: this.$lightColor, //高亮颜色
       mapFlag: false, // 地图选择开
       routerVal: "",
+      countryShow: false,
+      countryList: [
+        { value: "CN", label: "中国 (China)" },
+        { value: "US", label: "美国 (USA)" },
+        { value: "CA", label: "加拿大 (Canada)" },
+        { value: "JP", label: "日本 (Japan)" },
+        { value: "KR", label: "韩国 (South Korea)" },
+        { value: "AU", label: "澳大利亚 (Australia)" },
+        { value: "AE", label: "阿联酋 (UAE)" },
+        { value: "SA", label: "沙特 (Saudi Arabia)" },
+        { value: "QA", label: "卡塔尔 (Qatar)" },
+        { value: "KW", label: "科威特 (Kuwait)" },
+        { value: "OM", label: "阿曼 (Oman)" },
+        { value: "BH", label: "巴林 (Bahrain)" },
+        { value: "TH", label: "泰国 (Thailand)" },
+        { value: "VN", label: "越南 (Vietnam)" }
+      ],
       form: {
         detail: "", //地址详情
         name: "", //收货人姓名
         mobile: "", //手机号码
+        countryCode: "CN",
+        countryName: "中国 (China)",
+        postalCode: "",
         consigneeAddressIdPath: [], //地址id
         consigneeAddressPath: [], //地址名字
         ___path: "", //所在区域
@@ -235,13 +308,24 @@ export default {
             message: this.$t('address.inputMobile'),
             trigger: ["blur", "change"],
           },
+          // 放宽国际手机号格式（允许 +、空格、括号、横杠）
           {
-            validator: (rule, value, callback) => {
-              return uni.$u.test.mobile(value);
-            },
+            pattern: /^\+?[\d\s\-()]{6,20}$/,
             message: this.$t('auth.mobileError'),
             trigger: ["change", "blur"],
           },
+        ],
+        postalCode: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.isPostalCodeRequired && !value) {
+                return false;
+              }
+              return true;
+            },
+            message: this.$t('address.inputPostalCode'),
+            trigger: ["blur", "change"],
+          }
         ],
         ___path: [
           {

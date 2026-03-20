@@ -3,7 +3,7 @@ import uni from '@dcloudio/vite-plugin-uni';
 import path from 'path';
 
 export default defineConfig({
-    plugins: [
+    define: { "__MAOMALL_BUILD_ID__": "1773966479" }, plugins: [
         uni(),
     ],
     resolve: {
@@ -13,9 +13,6 @@ export default defineConfig({
             { find: 'rpc-websockets/dist/lib/client/websocket.browser', replacement: path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client/websocket.browser.js') },
             { find: 'rpc-websockets/dist/lib/client/websocket', replacement: path.resolve(__dirname, 'node_modules/rpc-websockets/dist/lib/client/websocket.js') },
         ],
-    },
-    define: {
-        'process.env': {},
     },
     optimizeDeps: {
         include: ['buffer', 'process', 'uview-plus'],

@@ -1,148 +1,100 @@
 /** 配置楼层模块的跳转 */
+import { uniNavigateTo, uniSwitchTab } from "@/utils/nav.js";
+
 export function modelNavigateTo(item) {
 	let val = item.url || item;
 	//链接跳转到专题
 
 	if (val && val.id && val.pageType == "special") {
-		uni.navigateTo({
-			url: `/pages/tabbar/special/special?id=${val.id}`,
-		});
+		uniNavigateTo(`/pages/tabbar/special/special?id=${val.id}`);
 	}
 	switch (val.___type || val.type) {
 		case "goods":
-			uni.navigateTo({
-				url: "/pages/product/goods?id=" + val.id + "&goodsId=" + val.goodsId,
-			});
+			uniNavigateTo("/pages/product/goods?id=" + val.id + "&goodsId=" + val.goodsId);
 			break;
 		case "category":
 			if (val.id) {
-				uni.navigateTo({
-					url: `/pages/navigation/search/searchPage?category=${val.id}`,
-				});
+				uniNavigateTo(`/pages/navigation/search/searchPage?category=${val.id}`);
 			} else {
-				uni.navigateTo({
-					url: `/pages/navigation/search/searchPage`,
-				});
+				uniNavigateTo(`/pages/navigation/search/searchPage`);
 			}
 			break;
 		case "shops":
-			uni.navigateTo({
-				url: `/pages/product/shopPage?id=${val.id}`,
-			});
+			uniNavigateTo(`/pages/product/shopPage?id=${val.id}`);
 			break;
 			// 活动
 		case "marketing":
 			switch (val.___promotion) {
 				// 猫币商品
 				case "POINTS_GOODS":
-					uni.navigateTo({
-						url: `/pages/promotion/point/detail?id=${val.promotionId}`,
-					});
+					uniNavigateTo(`/pages/promotion/point/detail?id=${val.promotionId}`);
 					break;
 				// 砍价
 				case "KANJIA":
-					uni.navigateTo({
-						url: `/pages/promotion/bargain/detail?id=${val.promotionId}`,
-					});
+					uniNavigateTo(`/pages/promotion/bargain/detail?id=${val.promotionId}`);
 					break;
 				// 优惠券商品
 				case "COUPON":
-					uni.navigateTo({
-						url: "/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId,
-					});
+					uniNavigateTo("/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId);
 					break;
 				// 满减商品
 				case "FULL_DISCOUNT":
-					uni.navigateTo({
-						url: "/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId,
-					});
+					uniNavigateTo("/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId);
 					break;
 				// 秒杀频道
 				case "SECKILL":
-					uni.navigateTo({
-						url: "/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId,
-					});
+					uniNavigateTo("/pages/product/goods?id=" + val.skuId + "&goodsId=" + val.goodsId);
 					break;
 			}
 			break;
 		case "pages":
-			uni.navigateTo({
-				url: val.___path + "?id=" + val.id + "&title=" + val.title,
-			});
+			uniNavigateTo(val.___path + "?id=" + val.id + "&title=" + val.title);
 			break;
 		case "other":
 			switch (val.title || item.title) {
 				case "首页":
-					uni.switchTab({
-						url: `/pages/tabbar/home/index`,
-					});
+					uniSwitchTab(`/pages/tabbar/home/index`);
 					break;
 				case "购物车":
-					uni.switchTab({
-						url: `/pages/tabbar/cart/cartList`,
-					});
+					uniSwitchTab(`/pages/tabbar/cart/cartList`);
 					return;
 				case "个人中心":
-					uni.switchTab({
-						url: `/pages/tabbar/user/my`,
-					});
+					uniSwitchTab(`/pages/tabbar/user/my`);
 					break;
 				case "收藏商品":
-					uni.navigateTo({
-						url: `/pages/mine/myCollect`,
-					});
+					uniNavigateTo(`/pages/mine/myCollect`);
 					break;
 				case "我的订单":
-					uni.navigateTo({
-						url: `/pages/order/myOrder?status=0`,
-					});
+					uniNavigateTo(`/pages/order/myOrder?status=0`);
 					break;
 				case "领券中心":
-					uni.navigateTo({
-						url: `/pages/cart/coupon/couponCenter`,
-					});
+					uniNavigateTo(`/pages/cart/coupon/couponCenter`);
 					break;
 				case "签到":
-					uni.navigateTo({
-						url: `/pages/mine/signIn`,
-					});
+					uniNavigateTo(`/pages/mine/signIn`);
 					break;
 				case "秒杀频道":
-					uni.navigateTo({
-						url: `/pages/promotion/seckill`,
-					});
+					uniNavigateTo(`/pages/promotion/seckill`);
 					break;
 				case "拼团频道":
-					uni.navigateTo({
-						url: `/pages/promotion/joinGroup`,
-					});
+					uniNavigateTo(`/pages/promotion/joinGroup`);
 					break;
 				case "小程序直播":
-					uni.navigateTo({
-						url: `/pages/promotion/lives`,
-					});
+					uniNavigateTo(`/pages/promotion/lives`);
 					break;
 				case "砍价":
-					uni.navigateTo({
-						url: `/pages/promotion/bargain/list`,
-					});
+					uniNavigateTo(`/pages/promotion/bargain/list`);
 					break;
 				case "猫币商城":
-					uni.navigateTo({
-						url: `/pages/promotion/point/pointList`,
-					});
+					uniNavigateTo(`/pages/promotion/point/pointList`);
 					break;
 				case "店铺列表":
-					uni.navigateTo({
-						url: `/pages/product/shopList`,
-					});
+					uniNavigateTo(`/pages/product/shopList`);
 					break;
 				case "活动":
 				case "优惠券活动":
 				case "券活动":
-					uni.navigateTo({
-						url: `/pages/cart/coupon/couponCenter`,
-					});
+					uniNavigateTo(`/pages/cart/coupon/couponCenter`);
 					break;
 				default:
 					// #ifdef H5
@@ -221,20 +173,14 @@ function seacnCode() {
       // WX_CODE 为小程序码
       if (res.scanType == "WX_CODE") {
         console.log(res);
-        uni.navigateTo({
-          url: `/${res.path}`,
-        });
+        uniNavigateTo(`/${res.path}`);
       } else {
         config.scanAuthNavigation.forEach((src) => {
           if (res.result.indexOf(src) != -1) {
-            uni.navigateTo({
-              url: `/${res.result.substring(src.length)}`,
-            });
+            uniNavigateTo(`/${res.result.substring(src.length)}`);
           } else {
             setTimeout(() => {
-              uni.navigateTo({
-                url: "/pages/tabbar/home/web-view?src=" + path,
-              });
+              uniNavigateTo("/pages/tabbar/home/web-view?src=" + path);
             }, 100);
           }
         });
