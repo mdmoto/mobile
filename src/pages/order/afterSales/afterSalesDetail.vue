@@ -10,7 +10,7 @@
           </view>
         </view>
         <view>
-          <view class="goods-item-view" v-for="(item,index) in sku.orderItems" v-if="item.sn == sn"
+          <view class="goods-item-view" :key="index" v-for="(item,index) in (sku.orderItems || []).filter(i => i.sn == sn)"
             @click="gotoGoodsDetail(sku.goods_id)">
             <view class="goods-img">
               <u-image border-radius="6" width="131rpx" height="131rpx" :src="item.image"></u-image>

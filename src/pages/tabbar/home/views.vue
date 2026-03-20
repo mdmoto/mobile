@@ -119,18 +119,21 @@ export default {
     init () {
       this.pageData = "";
       getFloorData().then((res) => {
-        // api/base.js bridge: success path usually returns the "result" object directly.
         const payload = (res && (res.result || (res.data && res.data.result))) || res;
+        console.log('FLOOR_DIAGNOSTIC: raw payload', payload);
         const rawPageData = payload && payload.pageData;
         if (!rawPageData) {
+          console.error('FLOOR_DIAGNOSTIC: no pageData found');
           this.pageData = "";
           return;
         }
 
         try {
           const result = typeof rawPageData === "string" ? JSON.parse(rawPageData) : rawPageData;
+          console.log('FLOOR_DIAGNOSTIC: parsed pageData', result);
           this.pageData = result;
           if (result && Array.isArray(result.list) && result.list.length) {
+            console.log('FLOOR_DIAGNOSTIC: modules count', result.list.length);
             const lastModule = result.list[result.list.length - 1];
             if (lastModule && lastModule.type == 'goods') {
               this.enableLoad = true;

@@ -36,12 +36,13 @@
                     </view>
 
                     <view class="goods-imgs-view" v-if="order.image">
-                      <view class="img-view" v-if="order.image" v-for="(img, imgIndex) in order.image.split(',')"
-                        :key="imgIndex">
-                        <u-image v-if="order.image" @click.native="
-                            preview(order.image.split(','), imgIndex)
-                          " width="160rpx" height="160rpx" :src="img"></u-image>
-                      </view>
+                      <template v-for="(img, imgIndex) in order.image.split(',')" :key="imgIndex">
+                        <view class="img-view" v-if="order.image">
+                          <u-image v-if="order.image" @click.native="
+                              preview(order.image.split(','), imgIndex)
+                            " width="160rpx" height="160rpx" :src="img"></u-image>
+                        </view>
+                      </template>
                     </view>
                   </view>
                 </view>

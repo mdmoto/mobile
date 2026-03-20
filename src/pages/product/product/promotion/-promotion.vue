@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view v-for="(promotionItem, promotionIndex) in promotion" :key="promotionIndex" class="promotion_row" @click="shutMask(1)">
-			<view v-if="res != null" v-for="(item, index) in Object.keys(res)" :key="index">
+			<view v-for="(item, index) in (res ? Object.keys(res) : [])" :key="index">
 				<div class="promotion_col" v-if="item.split('-')[0] == promotionItem.value && item.split('-')[0] == 'FULL_DISCOUNT'">
 					<!-- 满减，折扣 -->
 					<div class="flex">

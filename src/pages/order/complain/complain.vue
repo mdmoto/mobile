@@ -10,7 +10,7 @@
         <view class="order-sn"></view>
       </view>
       <u-line color="#DCDFE6"></u-line>
-      <view class="goods-item-view" v-for="(sku, index) in orderGoodsList" :key="index" v-if="sku.skuId == skuId">
+      <view class="goods-item-view" v-for="(sku, index) in (orderGoodsList || []).filter(s => s.skuId == skuId)" :key="index">
         <view class="goods-img">
           <u-image border-radius="6" width="131rpx" height="131rpx" :src="sku.image"></u-image>
         </view>
