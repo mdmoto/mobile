@@ -11,7 +11,7 @@ window.onunhandledrejection = function(event) {
 if (typeof window !== "undefined") {
   
 if (typeof window !== "undefined") {
-  console.log("MaoMall_Startup_Heartbeat_2026_03_20_v2");
+  console.log("MaoMall_Startup_Heartbeat_2026_03_20_V5_DEFINITIVE");
   // Proactive check of methods
   const testUni = typeof uni !== "undefined" ? uni : window.uni;
   if (testUni) {
