@@ -16,9 +16,11 @@ export default {
     };
   },
   onShow(){
-    setTimeout(()=>{
-      this.$refs.tpl.fetchCoupon();
-    },1000)
+    this.$nextTick(() => {
+      if (this.$refs.tpl && typeof this.$refs.tpl.init === "function") {
+        this.$refs.tpl.init();
+      }
+    });
   },
   methods: {
 

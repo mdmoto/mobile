@@ -5,7 +5,7 @@
       <template v-if="item.type == 'search'">
         <search style="width: 100%" :res="item.options" />
       </template>
-      <carousel v-if="item.type == 'carousel'" :res="item.options" />
+      <carousel v-if="item.type == 'carousel' || item.type == 'banner' || item.type == 'slider' || item.type == 'BANNER' || item.type == 'BANNER_FLOOR'" :res="item.options" />
       <titleLayout v-if="item.type == 'title'" :res="item.options" />
       <leftOneRightTwo v-if="item.type == 'leftOneRightTwo'" :res="item.options" />
       <leftTwoRightOne v-if="item.type == 'leftTwoRightOne'" :res="item.options" />
@@ -17,7 +17,7 @@
       <flexTwo v-if="item.type == 'flexTwo'" :res="item.options" />
       <textPicture v-if="item.type == 'textPicture'" :res="item.options" />
       <menuLayout v-if="item.type == 'menu'" :res="item.options" />
-      <flexOne v-if="item.type == 'flexOne'" :res="item.options" />
+      <flexOne v-if="item.type == 'flexOne' || item.type == 'IMAGE_FLOOR' || item.type == 'image_floor' || item.type == 'IMAGE'" :res="item.options" />
       <goods :enableBottomLoad="enableLoad" v-if="item.type == 'goods'" :res="item.options" />
       <group v-if="item.type == 'group'" :res="item.options" />
       <notice v-if="item.type == 'notice'" :res="item.options" />
@@ -113,7 +113,9 @@ export default {
           console.log('FLOOR_DIAGNOSTIC: parsed pageData', result);
           this.pageData = result;
           if (result && Array.isArray(result.list) && result.list.length) {
-            console.log('FLOOR_DIAGNOSTIC: modules count', result.list.length);
+            result.list.forEach((m, i) => {
+              console.log(`FLOOR_DIAGNOSTIC: module ${i} type ${m.type}`);
+            });
             const lastModule = result.list[result.list.length - 1];
             if (lastModule && lastModule.type == 'goods') {
               this.enableLoad = true;

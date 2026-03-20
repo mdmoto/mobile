@@ -81,7 +81,11 @@ import { getMaoMallRates } from "@/api/maollar";
 			this.initMaoMallRates();
 		},
 
-		onShow() {
+		onShow() { 
+			// #ifdef H5 
+			uni.hideLoading(); 
+			uni.hideToast(); 
+			// #endif
 			// #ifndef H5
 			if(this.config.enableGetClipboard){
 				this.getClipboard();
