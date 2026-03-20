@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-popup v-model="enableShowCoupon" mode="center" width="550rpx" height="400px">
+    <u-popup v-model:show="enableShowCoupon" mode="center" width="550rpx" height="400px">
       <view style="height: 130rpx">
         <view
           style="
@@ -127,9 +127,9 @@ export default {
       getAutoCoup().then((res) => {
         const payload = (res && (res.result || (res.data && res.data.result))) || res;
         const list = Array.isArray(payload) ? payload : (payload && payload.records) || [];
-        if (list && list.length >= 0) {
+        if (list && list.length > 0) {
           this.coupList.push(...list);
-          if (this.coupList != "") {
+          if (this.coupList.length > 0) {
             this.enableShowCoupon = true;
           } else {
             this.enableShowCoupon = false;

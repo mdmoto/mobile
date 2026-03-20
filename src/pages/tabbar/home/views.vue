@@ -2,16 +2,9 @@
   <div class="wrapper">
     <!-- uni 中不能使用 vue component 所以用if判断每个组件 -->
     <div v-for="(item, index) in pageData.list" :key="index">
-      <!-- 搜索栏，如果在楼层装修顶部则会自动浮动，否则不浮动 -->
-      <u-navbar class="navbar" v-if="item.type == 'search'" :is-back="false" :is-fixed="index === 1 ? false : true">
+      <template v-if="item.type == 'search'">
         <search style="width: 100%" :res="item.options" />
-        <!-- #ifndef H5 -->
-        <!-- 扫码功能 不兼容h5 详情文档: https://uniapp.dcloud.io/api/system/barcode?id=scancode -->
-        <div slot="right" class="navbar-right">
-          <u-icon name="scan" @click="scan()" color="#666" size="50"></u-icon>
-        </div>
-        <!-- #endif -->
-      </u-navbar>
+      </template>
       <carousel v-if="item.type == 'carousel'" :res="item.options" />
       <titleLayout v-if="item.type == 'title'" :res="item.options" />
       <leftOneRightTwo v-if="item.type == 'leftOneRightTwo'" :res="item.options" />
@@ -29,13 +22,7 @@
       <group v-if="item.type == 'group'" :res="item.options" />
       <notice v-if="item.type == 'notice'" :res="item.options" />
       <promotions v-if="item.type == 'promotionDetail'" :res="item.options" />
-      <!-- <joinGroup v-if="item.type == 'joinGroup'" :res="item.options" /> -->
-      <!-- <integral v-if="item.type == 'integral'" :res="item.options" /> -->
-      <!-- <spike v-if="item.type == 'spike'" :res="item.options" /> -->
-    
     </div>
-    <fetchCoupon ref='coupon' />
-    <u-no-network @retry="init" @isConnected="isConnected"></u-no-network>
   </div>
 </template>
 
@@ -65,15 +52,12 @@ import config from "@/config/config";
 import tpl_notice from "@/pages/tabbar/home/template/tpl_notice"; //标题栏模块
 import tpl_promotions from "@/pages/tabbar/home/template/tpl_promotions_detail"; //标题栏模块
 import storage from "@/utils/storage.js";
-import fetchCoupon from '@/pages/tabbar/home/template/fetch_coupon'
-// import {receiveCoupons} from "@/api/members"
 
 export default {
   data () {
     return {
       config,
       storage,
-      showCp:true,
       pageData: "", //楼层页面数据
       isIos: "",
       enableLoad: false, //触底加载 针对于商品模块
@@ -98,7 +82,6 @@ export default {
     group: tpl_group,
     notice: tpl_notice,
     promotions: tpl_promotions,
-    fetchCoupon
   },
 
   mounted () {
@@ -110,9 +93,6 @@ export default {
    
   },
   methods: {
-    fetchCoupon(){
-       this.$refs.coupon.firstGetAuto();
-    },
     /**
      * 实例化首页数据楼层
      */
@@ -145,39 +125,22 @@ export default {
         }
       });
     },
-    // 是否有网络链接
-    isConnected (val) {
-      val ? this.init() : ''
-    },
 
     /**
      * TODO 扫码功能后续还会后续增加
-     * 应该实现的功能目前计划有：
-     * 扫描商品跳转商品页面
-     * 扫描活动跳转活动页面
-     * 扫描二维码登录
-     * 扫描其他站信息 弹出提示，返回首页。
      */
     scanCode () {
       uni.scanCode({
         success: function (res) {
           let path = encodeURIComponent(res.result);
-
-
-
           if (path != undefined && path.indexOf("QR_CODE_LOGIN_SESSION") == 0) {
-            console.log(path)
-            //app扫码登录
             uni.navigateTo({
               url: "/pages/passport/scannerCodeLoginConfirm?token=" + path
             });
             return;
           }
 
-
-          // WX_CODE 为小程序码
           if (res.scanType == "WX_CODE") {
-            console.log(res);
             uni.navigateTo({
               url: `/${res.path}`,
             });
@@ -221,33 +184,25 @@ export default {
 
     /**
      * 唤醒客户端扫码
-     * 没权限去申请权限，有权限获取扫码功能
      */
     async scan () {
       // #ifdef APP-PLUS
       this.isIos = plus.os.name == "iOS";
-      // 判断是否是Ios
       if (this.isIos) {
-        const iosFirstCamera = uni.getStorageSync("iosFirstCamera"); //是不是第一次开启相机
+        const iosFirstCamera = uni.getStorageSync("iosFirstCamera"); 
         if (iosFirstCamera !== "false") {
-          uni.setStorageSync("iosFirstCamera", "false"); //设为false就代表不是第一次开启相机
+          uni.setStorageSync("iosFirstCamera", "false"); 
           this.scanCode();
         } else {
           if (permission.judgeIosPermission("camera")) {
             this.scanCode();
           } else {
-            // 没有权限提醒是否去申请权限
             this.tipsGetSettings();
           }
         }
       } else {
-        /**
-         * TODO 安卓 权限已经授权了，调用api总是显示用户已永久拒绝申请。人傻了
-         * TODO 如果xdm有更好的办法请在 https://gitee.com/beijing_hongye_huicheng/maollar/issues 提下谢谢
-         */
         this.scanCode();
       }
-
       // #endif
 
       // #ifdef MP-WEIXIN

@@ -10,7 +10,7 @@
 			"path": "pages/tabbar/home/index",
 			"style": {
 				"navigationBarTitleText": "首页",
-				"navigationStyle": "custom",
+				"navigationStyle": "default",
 				"navigationBarTextStyle": "black",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 50
@@ -19,7 +19,7 @@
 		{
 			"path": "pages/tabbar/screen/fullScreen",
 			"style": {
-				"navigationStyle": "custom", 
+				"navigationStyle": "default", 
 				"app-plus": {
 					"animationType": "fade-in", 
 					"background": "transparent", 
@@ -38,7 +38,7 @@
 			"path": "pages/tabbar/cart/cartList",
 			"style": {
 				"navigationBarTitleText": "购物车",
-				"navigationStyle": "custom", 
+				"navigationStyle": "default", 
 				"navigationBarBackgroundColor": "#fff",
 				"enablePullDownRefresh": true 
 			}
@@ -47,7 +47,7 @@
 			"path": "pages/tabbar/category/category",
 			"style": {
 				"navigationBarTitleText": "分类",
-				"navigationStyle": "custom", 
+				"navigationStyle": "default", 
 				"navigationBarTextStyle": "black",
 				"disableScroll": true,
 				"bounce": "none",
@@ -58,7 +58,7 @@
 			"path": "pages/navigation/search/searchPage",
 			"style": {
 				"navigationBarTitleText": "搜索",
-				"navigationStyle": "custom",
+				"navigationStyle": "default",
 				"app-plus": {
 					
 					"scrollIndicator": "none",
@@ -76,7 +76,7 @@
 			"style": {
 				"navigationBarTextStyle": "white",
 				"enablePullDownRefresh": true,
-				"navigationStyle": "custom"
+				"navigationStyle": "default"
 			}
 		},
 		{
@@ -105,7 +105,7 @@
 					"style": {
 						"navigationBarTitleText": "我的足迹",
 						"enablePullDownRefresh": true,
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
@@ -113,7 +113,7 @@
 					"style": {
 						"navigationBarTitleText": "收藏",
 						"enablePullDownRefresh": true, 
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"app-plus": {
 							"scrollIndicator": "none"
 						}
@@ -177,13 +177,13 @@
 				{
 					"path": "deposit/index",
 					"style": {
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
 					"path": "deposit/operation",
 					"style": {
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
@@ -265,7 +265,7 @@
 				{
 					"path": "im/list",
 					"style": {
-						"navigationStyle": "custom", 
+						"navigationStyle": "default", 
 						"enablePullDownRefresh": true,
 						"app-plus": {}
 					}
@@ -273,7 +273,7 @@
 				{
 					"path": "im/index",
 					"style": {
-						"navigationStyle": "custom", 
+						"navigationStyle": "default", 
 						"enablePullDownRefresh": true,
 						"app-plus": {}
 					}
@@ -355,7 +355,7 @@
 					"path": "help/about2",
 					"style": {
 						"navigationBarTitleText": "About Mao Mall",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
@@ -397,14 +397,14 @@
 					"path": "shopPage",
 					"style": {
 						"navigationBarTitleText": "",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
 					"path": "shopList",
 					"style": {
 						"navigationBarTitleText": "",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
@@ -417,14 +417,14 @@
 					"path": "shopPageGoods",
 					"style": {
 						"navigationBarTitleText": "",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
 					"path": "goods",
 					"style": {
 						"backgroundColor": "#fff",
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"app-plus": {
 							
 							"bounce": "none",
@@ -446,7 +446,7 @@
 				},
 				{ 
 					"path": "comment",
-					"navigationStyle": "custom",
+					"navigationStyle": "default",
 					"style": {
 						"navigationBarTitleText": "商品评价",
 						
@@ -478,7 +478,7 @@
 					"path": "login",
 					"style": {
 						"navigationBarTitleText": "",
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"app-plus": {
 							"titleNView": false,
 							"animationType": "slide-in-bottom",
@@ -495,14 +495,14 @@
 					"path": "entry/seller/index",
 					"style": {
 						"navigationBarTitleText": "店铺入驻",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
 					"path": "entry/seller/control",
 					"style": {
 						"navigationBarTitleText": "",
-						"navigationStyle": "custom"
+						"navigationStyle": "default"
 					}
 				},
 				{
@@ -515,7 +515,7 @@
 					"path": "wechatMPLogin",
 					"style": {
 						"navigationBarTitleText": "小程序登录",
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "black"
 					}
 				},
@@ -523,7 +523,7 @@
 					"path": "scannerCodeLoginConfirm",
 					"style": {
 						"navigationBarTitleText": "扫码登录",
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "black"
 					}
 				}
@@ -536,7 +536,7 @@
 					"path": "seckill",
 					"style": {
 						"navigationBarTitleText": "限时抢购",
-						"navigationStyle": "custom", 
+						"navigationStyle": "default", 
 						"navigationBarTextStyle": "black",
 						"app-plus": {
 							"titleNView": {
@@ -549,7 +549,7 @@
 					"path": "joinGroup",
 					"style": {
 						"navigationBarTitleText": "拼团活动",
-						"navigationStyle": "custom", 
+						"navigationStyle": "default", 
 						"navigationBarTextStyle": "black",
 						"app-plus": {
 							
@@ -560,21 +560,21 @@
 				{
 					"path": "lives",
 					"style": {
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "black"
 					}
 				},
 				{
 					"path": "bargain/list",
 					"style": {
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "white"
 					}
 				},
 				{
 					"path": "bargain/detail",
 					"style": {
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "white"
 					}
 				},
@@ -587,7 +587,7 @@
 				{
 					"path": "point/detail",
 					"style": {
-						"navigationStyle": "custom",
+						"navigationStyle": "default",
 						"navigationBarTextStyle": "white"
 					}
 				},
@@ -643,7 +643,7 @@
 					"path": "payment/success",
 					"style": {
 						"navigationBarTitleText": "支付成功",
-						"navigationStyle": "custom", 
+						"navigationStyle": "default", 
 						"navigationBarTextStyle": "white",
 						"app-plus": {
 							"popGesture": "none", 

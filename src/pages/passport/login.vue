@@ -1,7 +1,6 @@
 <template>
 	<div class="wrapper">
 		<div v-if="!wechatLogin">
-			<u-navbar :is-back="showBack" :border-bottom="false"></u-navbar>
 			<div>
 				<div class="title">{{ $t(loginTitleWay[current].title) }}</div>
 				<div :class="current == 1 ? 'desc-light' : 'desc'">

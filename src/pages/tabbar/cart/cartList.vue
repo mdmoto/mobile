@@ -1,10 +1,5 @@
 <template>
   <div class="wrapper">
-    <u-navbar :is-back="false" :title="$t('cart.title')">
-      <div slot="right">
-        <div class="light-color edit" @click="isEdit = !isEdit">{{ !isEdit ? $t('common.edit') : $t('common.complete')}}</div>
-      </div>
-    </u-navbar> 
     <!-- 空白页-->
     <view v-if="!loading && (cartDetail.cartList == '' || cartDetail.cartList == [] || !cartDetail)" class="empty">
       <image src="/static/emptyCart.png" mode="aspectFit"></image>

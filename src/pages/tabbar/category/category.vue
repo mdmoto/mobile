@@ -1,14 +1,5 @@
 <template>
   <view class="category-wrap">
-    <u-navbar class="navbar" :is-back="false">
-      <div class="title">{{ $t('category.title') }}</div>
-      <!-- #ifdef H5 -->
-      <u-search class="nav-search"  @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
-      <!-- #endif -->
-      <!-- #ifndef H5 -->
-      <u-search class="nav-search" disabled @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
-      <!-- #endif -->
-    </u-navbar>
     <view class="content">
       <scroll-view scroll-y scroll-with-animation class="left-aside">
         <view v-for="(item, index) in tabList" :key="item.id" class="f-item b-b" :class="{ active: item.id === currentId }" @click="tabtap(item, index)">
@@ -85,7 +76,7 @@ export default {
      */
     loadListContent(index) {
       this.topImg = this.tabList[index];
-      this.categoryList = this.tabList[index].children;
+      this.categoryList = this.tabList[index] ? this.tabList[index].children : [];
     },
     /**
      * 一级分类点击
@@ -136,13 +127,11 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
   width: 259rpx;
   text-align: center;
    font-size: 28rpx;
-
- 
 }
 .category-wrap {
   height: 100%;
   .content {
-    height: calc(100vh - 94px);
+    height: calc(100vh - var(--window-top) - var(--window-bottom) - 50px);
     display: flex;
     color: #333;
     font-size: 28rpx;
