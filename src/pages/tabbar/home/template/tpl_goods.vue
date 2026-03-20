@@ -1,11 +1,11 @@
 <template>
-  <div class="layout" v-if="res && res.list && res.list[0]">
+  <div class="layout" v-if="res && res.list && res.list[0]" style="pointer-events: auto !important;">
     <u-sticky>
       <div class="goods-cell-title">
         <div
           class="goods-item-title"
           :class="{ 'selected-title': selected.index == index }"
-          @click="handleClickTitle(title, index)"
+          @click.stop="handleClickTitle(title, index)"
           v-for="(title, index) in titleWaySafe"
           :key="index"
         >
@@ -14,7 +14,7 @@
         </div>
       </div>
     </u-sticky>
-    <div class="goods-list">
+    <div class="goods-list" style="pointer-events: auto !important;">
       <div
         v-if="
           item &&
@@ -22,7 +22,7 @@
             ? selected.index == item.___index
             : selected.val == item.type)
         "
-        @click="handleClick(item)"
+        @click.stop="handleClick(item)"
         class="goods-item"
         v-for="(item, item_index) in listWaySafe"
         :key="item_index"
@@ -34,7 +34,9 @@
             mode="aspectFit"
             width="100%"
           >
-            <u-loading-icon slot="loading"></u-loading-icon>
+             <template #loading>
+                <u-loading-icon></u-loading-icon>
+             </template>
           </u-image>
         </div>
         <div class="goods-desc">
@@ -61,7 +63,7 @@
         v-for="(item, index) in goodsData"
         :key="index"
         class="goods-item"
-        @click="handleClick(item)"
+        @click.stop="handleClick(item)"
       >
         <div class="goods-img">
           <u-image
@@ -70,7 +72,9 @@
             mode="aspectFit"
             width="100%"
           >
-            <u-loading-icon slot="loading"></u-loading-icon>
+             <template #loading>
+                <u-loading-icon></u-loading-icon>
+             </template>
           </u-image>
         </div>
         <div class="goods-desc">
@@ -193,7 +197,9 @@ export default {
       return unitPriceFn(val, unit, location);
     },
     handleClick(item) {
-      modelNavigateTo(item);
+      if (item) {
+        modelNavigateTo(item);
+      }
     },
     closeGoods(val, index) {
       this.res.list[0].listWay.splice(index, 1);
@@ -341,6 +347,9 @@ $w_94: 94%;
   margin-bottom: 10px;
   border-radius: 0.4em;
   overflow: hidden;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
 }
 
 .goods-img {
@@ -364,6 +373,7 @@ $w_94: 94%;
   background: #fff;
   padding: 8rpx 0 8rpx 8rpx;
   margin: 0 auto;
+  pointer-events: auto !important;
   > .goods-title {
     font-size: 24rpx;
     height: 67rpx;

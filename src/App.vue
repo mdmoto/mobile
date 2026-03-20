@@ -267,6 +267,11 @@ import { getMaoMallRates } from "@/api/maollar";
 
 	// #endif
 
+	uni-page-body, .wrapper, .goods-list, .goods-item { 
+		pointer-events: auto !important; 
+		user-select: auto !important; 
+	} 
+
 	body {
 		background-color: $bg-color;
 	}
