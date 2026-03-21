@@ -7,9 +7,8 @@
           height="170rpx"
           width="100%"
           :src="res.list[0].img"
-          alt
-          ><u-loading-icon slot="loading"></u-loading-icon
-        ></u-image>
+          alt>
+          <template #loading><u-loading-icon></u-loading-icon></template></u-image>
       </div>
       <div class="view-height-85" @click="modelNavigateTo(res.list[1])">
         <u-image
@@ -17,9 +16,8 @@
           height="170rpx"
           width="100%"
           :src="res.list[1].img"
-          alt
-          ><u-loading-icon slot="loading"></u-loading-icon
-        ></u-image>
+          alt>
+          <template #loading><u-loading-icon></u-loading-icon></template></u-image>
       </div>
     </div>
     <div class="view-width-100"  @click="modelNavigateTo(res.list[2])">
@@ -27,9 +25,8 @@
         class="image-mode"
         height="200rpx"
         width="100%"
-        :src="res.list[2].img"
-        ><u-loading-icon slot="loading"></u-loading-icon
-      ></u-image>
+        :src="res.list[2].img">
+        <template #loading><u-loading-icon></u-loading-icon></template></u-image>
     </div>
   </div>
 </template>

@@ -1,13 +1,12 @@
 <template>
   <view class="category-wrap">
-    <u-navbar class="navbar" :is-back="false">
-      <div class="title">{{ $t('category.title') }}</div>
-      <!-- #ifdef H5 -->
-      <u-search class="nav-search"  @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
-      <!-- #endif -->
-      <!-- #ifndef H5 -->
-      <u-search class="nav-search" disabled @click.native="search" :placeholder="$t('home.search')" :show-action="false"></u-search>
-      <!-- #endif -->
+    <u-navbar class="navbar" :is-back="false" fixed placeholder>
+      <template #left>
+        <view class="navbar-left-content" style="display: flex; align-items: center; width: 750rpx; padding: 0 30rpx;">
+          <text class="title" style="margin-right: 30rpx; font-weight: bold; flex-shrink: 0; font-size: 32rpx; color: #333;">{{ $t('category.title') }}</text>
+          <u-search class="nav-search" @click.native="search" :placeholder="$t('home.search')" :show-action="false" style="flex: 1;"></u-search>
+        </view>
+      </template>
     </u-navbar>
     <view class="content">
       <scroll-view scroll-y scroll-with-animation class="left-aside">
@@ -195,27 +194,24 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
     width: 100%;
     padding-top: 12rpx;
   }
-  .margin-right {
-    margin-right: 0 !important;
-  }
   .t-item {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 150rpx;
-    margin-right: 25rpx;
+    width: 25%;
     font-size: 24rpx;
     padding-bottom: 20rpx;
+    box-sizing: border-box;
     image {
-      width: 140rpx;
-      height: 140rpx;
+      width: 110rpx;
+      height: 110rpx;
       border-radius: 8px;
       margin-bottom: 20rpx;
     }
     ::v-deep  .u-image {
-      width: 140rpx !important;
-      height: 140rpx !important;
+      width: 110rpx !important;
+      height: 110rpx !important;
       border-radius: 8px !important;
       margin-bottom: 20rpx !important;
     }

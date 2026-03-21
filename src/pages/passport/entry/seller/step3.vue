@@ -171,7 +171,7 @@ export default {
   watch: {
     companyData: {
       handler(val) {
-        this.$set(this, "form", val);
+        this["form"] = val;
         // 给图片赋值
         const judgeDeepPhoto = ["storeLogo"];
 
@@ -303,7 +303,7 @@ export default {
           } else {
             name += item.localName + ",";
           }
-          this.$set(this.form,'storeAddressPath',name)
+          this.form["storeAddressPath"] = name
         }
       });
 

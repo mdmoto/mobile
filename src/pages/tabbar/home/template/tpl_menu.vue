@@ -14,7 +14,7 @@
             class="menu-img"
             :src="item.img"
           >
-            <u-loading-icon slot="loading"></u-loading-icon>
+            <template #loading><u-loading-icon></u-loading-icon></template>
           </u-image>
         </div>
         <div class="menu-title">{{ item.title }}</div>

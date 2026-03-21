@@ -20,19 +20,24 @@
     <!-- 猫币，预存款，优惠券 -->
     <div class="pointBox box">
       <u-row text-align="center" gutter="16" class="point">
-        <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/point/myPoint')">
+        <u-col text-align="center" span="3" @click="navigateTo('/pages/mine/point/myPoint')">
           <view>{{ $t('user.points') }}</view>
           <view class="value-text">{{ userInfo.point || 0 }}</view>
         </u-col>
 
-        <u-col text-align="center" span="4" @click="navigateTo('/pages/mine/deposit/operation')">
+        <u-col text-align="center" span="3" @click="navigateTo('/pages/mine/deposit/operation')">
           <view>{{ $t('user.wallet') }}</view>
           <view class="money">{{ unitPrice(walletNum, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(walletNum, undefined, 'after') }}</span></view>
         </u-col>
 
-        <u-col text-align="center" span="4" @click="navigateTo('/pages/cart/coupon/myCoupon')">
+        <u-col text-align="center" span="3" @click="navigateTo('/pages/cart/coupon/myCoupon')">
           <view>{{ $t('user.coupon') }}</view>
           <view class="value-text">{{ couponNum || 0 }}</view>
+        </u-col>
+        
+        <u-col text-align="center" span="3" @click="navigateTo('/pages/mine/myTracks')">
+          <view>{{ $t('user.footprint') }}</view>
+          <view class="value-text">{{ footNum || 0 }}</view>
         </u-col>
       </u-row>
       <!-- 我的订单，代付款 -->
@@ -101,8 +106,8 @@ export default {
   },
   onLoad() { },
   onShow() {
-    this.userInfo = this.$options.filters.isLogin() || {};
-    if (this.$options.filters.isLogin("auth")) {
+    this.userInfo = this.$filters.isLogin() || {};
+    if (this.$filters.isLogin("auth")) {
       this.getUserOrderNum();
     } else {
       this.walletNum = 0;
@@ -112,7 +117,7 @@ export default {
   },
   onPullDownRefresh() {
     this.getUserOrderNum();
-    this.userInfo = this.isLogin();
+    this.userInfo = this.$filters.isLogin();
   },
   // #ifndef MP
   onNavigationBarButtonTap(e) {

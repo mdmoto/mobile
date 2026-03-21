@@ -10,7 +10,7 @@
             height="330rpx"
            mode="aspectFit"
           >
-            <u-loading-icon slot="loading"></u-loading-icon>
+            <template #loading><u-loading-icon></u-loading-icon></template>
           </u-image>
         </view>
         <view class="goods-detail">
@@ -67,7 +67,7 @@
 							mode="aspectFit"
               :src="item.goodsImage || item.thumbnail"
             >
-              <u-loading-icon slot="loading"></u-loading-icon>
+              <template #loading><u-loading-icon></u-loading-icon></template>
             </u-image>
           </div>
           <div class="goods-detail">

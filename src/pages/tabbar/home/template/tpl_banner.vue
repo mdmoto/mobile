@@ -1,8 +1,8 @@
 <template>
   <div class="layout">
     <div class="box">
-      <u-swiper @click="clickSwiper" interval="5000" duration="500" height="350" v-if="res" name="img" :list="res.list">
-        <u-loading-icon slot="loading"></u-loading-icon>
+      <u-swiper @click="clickSwiper" interval="5000" duration="500" height="350rpx" v-if="res" keyName="img" :list="res.list">
+        <template #loading><u-loading-icon></u-loading-icon></template>
       </u-swiper>
     </div>
   </div>
@@ -13,18 +13,6 @@ import { modelNavigateTo } from "./tpl";
 export default {
   title: "导航栏",
   props: ["res"],
-  watch: {
-    res: {
-      handler(newValue, oldValue) {
-        this.$set(this, "res", newValue);
-      },
-      deep: true,
-    },
-  },
-
-  mounted() {
-   
-  },
   methods: {
     clickSwiper(index) {
       modelNavigateTo(this.res.list[index]);

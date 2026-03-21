@@ -36,29 +36,16 @@ import { getMaoMallRates } from "@/api/maollar";
 		 * 监听返回
 		 */
 		onBackPress(e) {
-			console.log("onBackPress-APP", e);
 			if (e.from == "backbutton") {
-				let routes = getCurrentPages();
-				let curRoute = routes[routes.length - 1].options;
-				routes.forEach((item) => {
-					if (
-						item.route == "pages/tabbar/cart/cartList" ||
-						item.route.indexOf("pages/product/goods") != -1
-					) {
-						uni.redirectTo({
-							url: item.route,
-						});
-					}
-				});
-
-				if (curRoute.addId) {
-					uni.reLaunch({
-						url: "/pages/tabbar/cart/cartList",
-					});
-				} else {
+				const pages = getCurrentPages();
+				if (pages.length > 1) {
 					uni.navigateBack();
+				} else {
+					uni.switchTab({
+						url: "/pages/tabbar/home/index"
+					});
 				}
-				return true; //阻止默认返回行为
+				return true;
 			}
 		},
 		onLaunch: function(val) {

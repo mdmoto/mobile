@@ -49,7 +49,6 @@ export default {
   filters: {},
   watch: {},
   mounted() {
-    this.addressFlag = false;
     if( this.isLogin("auth") ){
       this.getShippingAddress()
     }
@@ -91,11 +90,9 @@ export default {
               this.checked = addr[0];
               this.$emit("deliveryData", this.checked);
             }
-            // addr[0] ? "" : (addr = res.data);
-
-            // /**获取默认地址是否有货 */
-            // this.clickAddress(addr[0]);
           }
+        }).catch(() => {
+          console.error("[address] getShippingAddress error");
         });
       }
     },
@@ -114,6 +111,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "../product.scss";
 .light {
   background-image: linear-gradient(
     135deg,

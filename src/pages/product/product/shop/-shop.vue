@@ -25,7 +25,7 @@
       <view class="recommend-list">
         <view class="recommend-item" @click="clickGoods(item)" v-for="(item, index) in res" :key="index">
           <u-image class="recommend-item-img" :fade="true" duration="450" :lazy-load="true" :src="item.thumbnail" height="218rpx">
-            <u-loading-icon slot="loading"></u-loading-icon>
+            <template #loading><u-loading-icon></u-loading-icon></template>
             <view slot="error" style="font-size: 24rpx; ">加载失败</view>
           </u-image>
           <view class="recommend-item-name">

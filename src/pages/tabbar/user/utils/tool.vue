@@ -167,7 +167,7 @@ export default {
 				'/pages/mine/set/feedBack'
 			]
 			if (!ignores.includes(url)) {
-				if (this.tipsToLogin('normal')) {
+				if (this.$filters.tipsToLogin('normal')) {
 					this.handleNavigate(url)
 				}
 			}
@@ -273,9 +273,10 @@ export default {
 			align-items: center;
 			justify-content: flex-start;
 			font-size: $font-sm;
-			width: 25%;
+			flex: 0 0 25%;
+			box-sizing: border-box;
 			min-height: 160rpx;
-			padding: 40rpx 5rpx 20rpx 5rpx;
+			padding: 40rpx 2rpx 20rpx 2rpx;
 			word-break: break-word;
 			line-height: 1.2;
 		}

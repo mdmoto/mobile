@@ -58,7 +58,7 @@ export default {
   methods: {
     // 点击反馈内容
     handleClick(index) {
-      this.$set(this.feedBack, "type", this.list[index].value);
+      this.feedBack["type"] = this.list[index].value;
     },
 
     //图片上传

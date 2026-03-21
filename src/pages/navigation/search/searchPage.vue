@@ -1,18 +1,13 @@
 <template>
 	<view class="content">
 		<u-navbar :background="navObj" :is-back="false">
-			<mSearch
-				ref="mSearch"
-				class="mSearch-input-box"
-				@clickLeft="back"
-				:mode="2"
-				:placeholder="defaultKeyword"
-				@search="doSearch(false)"
-				@confirm="doSearch(false)"
-				@SwitchType="doSearchSwitch()"
-				v-model="keyword"
-				:isFocusVal="!isShowSeachGoods"
-			></mSearch>
+			<template #left>
+				<view style="width: 730rpx; padding: 0 20rpx;">
+					<mSearch ref="mSearch" class="mSearch-input-box" @clickLeft="back" :mode="2" :placeholder="defaultKeyword"
+						@search="doSearch(false)" @confirm="doSearch(false)" @SwitchType="doSearchSwitch()" v-model="keyword"
+						:isFocusVal="!isShowSeachGoods"></mSearch>
+				</view>
+			</template>
 		</u-navbar>
 
 		<view class="search-keyword" v-if="!isShowSeachGoods">
@@ -539,10 +534,10 @@ export default {
 			if (this.params.sort == type) {
 				this.params.order == 'asc' ? (this.params.order = 'desc') : (this.params.order = 'asc');
 
-				this.$set(this.params, 'sort', type);
+				this.params["sort"] = type;
 			} else {
 				this.params.order = 'desc';
-				this.$set(this.params, 'sort', type);
+				this.params["sort"] = type;
 			}
 
 			if (index == 0) {
@@ -626,7 +621,15 @@ export default {
 				this.goodsList = [];
 			}
 			//没有更多直接返回 #TODO
+			console.log('[search] loadData params:', this.params);
 			let goodsList = await getGoodsList(this.params);
+			console.log('[search] loadData raw response:', goodsList);
+			if (!goodsList || !goodsList.data || !goodsList.data.success) {
+				console.warn('[search] API failure:', goodsList);
+				this.loadingType = 'noMore';
+				this.empty = true;
+				return;
+			}
 			if (goodsList.data.result.records.length < 10) {
 				this.loadingType = 'noMore';
 				this.empty = true;
@@ -709,7 +712,7 @@ export default {
 			this.$refs.mSearch.inputVal = keyword;
 			this.params.keyword = this.keyword;
 			this.params.pageNumber = 1;
-			this.$set(this.sortParams, 'keyword', keyword);
+			this.sortParams["keyword"] = keyword;
 			this.loadData('refresh', 1);
 		},
 		//保存关键字到历史记录

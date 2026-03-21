@@ -316,7 +316,7 @@ export default {
     companyData: {
       handler(val) {
         if (val) {
-          this.$set(this, "form", val);
+          this["form"] = val;
           // 给图片赋值
           const judgeDeepPhoto = ["legalPhoto", "licencePhoto"];
           judgeDeepPhoto.forEach((key) => {

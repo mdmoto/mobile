@@ -17,13 +17,16 @@
       :y="navbarListY" placement="top-start" />
     <view class="index">
       <!-- topBar -->
-      <u-navbar :background="navbar" :is-back="false" :class="headerFlag ? 'header' : 'header bg-none scroll-hide'">
-        <div class="headerRow">
-          <div class="backs">
-            <u-icon @click="back()" name="arrow-left" class="icon-back"></u-icon>
-
-            <u-icon name="list" @click="popupsSwitch = !popupsSwitch" class="icon-list"></u-icon>
+      <u-navbar bgColor="#fff" autoBack :show-back="false" fixed placeholder :class="headerFlag ? 'header' : 'header bg-none scroll-hide'">
+        <template #left>
+          <div class="headerRow">
+            <div class="backs">
+              <u-icon @click="back()" name="arrow-left" class="icon-back"></u-icon>
+              <u-icon name="list" @click="popupsSwitch = !popupsSwitch" class="icon-list"></u-icon>
+            </div>
           </div>
+        </template>
+        <template #center>
           <div class="headerList" :class="headerFlag ? 'tab-bar' : 'tab-bar scroll-hide'">
             <div class="headerRow">
               <div class="nav-item" v-for="header in headerList" :key="header.id"
@@ -32,7 +35,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </template>
       </u-navbar>
 
       <u-navbar :border-bottom="false" v-show="!headerFlag" class="header-only-back" :background="navbarOnlyBack"
@@ -86,22 +89,22 @@
 
                     <span>
                       <span v-if="wholesaleList.length">
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
+                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                          $filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
                         }}</span>.{{
-                          $options.filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
+                          $filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
                         }}
                         ~
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(wholesaleList[0].price)[0]
+                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                          $filters.goodsFormatPrice(wholesaleList[0].price)[0]
                         }}</span>.{{
-                          $options.filters.goodsFormatPrice(wholesaleList[0].price)[1]
+                          $filters.goodsFormatPrice(wholesaleList[0].price)[1]
                         }}
                       </span>
                       <span v-else>
-                        <span>{{ $options.filters.currencySymbol() }}</span><span class="price">{{
-                          $options.filters.goodsFormatPrice(goodsDetail.price)[0]
-                        }}</span>.{{ $options.filters.goodsFormatPrice(goodsDetail.price)[1] }}
+                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                          $filters.goodsFormatPrice(goodsDetail.price)[0]
+                        }}</span>.{{ $filters.goodsFormatPrice(goodsDetail.price)[1] }}
                       </span>
                     </span>
                   </view>
@@ -110,7 +113,7 @@
                       暂无报价
                     </div>
                     <span v-else>
-                    {{ $options.filters.currencySymbol() }}<span class="price">0 </span>.00
+                    {{ $filters.currencySymbol() }}<span class="price">0 </span>.00
                     </span>
                   </view>
 
@@ -207,7 +210,7 @@
             <view class="icon-btn-name">客服</view>
           </view>
           <view class="icon-btn-item" @click="reluchToCart()">
-            <u-icon size="34" name="storeping-cart"></u-icon>
+            <u-icon size="34" name="shopping-cart"></u-icon>
             <view class="icon-btn-name">购物车</view>
             <view v-if="nums && nums > 0" class="num-icon">{{ nums }}</view>
           </view>
@@ -227,11 +230,11 @@
         <!-- 拼团结算 -->
         <view class="detail-btn" v-else-if="isGroup">
           <view class="to-store-car pt-buy to-store-btn" @click="shutMask(4, 'buy')">
-            <view>{{ goodsDetail.price | unitPrice }}</view>
+            <view>{{ $filters.unitPrice(goodsDetail.price) }}</view>
             <view>单独购买</view>
           </view>
           <view class="to-buy pt-buy to-store-btn" @click="toAssembleBuyNow">
-            <view>{{ goodsDetail.promotionPrice | unitPrice }}</view>
+            <view>{{ $filters.unitPrice(goodsDetail.promotionPrice) }}</view>
             <view>拼团价格</view>
           </view>
         </view>
@@ -502,7 +505,6 @@ export default {
     // #endif
   },
   async onShow () {
-    this.goodsDetail = {};
     //如果有参数ids说明事分销短连接，需要获取参数
     if (this.routerVal.scene) {
       getMpScene(this.routerVal.scene).then((res) => {
@@ -510,8 +512,8 @@ export default {
           let data = res.data.result.split(","); // skuId,goodsId,distributionId
           this.init(data[0], data[1], data[2]);
         }
-      });
-    } else {
+      }).catch(() => {});
+    } else if (this.routerVal.id) {
       this.init(this.routerVal.id, this.routerVal.goodsId, this.routerVal.distributionId);
     }
   },
@@ -552,33 +554,74 @@ export default {
     async init (id, goodsId, distributionId = "") {
       this.isGroup = false; //初始化拼团
       this.productId = id; // skuId
-      // 这里请求获取到页面数据  解析数据
 
-      let response = await getGoods(id || 'undefined', goodsId);
-      
-      // 判断当前接口返回内容 
-      if (!response.data.success) {
-        // 商品已下架
-        if(response.data.code == 11001){
-          this.takeDownFromSale = true
-        }
-        // setTimeout(() => {
-        //   uni.navigateBack();
-        // }, 500);
+      let response;
+      console.log('[goods] init calling getGoods with:', { id, goodsId });
+      try {
+        response = await getGoods(id, goodsId);
+        console.log('[goods] raw response:', response);
+      } catch (e) {
+        console.error('[goods] getGoods 请求异常:', e);
+        uni.showToast({ title: '请求失败，请稍后重试', icon: 'none' });
+        return;
       }
+
+      // 空值保护：response 为 null 或 response.data 不存在
+      // 注意：新版 request 可能将 result 直接放在 response
+      if (!response) {
+        uni.showToast({ title: '网络异常，请稍后', icon: 'none' });
+        return;
+      }
+
+      const resData = response.data || response;
+
+      // 判断当前接口返回内容
+      if (!resData.success) {
+        // 商品已下架或后台崩溃 catch 到的 11001
+        if (resData.code == 11001) {
+          this.takeDownFromSale = true;
+          // 如果消息是“商品异常”，则给用户更友好的提示
+          if (resData.message === '商品异常，请稍后重试') {
+             uni.showToast({ title: '核心数据同步中，请稍后', icon: 'none' });
+          }
+        } else {
+          uni.showToast({ title: resData.message || '商品已失效', icon: 'none' });
+        }
+        return;
+      }
+
       // 这里是绑定分销员
       if ((distributionId || this.$store.state.distributionId) && this.isLogin("auth")) {
         let disResult = await getGoodsDistribution(distributionId);
-        if (!disResult.data.success || disResult.statusCode == 403) {
+        if (!disResult || !disResult.data || !disResult.data.success || disResult.statusCode == 403) {
           this.$store.state.distributionId = distributionId;
         }
       }
+
+      let result = resData.result;
+      console.log('[goods] raw result:', JSON.stringify(result).substring(0, 200));
+      
+      // 容错处理：如果 result 被多层包装 (例如 {success:true, result: { data: {...} }})
+      if (result && result.data && !result.id && !result.goodsName) {
+        console.log('[goods] detected nested data, unwrapping...');
+        result = result.data;
+      }
+
+      const keys = result ? Object.keys(result) : [];
+      console.log('[goods] processing result keys:', keys);
+      if (!result || (!result.id && !result.goodsId)) {
+        console.error('[goods] Missing critical ID in result:', result);
+        uni.showToast({ title: '商品仍在同步中', icon: 'none' });
+        return;
+      }
+
       /**商品信息以及规格信息存储 */
-      this.goodsDetail = response.data.result.data;
-      this.wholesaleList = response.data.result.wholesaleList;
-      this.goodsSpec = response.data.result.specs;
-      this.PromotionList = response.data.result.promotionMap;
-      this.goodsParams = response.data.result.goodsParamsDTOList || [];
+      this.goodsDetail = result;
+      this.wholesaleList = result.wholesaleList || [];
+      this.goodsSpec = result.specs;
+      this.PromotionList = result.promotionMap;
+      this.goodsParams = result.goodsParamsDTOList || [];
+      console.log('[goods] data assigned. Price:', result.price, 'Gallery length:', result.goodsGalleryList ? result.goodsGalleryList.length : 0);
 
       // 判断是否拼团活动或者猫币商品 如果有则显示拼团活动信息
       this.PromotionList &&
@@ -587,14 +630,33 @@ export default {
           if (item.indexOf("PINTUAN") == 0) {
             this.isGroup = true;
           }
-
           // 秒杀
           if (item.indexOf("SECKILL") == 0) {
-            this.isSeckill = true
+            this.isSeckill = true;
           }
         });
-      // 轮播图
-      this.imgList = this.goodsDetail.goodsGalleryList.filter(i => i.indexOf("\"url\":") === -1 && i.indexOf("\"status\":") === -1);
+
+      // 轮播图渲染逻辑优化 - 支持三种格式：纯字符串URL、{url:...}对象、JSON字符串
+      if (this.goodsDetail && this.goodsDetail.goodsGalleryList) {
+        this.imgList = this.goodsDetail.goodsGalleryList.map(item => {
+          // 如果是对象，直接取 url 字段 (后端最常见格式 {url:'...', sort:1})
+          if (item && typeof item === 'object' && item.url) {
+            return item.url;
+          }
+          // 如果是 JSON 字符串，尝试解析出 URL
+          if (typeof item === 'string' && item.includes('"url":')) {
+            try {
+              const obj = JSON.parse(item);
+              return obj.url || item;
+            } catch (e) {
+              return item;
+            }
+          }
+          // 如果是纯字符串 URL 直接使用
+          return item;
+        }).filter(url => url && typeof url === 'string' && url.startsWith('http'));
+      }
+
 
       // 获取店铺基本信息
       this.getStoreBaseInfoFun(this.goodsDetail.storeId);
@@ -607,8 +669,8 @@ export default {
 
       // 获取商品列表
       this.getOtherLikeGoods();
-      // 获取商品是否已被收藏 如果未登录不获取
 
+      // 获取商品是否已被收藏 如果未登录不获取
       if (this.isLogin("auth")) {
         this.getGoodsCollectionFun(this.goodsDetail.id);
       }
@@ -742,7 +804,7 @@ export default {
         if (res.data.success) {
           this.storeDetail = res.data.result;
         }
-      });
+      }).catch(() => {});
     },
 
     /**
@@ -757,7 +819,7 @@ export default {
           });
           this.favorite = !this.favorite;
         }
-      });
+      }).catch(() => {});
     },
 
     /**
@@ -767,7 +829,7 @@ export default {
       if (storage.getHasLogin()) {
         API_Members.getGoodsIsCollect("GOODS", goodsId).then((res) => {
           this.favorite = res.data.result;
-        });
+        }).catch(() => {});
       }
     },
 
@@ -781,8 +843,8 @@ export default {
         storeId: this.goodsDetail.storeId,
         recommend: true,
       }).then((res) => {
-        this.recommendList = res.data.result.records;
-      });
+          this.recommendList = res.data.result.records;
+      }).catch(() => {});
     },
 
     /**
@@ -796,8 +858,8 @@ export default {
         currentGoodsId: this.goodsDetail.id,
         keyword: this.goodsDetail.name
       }).then((res) => {
-        this.likeGoodsList = res.data.result.records;
-      });
+          this.likeGoodsList = res.data.result.records;
+      }).catch(() => {});
     },
 
     /**
@@ -809,7 +871,7 @@ export default {
           title: res.data.message,
           icon: "none",
         });
-      });
+      }).catch(() => {});
     },
 
     /**
@@ -879,7 +941,7 @@ export default {
             icon: "none",
           });
         }
-      });
+      }).catch(() => {});
       this.favorite = !this.favorite;
     },
 

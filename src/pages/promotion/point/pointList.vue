@@ -21,7 +21,7 @@
             <view class="index-item" v-for="(item, key) in nav.goods" :key="key" @click="toGoods(item)">
               <view class="index-item-img">
                 <u-image :src="item.thumbnail" mode="aspectFit">
-                  <u-loading-icon slot="loading"></u-loading-icon>
+                  <template #loading><u-loading-icon></u-loading-icon></template>
                 </u-image>
                 <view class="index-item-title">{{ item.goodsName }}</view>
                 <view class="index-item-price flex flex-a-c flex-j-sb">

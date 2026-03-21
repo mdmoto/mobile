@@ -10,14 +10,14 @@
             class="empty"
             text="暂无商品介绍"
             mode="data"
-            v-if="!res.mobileIntro"
+            v-if="!res.mobileIntro && !res.intro"
           ></u-empty>
           <u-parse
             class="vhtml"
             :lazy-load="true"
             :use-cache="true"
             :show-with-animation="true"
-            :html="res.mobileIntro"
+            :html="res.mobileIntro || res.intro"
             :tag-style="style"
           ></u-parse>
         </view>
@@ -60,23 +60,15 @@
 </template>
 
 <script>
-import { getGoodsMessage } from "@/api/goods";
 export default {
   data() {
     return {
-      goodsDetail: "",
       style: {
         img:"display:block"
 			}
     };
   },
   props: ["res", "goodsId", "goodsParams"],
-  async mounted() {
-    let res = await getGoodsMessage(this.goodsId);
-    if (res.data.success) {
-      this.goodsDetail = res.data.result;
-    }
-  },
 };
 </script>
 

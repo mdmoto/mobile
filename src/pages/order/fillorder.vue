@@ -839,7 +839,7 @@ export default {
             storeId: item.storeId,
           };
 
-          this.$set(this.remarkVal, index, repeatData);
+          this.remarkVal[index] = repeatData;
         });
 
         this.orderMessage = res.data.result;

@@ -277,7 +277,7 @@ export default {
       getAddressDetail(option.id).then((res) => {
         const params = res.data.result;
         params.___path = params.consigneeAddressPath;
-        this.$set(this, "form", params);
+        this["form"] = params;
 
          if (this.$store.state.isShowToast){ uni.hideLoading() };
       });

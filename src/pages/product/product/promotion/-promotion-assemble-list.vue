@@ -75,6 +75,8 @@ export default {
           console.warn(res.data.result);
           this.assembleOrder = res.data.result;
         }
+      }).catch(() => {
+        this.assembleOrder = [];
       });
     },
 

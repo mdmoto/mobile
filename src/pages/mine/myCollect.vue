@@ -15,7 +15,7 @@
 						@click="clickGoodsSwiperAction(item, index)" :index="index" :key="index">
 						<view class="goods" @click="goGoodsDetail(item)">
 							<u-image width="131rpx" height="131rpx" :src="item.image" mode="aspectFit">
-								<u-loading-icon slot="loading"></u-loading-icon>
+								<template #loading><u-loading-icon></u-loading-icon></template>
 							</u-image>
 							<view class="goods-intro">
 								<view>{{ item.goodsName }}</view>
@@ -41,7 +41,7 @@
 								<view class="store-logo">
 									<u-image width="102rpx" height="102rpx" :src="item.storeLogo" :alt="item.storeName"
 										mode="aspectFit">
-										<u-loading-icon slot="loading"></u-loading-icon>
+										<template #loading><u-loading-icon></u-loading-icon></template>
 									</u-image>
 								</view>
 								<view class="store-name">
@@ -145,9 +145,9 @@
 				let way;
 				type == "goods" ? (way = goodList) : (way = storeList);
 				way.forEach((item) => {
-					this.$set(item, "selected", false);
+					item["selected"] = false;
 				});
-				this.$set(val, "selected", false);
+				val["selected"] = false;
 				val.selected = true;
 			},
 

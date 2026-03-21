@@ -1,5 +1,5 @@
 /**
- * 商品相关API (Refactored for Vue2/Vue3 Bridge)
+ * 商品相关API
  */
 import { request, Method } from "@/api/base.js";
 

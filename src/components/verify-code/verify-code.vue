@@ -127,14 +127,16 @@ export default {
 		 * @param {Function} callback - 回调函数
 		 */
 		getElement(elm, type = 'single', callback) {
-			uni
-				.createSelectorQuery()
-				.in(this)
-				[type === 'array' ? 'selectAll' : 'select'](elm)
-				.boundingClientRect()
-				.exec(data => {
-					callback(data[0]);
+			const query = uni.createSelectorQuery().in(this);
+			if (type === 'array') {
+				query.selectAll(elm).boundingClientRect().exec(data => {
+					callback(data && data[0] ? data[0] : []);
 				});
+			} else {
+				query.select(elm).boundingClientRect().exec(data => {
+					callback(data && data[0] ? data[0] : null);
+				});
+			}
 		},
 		/**
 		 * @description 计算光标的高度
@@ -155,9 +157,11 @@ export default {
 				// 获取各个box信息
 				this.getElement('.xt__box', 'array', elms => {
 					this.codeCursorLeft = [];
-					elms.forEach(elm => {
-						this.codeCursorLeft.push(elm.left - parentLeft + elm.width / 2);
-					});
+					if (elms && elms.forEach) {
+						elms.forEach(elm => {
+							this.codeCursorLeft.push(elm.left - parentLeft + elm.width / 2);
+						});
+					}
 				});
 			});
 		},

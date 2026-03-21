@@ -18,10 +18,12 @@
         :arrow="true" 
         @click="showLanguagePicker = true"
       >
-        <view slot="right" class="current-lang">
-          <text class="lang-flag">{{ currentLangFlag }}</text>
-          <text class="lang-name">{{ currentLangName }}</text>
-        </view>
+        <template #value>
+          <view class="current-lang">
+            <text class="lang-flag">{{ currentLangFlag }}</text>
+            <text class="lang-name">{{ currentLangName }}</text>
+          </view>
+        </template>
       </u-cell>
       
       <!-- 货币设置 -->
@@ -30,9 +32,11 @@
         :arrow="true" 
         @click="showCurrencyPicker = true"
       >
-        <view slot="right" class="current-lang">
-          <text class="lang-name">{{ currentCurrency }}</text>
-        </view>
+        <template #value>
+          <view class="current-lang">
+            <text class="lang-name">{{ currentCurrency }}</text>
+          </view>
+        </template>
       </u-cell>
       
       <!-- #ifdef APP-PLUS -->
@@ -50,22 +54,26 @@
     
     <!-- 语言选择器 -->
     <u-picker
-      v-model="showLanguagePicker"
+      :show="showLanguagePicker"
       mode="selector"
       :range="languageList"
       range-key="name"
       :default-selector="[currentLangIndex]"
       @confirm="changeLanguage"
+      @cancel="showLanguagePicker = false"
+      @close="showLanguagePicker = false"
     ></u-picker>
 
     <!-- 货币选择器 -->
     <u-picker
-      v-model="showCurrencyPicker"
+      :show="showCurrencyPicker"
       mode="selector"
       :range="currencyList"
       range-key="name"
       :default-selector="[currentCurrencyIndex]"
       @confirm="changeCurrency"
+      @cancel="showCurrencyPicker = false"
+      @close="showCurrencyPicker = false"
     ></u-picker>
     <view class="submit" v-if="userInfo.id" @click="quiteLoginOut">{{ $t('user.logout') }}</view>
   </view>
@@ -133,40 +141,39 @@ export default {
 
   methods: {
     // 切换语言
-    changeLanguage(index) {
-      const selectedLang = this.languageList[index[0]];
-      
+    changeLanguage(e) {
+      // uViewPlus picker confirm 事件可能是 {value, index} 对象或直接是 index 数组
+      this.showLanguagePicker = false;
+      let idx = Array.isArray(e) ? e[0] : (e && e.index !== undefined ? e.index[0] : 0);
+      const selectedLang = this.languageList[idx];
+      if (!selectedLang) return;
       if (selectedLang.code !== this.currentLang) {
         setLanguage(selectedLang.code);
-        
         uni.showToast({
           title: this.$t('message.operationSuccess'),
           icon: 'success'
         });
-        
-        // 1秒后重新加载页面使语言生效
         setTimeout(() => {
-          uni.reLaunch({
-            url: '/pages/mine/set/setUp'
-          });
+          uni.reLaunch({ url: '/pages/mine/set/setUp' });
         }, 1000);
       }
     },
 
     // 切换货币
-    changeCurrency(index) {
-      const selected = this.currencyList[index[0]];
+    changeCurrency(e) {
+      // uViewPlus picker confirm 事件可能是 {value, index} 对象或直接是 index 数组
+      this.showCurrencyPicker = false;
+      let idx = Array.isArray(e) ? e[0] : (e && e.index !== undefined ? e.index[0] : 0);
+      const selected = this.currencyList[idx];
+      if (!selected) return;
       if (selected.code !== this.currentCurrency) {
         storage.setCurrency(selected.code);
         uni.showToast({
           title: this.$t('message.operationSuccess'),
           icon: 'success'
         });
-        // 货币切换通常不需要全量重启，但为了确保所有过滤器更新，重新进入页面
         setTimeout(() => {
-          uni.reLaunch({
-            url: '/pages/mine/set/setUp'
-          });
+          uni.reLaunch({ url: '/pages/mine/set/setUp' });
         }, 1000);
       }
     },
@@ -178,18 +185,18 @@ export default {
         url: url,
       });
     },
-     /**
+	  /**
 	   * 退出登录
 	   */
 	  quiteLoginOut() {
-      this.quiteLoginOut();
+		this.$filters.quiteLoginOut();
 	  },
   
 	/**
 	 * 用户注销
 	 */
 	logoff(){
-		this.logoff();
+		this.$filters.logoff();
 	},
 
     /**

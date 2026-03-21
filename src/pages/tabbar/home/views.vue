@@ -3,13 +3,17 @@
     <!-- uni 中不能使用 vue component 所以用if判断每个组件 -->
     <div v-for="(item, index) in pageData.list" :key="index">
       <!-- 搜索栏，如果在楼层装修顶部则会自动浮动，否则不浮动 -->
-      <u-navbar class="navbar" v-if="item.type == 'search'" :is-back="false" :is-fixed="index === 1 ? false : true">
-        <search style="width: 100%" :res="item.options" />
+      <u-navbar class="navbar" v-if="item.type == 'search'" :show-back="false" :fixed="true" placeholder>
+        <template #center>
+          <search style="width: 100%" :res="item.options" />
+        </template>
         <!-- #ifndef H5 -->
         <!-- 扫码功能 不兼容h5 详情文档: https://uniapp.dcloud.io/api/system/barcode?id=scancode -->
-        <div slot="right" class="navbar-right">
-          <u-icon name="scan" @click="scan()" color="#666" size="50"></u-icon>
-        </div>
+        <template #right>
+          <div class="navbar-right">
+            <u-icon name="scan" @click="scan()" color="#666" size="50"></u-icon>
+          </div>
+        </template>
         <!-- #endif -->
       </u-navbar>
       <carousel v-if="item.type == 'carousel'" :res="item.options" />

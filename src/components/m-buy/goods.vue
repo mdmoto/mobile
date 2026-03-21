@@ -11,18 +11,18 @@
 						<!-- 有活动商品价格 -->
 						<view class="goods-price" v-if="goodsDetail.promotionPrice && ((isGroup && buyType === 'PINTUAN') || !isGroup)">
 							<span v-if="goodsDetail.promotionPrice && !pointDetail">
-								{{ $options.filters.currencySymbol() }}
-								<span class="goods-price-promotionShow goods-price-bigshow">{{ $options.filters.goodsFormatPrice(goodsDetail.promotionPrice)[0] }}</span>
-								.{{ $options.filters.goodsFormatPrice(goodsDetail.promotionPrice)[1] }}
+								{{ $filters.currencySymbol() }}
+								<span class="goods-price-promotionShow goods-price-bigshow">{{ $filters.goodsFormatPrice(goodsDetail.promotionPrice)[0] }}</span>
+								.{{ $filters.goodsFormatPrice(goodsDetail.promotionPrice)[1] }}
 							</span>
 							<span v-if="pointDetail.points">
 								<span class="goods-price-promotionShow goods-price-bigshow">{{ pointDetail.points }}</span>
 								{{ $t('points.points') }}
 							</span>
 							<div class="promotion-box">
-								{{ $options.filters.currencySymbol() }}
-								<span class="goods-price-bigshow">{{ $options.filters.goodsFormatPrice(goodsDetail.price)[0] }}</span>
-								.{{ $options.filters.goodsFormatPrice(goodsDetail.price)[1] }}
+								{{ $filters.currencySymbol() }}
+								<span class="goods-price-bigshow">{{ $filters.goodsFormatPrice(goodsDetail.price)[0] }}</span>
+								.{{ $filters.goodsFormatPrice(goodsDetail.price)[1] }}
 							</div>
 						</view>
 						<!-- 正常商品的价格 -->
@@ -31,18 +31,18 @@
 							<div class="price-row flex" v-if="goodsDetail.salesModel === 'WHOLESALE'">
 								<div class="goods-price" v-for="(item, index) in wholesaleList" :key="index">
 									<span>
-										{{ $options.filters.currencySymbol() }}
-										<span class="goods-price-bigshow">{{ $options.filters.goodsFormatPrice(item.price)[0] }}</span>
-										.{{ $options.filters.goodsFormatPrice(item.price)[1] }}
+										{{ $filters.currencySymbol() }}
+										<span class="goods-price-bigshow">{{ $filters.goodsFormatPrice(item.price)[0] }}</span>
+										.{{ $filters.goodsFormatPrice(item.price)[1] }}
 									</span>
 									<span class="wholesale-item">{{ item.num }}{{ goodsDetail.goodsUnit }}</span>
 								</div>
 							</div>
 							<div class="goods-price" v-else>
 								<span>
-									{{ $options.filters.currencySymbol() }}
-									<span class="goods-price-bigshow">{{ $options.filters.goodsFormatPrice(goodsDetail.price)[0] }}</span>
-									.{{ $options.filters.goodsFormatPrice(goodsDetail.price)[1] }}
+									{{ $filters.currencySymbol() }}
+									<span class="goods-price-bigshow">{{ $filters.goodsFormatPrice(goodsDetail.price)[0] }}</span>
+									.{{ $filters.goodsFormatPrice(goodsDetail.price)[1] }}
 								</span>
 							</div>
 						</view>
@@ -261,7 +261,7 @@ export default {
 				}
 			});
 			if (selectedSkuId && selectedSkuId.skuId) {
-				this.$set(this.currentSelected, index, specValue.value);
+				this.currentSelected[index] = specValue.value;
 				this.selectSkuList = {
 					spec: {
 						specName: val.name,

@@ -21,7 +21,7 @@
 
         <view class="image-wrapper">
           <u-image :src="item" mode="aspectFit" class="loaded" width="100%" height="100%">
-            <u-loading-icon slot="loading"></u-loading-icon>
+            <template #loading><u-loading-icon></u-loading-icon></template>
           </u-image>
         </view>
       </swiper-item>
@@ -50,7 +50,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.video)
   }
 };
 </script>

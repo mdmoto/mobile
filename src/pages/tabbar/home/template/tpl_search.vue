@@ -4,9 +4,6 @@
       <u-icon name="search"></u-icon>
       {{ res.list[0].title }}
     </div>
-    <div slot="right" open-type="contact" class="navbar-right message" @click="linkMsgDetail" style="border-style:none;background:rgb(234,234,234);" >
-		  <image style="width:53rpx;height:53rpx;margin-top:6rpx;" src="@/static/img/title.png"></image>
-	  </div>
   </div>
 </template>
 <script>

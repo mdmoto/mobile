@@ -215,9 +215,9 @@ export default {
      */
     openAction(val) {
       this.goodsList.forEach((item) => {
-        this.$set(item, "___selected", false);
+        item["___selected"] = false;
       });
-      this.$set(val, "___selected", true);
+      val["___selected"] = true;
     },
 
     /**
@@ -293,7 +293,7 @@ export default {
       distributionGoods(this.params).then((res) => {
         if (res.data.success && res.data.result.records.length >= 1) {
           res.data.result.records.forEach((item) => {
-            this.$set(item, "___selected", false);
+            item["___selected"] = false;
           });
           this.goodsList.push(...res.data.result.records);
         }

@@ -2,7 +2,7 @@
 <template>
   <div class="layout">
     <u-image @click="modelNavigateTo(item)" height="240rpx" width="240rpx" class="image-mode" :src="item.img" v-for="(item, index) in res.list" :key="index">
-      <u-loading-icon slot="loading"></u-loading-icon>
+      <template #loading><u-loading-icon></u-loading-icon></template>
     </u-image>
   </div>
 </template>

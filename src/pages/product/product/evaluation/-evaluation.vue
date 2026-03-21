@@ -87,11 +87,18 @@ export default {
 
     // 获取商品评论
     getGoodsCommentsMethods() {
+      if (!this.goodsDetail || !this.goodsDetail.goodsId) return;
       API_Members.getGoodsComments(this.goodsDetail.goodsId, this.params).then(
         (res) => {
-          this.commDetail = res.data.result;
+          if (res && res.data && res.data.success) {
+            this.commDetail = res.data.result || { records: [], total: 0 };
+          } else {
+            this.commDetail = { records: [], total: 0 };
+          }
         }
-      );
+      ).catch(() => {
+        this.commDetail = { records: [], total: 0 };
+      });
     },
     toComment(id, grade) {
       uni.navigateTo({

@@ -5,7 +5,7 @@
 			<view v-for="(item, index) in res" :key="index" class="goods-item">
 				<view class="image-wrapper" @click="navigateToDetailPage(item)">
 					<u-image :src="item.thumbnail" width="100%" height='330rpx' mode="aspectFit">
-						<u-loading-icon slot="loading"></u-loading-icon>
+						<template #loading><u-loading-icon></u-loading-icon></template>
 					</u-image>
 				</view>
 				<view class="goods-detail">
@@ -15,8 +15,8 @@
 					</div>
 					<view class="price-box" @click="navigateToDetailPage(item)">
 						<div class="price" v-if="item.price!=undefined">
-							{{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(item.price )[0] }} </span>.{{
-	            $options.filters.goodsFormatPrice(item.price )[1]
+							{{ $filters.currencySymbol() }}<span>{{ $filters.goodsFormatPrice(item.price )[0] }} </span>.{{
+	            $filters.goodsFormatPrice(item.price )[1]
 	          }}
 						</div>
 					</view>
@@ -53,15 +53,15 @@
 				<div class="flex goods-col">
 					<div class="goods-img" @click="navigateToDetailPage(item)">
 						<u-image width="230rpx" mode="aspectFit" border-radius='16' height="230rpx" :src="item.thumbnail">
-							<u-loading-icon slot="loading"></u-loading-icon>
+							<template #loading><u-loading-icon></u-loading-icon></template>
 						</u-image>
 					</div>
 					<div class="goods-detail">
 						<div class="title clamp3" @click="navigateToDetailPage(item)">{{ item.goodsName }}</div>
 						<view class="price-box" @click="navigateToDetailPage(item)">
 							<div class="price" v-if="item.price!=undefined">
-								{{ $options.filters.currencySymbol() }}<span>{{ $options.filters.goodsFormatPrice(item.price )[0] }} </span>.{{
-			            $options.filters.goodsFormatPrice(item.price )[1]
+								{{ $filters.currencySymbol() }}<span>{{ $filters.goodsFormatPrice(item.price )[0] }} </span>.{{
+			            $filters.goodsFormatPrice(item.price )[1]
 			          }}
 							</div>
 						</view>

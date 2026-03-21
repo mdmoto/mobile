@@ -156,11 +156,7 @@ export default {
      * 选择地址
      */
     selectRegion(region) {
-      this.$set(
-        this.form,
-        "address",
-        `${region.province.label} ${region.city.label} ${region.area.label}`
-      );
+      this.form["address"] = `${region.province.label} ${region.city.label} ${region.area.label}`;
     },
 
     /**

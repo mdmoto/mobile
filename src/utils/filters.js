@@ -31,6 +31,14 @@ export function currencySymbol() {
 }
 
 /**
+ * 获取当前币种符号 (别名，供 promotion 模板直接调用)
+ */
+export function getSymbol() {
+  return currencySymbol();
+}
+
+
+/**
  * 获取支持的币种列表
  */
 export function getCurrencyList() {
@@ -518,15 +526,22 @@ export function getPages(val) {
  * 跳转到登录页面
  */
 export function navigateToLogin(type = "navigateTo") {
+  const url = "/pages/passport/login";
   // #ifdef MP-WEIXIN
-  uni[type]({
-    url: "/pages/passport/wechatMPLogin",
-  });
+  const loginUrl = "/pages/passport/wechatMPLogin";
+  if (type === "redirectTo") {
+    uni.redirectTo({ url: loginUrl });
+  } else {
+    uni.navigateTo({ url: loginUrl });
+  }
   // #endif
+
   // #ifndef MP-WEIXIN
-  uni[type]({
-    url: "/pages/passport/login",
-  });
+  if (type === "redirectTo") {
+    uni.redirectTo({ url });
+  } else {
+    uni.navigateTo({ url });
+  }
   //  #endif
 }
 

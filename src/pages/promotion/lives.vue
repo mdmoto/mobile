@@ -174,18 +174,18 @@ export default {
 
         if (!this.recommendLives.length) {
           if (this.liveList[0].shareImg) {
-            this.$set(this, "swiperImg", [
+            this.swiperImg = [
               {
                 image: this.liveList[0].shareImg,
                 roomId: this.liveList[0].roomId,
               },
-            ]);
+            ];
           }
         } else {
           this.recommendLives.forEach((item) => {
-            this.$set(this, "swiperImg", [
+            this.swiperImg = [
               { image: item.shareImg, roomId: item.roomId },
-            ]);
+            ];
           });
         }
       }

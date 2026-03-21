@@ -4,7 +4,7 @@
 			<div class="flex goods-col">
 				<div class="goods-img">
 					<u-image width="230rpx" mode="aspectFit" border-radius='16' height="230rpx" :src="item.goodsImage || item.thumbnail">
-						<u-loading-icon slot="loading"></u-loading-icon>
+						<template #loading><u-loading-icon></u-loading-icon></template>
 					</u-image>
 				</div>
 				<div class="goods-detail">

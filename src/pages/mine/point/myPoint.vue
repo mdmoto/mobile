@@ -189,9 +189,9 @@ export default {
         
         this.pointList.push(...data);
         if (data.length < 10) {
-          this.$set(this.count, "loadStatus", "noMore");
+          this.count["loadStatus"] = "noMore";
         } else {
-          this.$set(this.count, "loadStatus", "more");
+          this.count["loadStatus"] = "more";
         }
       } catch (err) {
         if (this.$store.state.isShowToast) { uni.hideLoading(); }

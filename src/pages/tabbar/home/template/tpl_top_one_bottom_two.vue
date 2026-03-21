@@ -3,18 +3,18 @@
   <div class="layout">
     <div class="view-width-100" @click="modelNavigateTo(res.list[0])">
       <u-image class="image-mode" width="100%" height="200rpx" :src="res.list[0].img">
-        <u-loading-icon slot="loading"></u-loading-icon>
+        <template #loading><u-loading-icon></u-loading-icon></template>
       </u-image>
     </div>
     <div class="view-width-100" @click="modelNavigateTo(res.list[1])">
       <div class="view-height-85">
         <u-image class="image-mode" width="100%" height="170rpx" :src="res.list[1].img">
-          <u-loading-icon slot="loading"></u-loading-icon>
+          <template #loading><u-loading-icon></u-loading-icon></template>
         </u-image>
       </div>
       <div class="view-height-85" @click="modelNavigateTo(res.list[2])">
         <u-image class="image-mode" width="100%" height="170rpx" :src="res.list[2].img">
-          <u-loading-icon slot="loading"></u-loading-icon>
+          <template #loading><u-loading-icon></u-loading-icon></template>
         </u-image>
       </div>
     </div>

@@ -15,67 +15,68 @@
       </div>
     </u-sticky>
     <div class="goods-list">
-      <div
-        v-if="
-          item.___index != undefined
-            ? selected.index == item.___index
-            : selected.val == item.type
-        "
-        @click="handleClick(item)"
-        class="goods-item"
-        v-for="(item, item_index) in res.list[0].listWay"
-        :key="item_index"
-      >
-        <div class="goods-img">
-          <u-image
-            :src="item.img"
-            height="350rpx"
-            mode="aspectFit"
-            width="100%"
-          >
-            <u-loading-icon slot="loading"></u-loading-icon>
-          </u-image>
-        </div>
-        <div class="goods-desc">
-          <div class="goods-title">
-            {{ item.title }}
+      <!-- 静态商品列表（listWay 绑定） -->
+      <template v-for="(item, item_index) in res.list[0].listWay" :key="item_index">
+        <div
+          v-if="item && (item.___index != undefined ? selected.index == item.___index : selected.val == item.type)"
+          @click="handleClick(item)"
+          class="goods-item"
+        >
+          <div class="goods-img">
+            <u-image
+              :src="item.img"
+              height="350rpx"
+              mode="aspectFit"
+              width="100%"
+            >
+              <template #loading><u-loading-icon></u-loading-icon></template>
+            </u-image>
           </div>
-          <div class="goods-bottom">
-            <div class="goods-price">
-              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
+          <div class="goods-desc">
+            <div class="goods-title">
+              {{ item.title }}
+            </div>
+            <div class="goods-bottom">
+              <div class="goods-price">
+                <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
 
-      <div
-        v-if="res.list[0].titleWay[selected.index].bindCategory && goodsData.length"
-        v-for="(item, index) in goodsData"
-        :key="index"
-        class="goods-item"
-        @click="handleClick(item)"
+      <!-- 分类绑定的动态商品列表 -->
+      <template
+        v-if="res.list[0].titleWay[selected.index] && res.list[0].titleWay[selected.index].bindCategory && goodsData.length"
       >
-        <div class="goods-img">
-          <u-image
-            :src="item.thumbnail"
-            height="350rpx"
-            mode="aspectFit"
-            width="100%"
-          >
-            <u-loading-icon slot="loading"></u-loading-icon>
-          </u-image>
-        </div>
-        <div class="goods-desc">
-          <div class="goods-title">
-            {{ item.goodsName }}
+        <div
+          v-for="(item, index) in goodsData"
+          :key="index"
+          class="goods-item"
+          @click="handleClick(item)"
+        >
+          <div class="goods-img">
+            <u-image
+              :src="item.thumbnail"
+              height="350rpx"
+              mode="aspectFit"
+              width="100%"
+            >
+              <template #loading><u-loading-icon></u-loading-icon></template>
+            </u-image>
           </div>
-          <div class="goods-bottom">
-            <div class="goods-price">
-              <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
+          <div class="goods-desc">
+            <div class="goods-title">
+              {{ item.goodsName }}
+            </div>
+            <div class="goods-bottom">
+              <div class="goods-price">
+                <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
       
       <!-- 加载更多提示（仅最后模块且启用触底加载时显示） -->
       <div v-if="enableBottomLoad && goodsData.length > 0" style="width: 100%; padding: 20rpx 0;">
@@ -160,7 +161,7 @@ export default {
       }
     })
   },
-  destroyed(){
+  unmounted(){
     uni.$off('onReachBottom')
   },
   methods: {
@@ -223,7 +224,7 @@ export default {
             pageSize: this.params.pageSize,
             pageNumber: this.params.pageNumber,
             loadedCount: this.goodsData.length,
-            totalElements: this.goodsResult.totalElements,
+            totalElements: this.goodsResult.totalElements || this.goodsResult.total,
             loadStatus: this.loadStatus,
             newRecordsCount: result.length
           });
