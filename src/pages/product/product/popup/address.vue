@@ -54,7 +54,7 @@ export default {
     }
     else{
       uni.navigateTo({
-         url: 'pages/passport/login'
+         url: '/pages/passport/login'
       });
     }
  
