@@ -1,6 +1,6 @@
 <template>
   <!-- 遮罩层 -->
-  <u-popup @close="close" v-model="show" mode="bottom" border-radius="30" height="260rpx">
+  <u-popup @close="close" :show="show" mode="bottom" border-radius="30" height="260rpx">
 
     <view class="share-title">
       <span>分享至</span>

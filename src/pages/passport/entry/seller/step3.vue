@@ -100,11 +100,14 @@
     >
     </m-city>
 
-    <u-select
-      v-model="enableCategory"
+    <u-picker
+      keyName="label"
+      :show="enableCategory"
       @confirm="confirmCategory"
-      :list="categoryList"
-    ></u-select>
+      @cancel="enableCategory = false"
+      @close="enableCategory = false"
+      :columns="[categoryList]"
+    ></u-picker>
 
     <uniMap v-if="mapFlag" @close="closeMap" @callback="callBackAddress" />
   </div>
@@ -262,9 +265,11 @@ export default {
       }
     },
 
-    confirmCategory(val) {
-      this.form.goodsManagementCategory = val[0].value;
-      this.goodsManagementCategory = val[0].label;
+    confirmCategory(e) {
+      this.enableCategory = false;
+      let val = e.value[0];
+      this.form.goodsManagementCategory = val.value;
+      this.goodsManagementCategory = val.label;
     },
     async fetchCategoryList() {
       const res = await getCategoryList(0);

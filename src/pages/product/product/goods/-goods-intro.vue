@@ -17,7 +17,7 @@
             :lazy-load="true"
             :use-cache="true"
             :show-with-animation="true"
-            :html="res.mobileIntro || res.intro"
+            :content="res.mobileIntro || res.intro"
             :tag-style="style"
           ></u-parse>
         </view>

@@ -107,7 +107,7 @@
       </div>
 	  
 	  			<template>
-	  				<u-popup v-model="sharingShow" mode="bottom" border-radius="14">
+	  				<u-popup :show="sharingShow" @close="sharingShow = false" mode="bottom" border-radius="14">
 	  					<view style="margin: 10px; text-align: center;"> {{ $t('address.sharingTips') }} </view>
 	  					<view class='qrcode'>
 	  						<uqrcode ref="uqrcode" canvas-id="qrcode" :value="sharingLink" :options="{ margin: 10 }">

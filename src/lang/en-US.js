@@ -150,6 +150,7 @@ export default {
         "about": "About Us",
         "language": "Language",
         "currency": "Currency",
+        "currencyCurrency": "Currency Settings",
         "currentLanguage": "Current Language",
         "currentCurrency": "Current Currency",
         "notLoggedIn": "Not logged in",

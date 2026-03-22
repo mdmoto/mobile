@@ -242,7 +242,7 @@
       <!-- 规格-模态层弹窗 -->
       <view class="spec">
         <!-- 促销弹窗 -->
-        <u-popup v-model="promotionShow" :height="setup.height" :mode="setup.mode" :border-radius="setup.radius"
+        <u-popup :show="promotionShow" :height="setup.height" :mode="setup.mode" :border-radius="setup.radius"
           @close="promotionShow = false" :mask-close-able="setup.close" closeable>
           <view class="header-title">优惠</view>
           <view class="cuxiao">
@@ -552,8 +552,12 @@ export default {
      * 初始化信息
      */
     async init (id, goodsId, distributionId = "") {
-      this.isGroup = false; //初始化拼团
-      this.productId = id; // skuId
+      if (this._isInitializing && this._lastInitId === id) return;
+      this._isInitializing = true;
+      this._lastInitId = id;
+      try {
+        this.isGroup = false; //初始化拼团
+        this.productId = id; // skuId
 
       let response;
       console.log('[goods] init calling getGoods with:', { id, goodsId });
@@ -636,12 +640,12 @@ export default {
           }
         });
 
-      // 轮播图渲染逻辑优化 - 支持三种格式：纯字符串URL、{url:...}对象、JSON字符串
+      // 轮播图渲染逻辑优化 - 支持三种格式：纯字符串URL、{url:...}/{original:...}对象、JSON字符串
       if (this.goodsDetail && this.goodsDetail.goodsGalleryList) {
-        this.imgList = this.goodsDetail.goodsGalleryList.map(item => {
-          // 如果是对象，直接取 url 字段 (后端最常见格式 {url:'...', sort:1})
-          if (item && typeof item === 'object' && item.url) {
-            return item.url;
+        let extractedImgs = this.goodsDetail.goodsGalleryList.map(item => {
+          // 如果是对象，直接取 url 或 original 字段
+          if (item && typeof item === 'object') {
+            return item.original || item.url || item;
           }
           // 如果是 JSON 字符串，尝试解析出 URL
           if (typeof item === 'string' && item.includes('"url":')) {
@@ -652,9 +656,32 @@ export default {
               return item;
             }
           }
-          // 如果是纯字符串 URL 直接使用
+          if (typeof item === 'string' && item.includes('"original":')) {
+            try {
+              const obj = JSON.parse(item);
+              return obj.original || item;
+            } catch (e) {
+              return item;
+            }
+          }
+          // 纯字符串 URL 直接使用
           return item;
-        }).filter(url => url && typeof url === 'string' && url.startsWith('http'));
+        }).filter(url => url && typeof url === 'string' && url.length > 5);
+
+        if (extractedImgs.length === 0 && this.goodsDetail.original) {
+          extractedImgs = [this.goodsDetail.original];
+        } else if (extractedImgs.length === 0 && this.goodsDetail.thumbnail) {
+          extractedImgs = [this.goodsDetail.thumbnail];
+        }
+        this.imgList = extractedImgs;
+        console.log("[goods] Extracted imgList:", this.imgList, "from raw goodsGalleryList:", this.goodsDetail.goodsGalleryList);
+      } else {
+        this.imgList = [];
+        if (this.goodsDetail && this.goodsDetail.original) {
+           this.imgList.push(this.goodsDetail.original);
+        } else if (this.goodsDetail && this.goodsDetail.thumbnail) {
+           this.imgList.push(this.goodsDetail.thumbnail);
+        }
       }
 
 
@@ -676,6 +703,11 @@ export default {
       }
       // 获取IM 需要的话使用
       // this.getIMDetailMethods();
+      } catch (err) {
+        console.error('[goods] init failure:', err);
+      } finally {
+        this._isInitializing = false;
+      }
     },
 
     async getIMDetailMethods () {

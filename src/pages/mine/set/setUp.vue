@@ -55,10 +55,9 @@
     <!-- 语言选择器 -->
     <u-picker
       :show="showLanguagePicker"
-      mode="selector"
-      :range="languageList"
-      range-key="name"
-      :default-selector="[currentLangIndex]"
+      :columns="[languageList]"
+      keyName="name"
+      :defaultIndex="[currentLangIndex >= 0 ? currentLangIndex : 0]"
       @confirm="changeLanguage"
       @cancel="showLanguagePicker = false"
       @close="showLanguagePicker = false"
@@ -67,10 +66,9 @@
     <!-- 货币选择器 -->
     <u-picker
       :show="showCurrencyPicker"
-      mode="selector"
-      :range="currencyList"
-      range-key="name"
-      :default-selector="[currentCurrencyIndex]"
+      :columns="[currencyList]"
+      keyName="name"
+      :defaultIndex="[currentCurrencyIndex >= 0 ? currentCurrencyIndex : 0]"
       @confirm="changeCurrency"
       @cancel="showCurrencyPicker = false"
       @close="showCurrencyPicker = false"
@@ -142,9 +140,8 @@ export default {
   methods: {
     // 切换语言
     changeLanguage(e) {
-      // uViewPlus picker confirm 事件可能是 {value, index} 对象或直接是 index 数组
       this.showLanguagePicker = false;
-      let idx = Array.isArray(e) ? e[0] : (e && e.index !== undefined ? e.index[0] : 0);
+      let idx = e.indexs[0];
       const selectedLang = this.languageList[idx];
       if (!selectedLang) return;
       if (selectedLang.code !== this.currentLang) {
@@ -161,9 +158,8 @@ export default {
 
     // 切换货币
     changeCurrency(e) {
-      // uViewPlus picker confirm 事件可能是 {value, index} 对象或直接是 index 数组
       this.showCurrencyPicker = false;
-      let idx = Array.isArray(e) ? e[0] : (e && e.index !== undefined ? e.index[0] : 0);
+      let idx = e.indexs[0];
       const selected = this.currencyList[idx];
       if (!selected) return;
       if (selected.code !== this.currentCurrency) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-popup v-model="enableShowCoupon" mode="center" width="550rpx" height="400px">
+    <u-popup :show="enableShowCoupon" @close="enableShowCoupon = false" mode="center" width="550rpx" height="400px">
       <view style="height: 130rpx">
         <view
           style="

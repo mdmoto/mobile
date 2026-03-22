@@ -104,7 +104,7 @@
 			</div>
 		</view>
 
-		<u-popup border-radius="20" mode="right" width="90%" v-model="sortPopup">
+		<u-popup border-radius="20" mode="right" width="90%" :show="sortPopup" @close="sortPopup = false">
 			<view class="status_bar"></view>
 			<view class="sort-box  ">
 				<view class="sort-list">

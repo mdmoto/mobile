@@ -235,12 +235,15 @@
       @callbackInvoice="callbackInvoice"
       v-if="invoiceFlag"
     />
-    <u-select
+    <u-picker
+      keyName="label"
       @confirm="confirmDistribution"
-      v-model="shippingFlag"
+      @cancel="shippingFlag = false"
+      @close="shippingFlag = false"
+      :show="shippingFlag"
       v-if="shippingMethod.length != 0"
-      :list="shippingMethod"
-    ></u-select>
+      :columns="[shippingMethod]"
+    ></u-picker>
 
     <div class="box box5" v-if="orderMessage.priceDetailDTO">
       <div>
@@ -785,13 +788,15 @@ export default {
     },
 
     // 选择配送
-    async confirmDistribution(val) {
+    async confirmDistribution(e) {
+      this.shippingFlag = false;
+      let val = e.value[0].value;
       let res = await API_Trade.setShipMethod({
-        shippingMethod: val[0].value,
+        shippingMethod: val,
         way: this.routerVal.way,
       });
 
-      this.shippingText = val[0].value;
+      this.shippingText = val;
       if (res.data.success) {
         this.getOrderList();
       }

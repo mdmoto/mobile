@@ -47,19 +47,24 @@ export default {
     };
   },
   filters: {},
-  watch: {},
   mounted() {
     if( this.isLogin("auth") ){
       this.getShippingAddress()
     }
-    else{
-      uni.navigateTo({
-         url: '/pages/passport/login'
-      });
-    }
- 
   },
   props: ["goodsId", "addressFlag"],
+  watch: {
+    addressFlag(val) {
+      if(val && !this.isLogin("auth")) {
+        uni.navigateTo({
+           url: '/pages/passport/login'
+        });
+        this.closeAddress();
+      } else if (val && this.isLogin("auth") && !this.addressDetail) {
+         this.getShippingAddress();
+      }
+    }
+  },
 
   methods: {
     /**关闭地址 */

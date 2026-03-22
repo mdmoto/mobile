@@ -2,7 +2,7 @@
   <!-- 轮播图 -->
   <view class="carousel">
 
-    <swiper circular="true" duration="400" @change="swiperChange">
+    <swiper :circular="true" duration="400" @change="swiperChange" v-if="res.length > 0">
       <swiper-item v-if='video'>
         <!-- #ifndef APP-PLUS -->
         <video class="video" show-mute-btn style="width:100%; height:100%;" muted autoplay :src='video' loop

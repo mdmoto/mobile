@@ -145,7 +145,7 @@
         </span>
       </view>
       <!-- 优惠详情 -->
-      <u-popup z-index="3" close mode="bottom" height="50%" closeable v-model="discountDetailsFlag" border-radius="20">
+      <u-popup z-index="3" close mode="bottom" height="50%" closeable :show="discountDetailsFlag" @close="discountDetailsFlag = false" border-radius="20">
         <div class="discount-list">
           <view class="discount-title">优惠明细</view>
           <div class="discount-way">

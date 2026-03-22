@@ -1,7 +1,7 @@
 <template>
   <view class="wrapper">
     <!-- 筛选弹出层 TODO后续版本更新 -->
-    <!-- <u-popup width="90%" v-model="popup" mode="right">
+    <!-- <u-popup width="90%" :show="popup" @close="popup = false" mode="right">
       <view class="screen-title">商品筛选</view>
 
       <view class="screen-view">

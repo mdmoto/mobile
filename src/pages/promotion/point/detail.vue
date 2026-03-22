@@ -37,7 +37,7 @@
         <div class="bargain">
           <div class="row-title">{{ $t('goods.description') }}</div>
           <view class="u-content">
-            <u-parse :html="goodsData.mobileIntro" :tag-style="style"></u-parse>
+            <u-parse :content="goodsData.mobileIntro" :tag-style="style"></u-parse>
           </view>
         </div>
       </div>

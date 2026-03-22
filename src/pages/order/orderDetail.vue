@@ -221,7 +221,7 @@
         </view>
       </view>
     </view>
-    <u-popup class="cancel-popup" v-model="cancelShow" mode="bottom" length="60%">
+    <u-popup class="cancel-popup" :show="cancelShow" @close="cancelShow = false" mode="bottom" length="60%">
       <view class="header">{{ $t('order.cancel') }}</view>
       <view class="body">
         <view class="title">{{ $t('order.cancelTips') }}</view>

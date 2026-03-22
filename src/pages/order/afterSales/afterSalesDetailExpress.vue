@@ -55,9 +55,9 @@
         </u-button>
       </view>
     </u-form>
-    <u-select mode="single-column" :list="companyList" v-model="companySelectShow"
-              @confirm="companySelectConfirm"></u-select>
-    <u-calendar v-model="timeshow" :mode="'date'" @change="onTimeChange"></u-calendar>
+    <u-picker keyName="label" :columns="[companyList]" :show="companySelectShow"
+              @confirm="companySelectConfirm" @cancel="companySelectShow = false" @close="companySelectShow = false"></u-picker>
+    <u-calendar :show="timeshow" :mode="'date'" @confirm="onTimeChange" @close="timeshow = false"></u-calendar>
     <u-toast ref="uToast"/>
   </view>
 </template>
@@ -99,8 +99,9 @@ export default {
      * 确认快递公司
      */
     companySelectConfirm(e) {
-      this.form.logisticsId = e[0].value;
-      this.form.courierCompany = e[0].label;
+      this.companySelectShow = false;
+      this.form.logisticsId = e.value[0].value;
+      this.form.courierCompany = e.value[0].label;
     },
 
     /**
@@ -123,7 +124,8 @@ export default {
      * 更改时间
      */
     onTimeChange(e) {
-      this.form.mDeliverTime = e.result;
+      this.timeshow = false;
+      this.form.mDeliverTime = e[0];
     },
 
     /**
@@ -134,21 +136,21 @@ export default {
 
       if (this.form.logisticsId == "") {
         this.$refs.uToast.show({
-          title: "请选择快递公司",
+          message: "请选择快递公司",
           type: "error",
         });
         return;
       }
       if (this.form.logisticsNo == "") {
         this.$refs.uToast.show({
-          title: "请填写快递单号",
+          message: "请填写快递单号",
           type: "error",
         });
         return;
       }
       if (this.form.mDeliverTime == "") {
         this.$refs.uToast.show({
-          title: "请选择发货时间",
+          message: "请选择发货时间",
           type: "error",
         });
         return;
@@ -165,10 +167,13 @@ export default {
         ;
         if (res.statusCode === 200) {
           this.$refs.uToast.show({
-            title: "提交成功",
+            message: "提交成功",
             type: "success",
-            back: true,
-            url: "/pages/order/afterSales/afterSales",
+            complete: () => {
+              uni.redirectTo({
+                url: "/pages/order/afterSales/afterSales",
+              });
+            }
           });
         }
       });

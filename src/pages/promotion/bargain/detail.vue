@@ -74,7 +74,7 @@
         <div class="bargain">
           <div class="bargain-title">商品详情</div>
           <view class="u-content">
-            <u-parse :html="bargainDetail.mobileIntro" :tag-style="style"></u-parse>
+            <u-parse :content="bargainDetail.mobileIntro" :tag-style="style"></u-parse>
           </view>
 
         </div>

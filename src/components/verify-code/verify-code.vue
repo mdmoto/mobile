@@ -127,7 +127,12 @@ export default {
 		 * @param {Function} callback - 回调函数
 		 */
 		getElement(elm, type = 'single', callback) {
+			// #ifdef H5
+			const query = uni.createSelectorQuery ? uni.createSelectorQuery().in(this) : this.createSelectorQuery().in(this);
+			// #endif
+			// #ifndef H5
 			const query = uni.createSelectorQuery().in(this);
+			// #endif
 			if (type === 'array') {
 				query.selectAll(elm).boundingClientRect().exec(data => {
 					callback(data && data[0] ? data[0] : []);

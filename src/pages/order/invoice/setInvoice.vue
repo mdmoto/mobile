@@ -1,5 +1,5 @@
 <template>
-  <u-popup closeable border-radius="28" @close="close" mode="bottom" height="80%" v-model="show">
+  <u-popup closeable border-radius="28" @close="close" mode="bottom" height="80%" :show="show">
 
     <div class="wrapper">
       <!-- 发票类型 -->
@@ -155,6 +155,7 @@ export default {
      * 监听关闭
      */
     close(val) {
+      this.show = false;
       this.$emit("callbackInvoice", val);
     },
     submitInvoice() {

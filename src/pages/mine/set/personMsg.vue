@@ -17,7 +17,7 @@
 
       <u-form-item :label="$t('user.birthday')" label-width="150" right-icon="arrow-right">
         <div style="width: 100%;" @click="showBirthday = true">{{ birthday || $t('user.pleaseSelectBirthday') }}</div>
-       <u-picker v-model="showBirthday" mode="time" :confirm-color="lightColor" @confirm="selectTime"></u-picker>
+       <u-datetime-picker :show="showBirthday" mode="date" :confirm-color="lightColor" @confirm="selectTime" @cancel="showBirthday = false" @close="showBirthday = false"></u-datetime-picker>
       </u-form-item>
       <u-form-item :label="$t('user.city')" label-width="150" :placeholder="$t('user.pleaseSelectCity')" right-icon="arrow-right">
         <div style="width: 100%;" @click="clickRegion">{{ form.___path || $t('user.pleaseSelectCity') }}</div>
@@ -162,9 +162,14 @@ export default {
     /**
      * 选择时间
      */
-    selectTime(time) {
-      this.form.birthday = `${time.year}-${time.month}-${time.day}`;
-      this.birthday = `${time.year} - ${time.month} - ${time.day}`;
+    selectTime(e) {
+      this.showBirthday = false;
+      const date = new Date(e.value);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      this.form.birthday = `${year}-${month}-${day}`;
+      this.birthday = `${year} - ${month} - ${day}`;
     },
 	
 	navigateTo(username) {

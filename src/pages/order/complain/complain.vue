@@ -27,7 +27,7 @@
     </view>
 
     <!-- 投诉主题 -->
-    <u-select @confirm="confirmComplain" v-model="complainShow" :list="complainList"></u-select>
+    <u-picker keyName="label" :columns="[complainList]" :show="complainShow" @confirm="confirmComplain" @cancel="complainShow = false" @close="complainShow = false"></u-picker>
     <!-- 投诉模块 -->
     <view class="cell">
       <view class="cell-item between" @click="complainShow = true">
@@ -187,7 +187,8 @@ export default {
      * 确认投诉
      */
     confirmComplain(e) {
-      this.complainTopic = e[0].label;
+      this.complainShow = false;
+      this.complainTopic = e.value[0].label;
     },
   },
 };

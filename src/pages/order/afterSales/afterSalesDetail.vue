@@ -87,11 +87,11 @@
       <u-button type="primary" ripple shape="circle" v-if="applyInfo.refundWay" :custom-style="customStyle"
         @click="onSubmit">提交申请</u-button>
     </view>
-    <u-select mode="single-column" :list="reasonList" v-model="reasonSelectShow" @confirm="reasonSelectConfirm">
-    </u-select>
-    <u-select mode="single-column" :list="typeList" v-model="typeSelectShow" @confirm="typeSelectConfirm"></u-select>
-    <u-select mode="single-column" :list="returnList" v-model="returnSelectShow" @confirm="returnSelectConfirm">
-    </u-select>
+    <u-picker keyName="label" :columns="[reasonList]" :show="reasonSelectShow" @confirm="reasonSelectConfirm" @cancel="reasonSelectShow = false" @close="reasonSelectShow = false">
+    </u-picker>
+    <u-picker keyName="label" :columns="[typeList]" :show="typeSelectShow" @confirm="typeSelectConfirm" @cancel="typeSelectShow = false" @close="typeSelectShow = false"></u-picker>
+    <u-picker keyName="label" :columns="[returnList]" :show="returnSelectShow" @confirm="returnSelectConfirm" @cancel="returnSelectShow = false" @close="returnSelectShow = false">
+    </u-picker>
     <u-toast ref="uToast" />
   </view>
 </template>
@@ -249,15 +249,19 @@ export default {
 
     //退款原因
     reasonSelectConfirm(e) {
-      this.form.reason = e[0].label;
+      this.reasonSelectShow = false;
+      this.form.reason = e.value[0].label;
     },
     //退款方式
     typeSelectConfirm(e) {
-      this.form.accountType = e[0].value;
-      this.form.accountType_label = e[0].label;
+      this.typeSelectShow = false;
+      this.form.accountType = e.value[0].value;
+      this.form.accountType_label = e.value[0].label;
     },
     //返回方式
-    returnSelectConfirm(e) {},
+    returnSelectConfirm(e) {
+      this.returnSelectShow = false;
+    },
 
     //修改申请数量
     valChange(e) {
@@ -289,23 +293,28 @@ export default {
       applyReturn(this.sn, this.form).then((resp) => {
          if (this.$store.state.isShowToast){ uni.hideLoading() };
         if (resp.data.success) {
-          this.$refs.uToast.show({ title: "提交成功", type: "success" });
-          uni.redirectTo({
-            url: "/pages/order/afterSales/applySuccess",
+          this.$refs.uToast.show({
+            message: "提交成功",
+            type: "success",
+            complete: () => {
+              uni.redirectTo({
+                url: "/pages/order/afterSales/applySuccess",
+              });
+            }
           });
         } else {
-          this.$refs.uToast.show({ title: resp.data.message, type: "error" });
+          this.$refs.uToast.show({ message: resp.data.message, type: "error" });
         }
       });
     },
     //检测提交参数
     handleCheckParams() {
       if (uni.$u.test.isEmpty(this.form.reason)) {
-        this.$refs.uToast.show({ title: "请选择 退款原因", type: "error" });
+        this.$refs.uToast.show({ message: "请选择 退款原因", type: "error" });
         return false;
       }
       if (uni.$u.test.isEmpty(this.form.problemDesc)) {
-        this.$refs.uToast.show({ title: "请输入 退款说明", type: "error" });
+        this.$refs.uToast.show({ message: "请输入 退款说明", type: "error" });
         return false;
       }
 
@@ -314,7 +323,7 @@ export default {
         // 银行开户行校验
         if (uni.$u.test.isEmpty(this.form.bankDepositName)) {
           this.$refs.uToast.show({
-            title: "请输入 银行开户行",
+            message: "请输入 银行开户行",
             type: "error",
           });
           return false;
@@ -322,7 +331,7 @@ export default {
         // 银行开户名校验
         if (uni.$u.test.isEmpty(this.form.bankAccountName)) {
           this.$refs.uToast.show({
-            title: "请输入 银行开户名",
+            message: "请输入 银行开户名",
             type: "error",
           });
           return false;
@@ -330,19 +339,19 @@ export default {
         // 银行账号校验
         if (uni.$u.test.isEmpty(this.form.bankAccountNumber)) {
           this.$refs.uToast.show({
-            title: "请输入 银行账号",
+            message: "请输入 银行账号",
             type: "error",
           });
           return false;
         } else if (uni.$u.test.chinese(this.form.bankAccountName) === false) {
           this.$refs.uToast.show({
-            title: "银行开户名输入错误",
+            message: "银行开户名输入错误",
             type: "error",
           });
           return false;
         } else if (uni.$u.test.chinese(this.form.bankDepositName) === false) {
           this.$refs.uToast.show({
-            title: "银行开户行输入错误",
+            message: "银行开户行输入错误",
             type: "error",
           });
           return false;
