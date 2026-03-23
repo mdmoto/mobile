@@ -332,7 +332,7 @@ export default {
         "signInTips": "Wenn Sie darauf bestehen, sich jeden Tag anzumelden, können Sie mehrere Belohnungen erhalten.",
         "signInSuccess": "Melden Sie sich erfolgreich an",
         "dailyRecord": "Tagesaufzeichnung",
-        "pointsRuleContent": "1. Sie können nach dem Einkauf und der Abrechnung eine $MAO-Punktebelohnung (Mining) erhalten\\n2. Gesammelte Punkte können jederzeit gegen $MAO-Token eingetauscht werden\\n3. Punkte sind unbegrenzt gültig und verfallen nicht.\\n4. Detaillierte Regeln finden Sie unter about.maollar.com"
+        "pointsRuleContent": "1. Sie können nach dem Einkauf und der Abrechnung eine $MAO-Punktebelohnung (Mining) erhalten\\n2. Gesammelte Punkte können jederzeit gegen $MAO-Token eingetauscht werden\\n3. Punkte sind unbegrenzt gültig und verfallen nicht.\\n4. Detaillierte Regeln finden Sie unter about.maomall.com"
     },
     "deposit": {
         "title": "Vorauszahlung",

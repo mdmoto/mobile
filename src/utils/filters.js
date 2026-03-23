@@ -64,7 +64,25 @@ export function unitPrice(val, unit, location) {
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  let rates = { CNY: 7.24, JPY: 154, USD: 1.0 };
+  
+  // 核心逻辑：确保符号与币种严格对应
+  let symbol = symbolMap[currency] || (currency === 'CNY' || currency === 'JPY' ? '¥' : '$');
+
+  // 计算逻辑：
+  // 核心防御：如果是人民币 (CNY)，永远返回原始数值，严禁执行任何除法计算
+  if (currency === 'CNY') {
+    let price = Foundation.formatPrice(val);
+    if (location === "before") {
+      return (unit || symbol) + price.substr(0, price.length - 3);
+    }
+    if (location === "after") {
+      return price.substr(-2);
+    }
+    return (unit || symbol) + price;
+  }
+
+  // 实时汇率解析逻辑 (仅针对非 CNY 币种)
+  let rates = { USD: 1.0 }; // 默认仅保留 1.0 基准，杜绝 7.24 等硬编码
   if (rateData) {
     if (rateData.rates) rates = rateData.rates;
     else if (rateData.result && rateData.result.rates) rates = rateData.result.rates;
@@ -72,15 +90,13 @@ export function unitPrice(val, unit, location) {
     else rates = rateData;
   }
 
-  let symbol = symbolMap[currency] || "¥";
-
-  // 计算逻辑：CNY (基准) -> USD -> Target
-  // 后端默认以 CNY 人民币录入，因此先除以人民币汇率得到基准美元价
-  const usdPrice = val / (rates.CNY || 7.24);
+  // 非 CNY 币种的换算逻辑
+  const usdPrice = val / (rates.CNY || 7.23); // 如果 API 没给 CNY 汇率，使用 7.23 仅作为外币换算的最后兜底，但不影响 CNY 本身显示
   let convertedPrice = usdPrice;
+  
   if (currency !== 'USD') {
-    const rate = rates[currency] || 1.0;
-    convertedPrice = usdPrice * rate;
+    const targetRate = rates[currency] || 1.0;
+    convertedPrice = usdPrice * targetRate;
   }
 
   let price = Foundation.formatPrice(convertedPrice);
@@ -104,7 +120,14 @@ export function goodsFormatPrice(val) {
 
   const currency = storage.getCurrency();
   const rateData = storage.getExchangeRates();
-  let rates = { CNY: 7.24, JPY: 154, USD: 1.0 };
+  
+  if (currency === 'CNY') {
+    let valNum = new Number(val);
+    return valNum.toFixed(2).split(".");
+  }
+
+  // 非 CNY 逻辑
+  let rates = { USD: 1.0 };
   if (rateData) {
     if (rateData.rates) rates = rateData.rates;
     else if (rateData.result && rateData.result.rates) rates = rateData.result.rates;
@@ -112,11 +135,11 @@ export function goodsFormatPrice(val) {
     else rates = rateData;
   }
 
-  const usdPrice = val / (rates.CNY || 7.24);
+  const usdPrice = val / (rates.CNY || 7.23);
   let convertedPrice = usdPrice;
   if (currency !== 'USD') {
-    const rate = rates[currency] || 1.0;
-    convertedPrice = usdPrice * rate;
+    const targetRate = rates[currency] || 1.0;
+    convertedPrice = usdPrice * targetRate;
   }
 
   let valNum = new Number(convertedPrice);

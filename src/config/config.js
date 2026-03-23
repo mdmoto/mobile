@@ -1,5 +1,5 @@
 const name = "MaoMall"; //全局商城name
-const schemeName = "maollar"; //唤醒app需要的schemeName
+const schemeName = "maomall"; //唤醒app需要的schemeName
 export default {
   name: name,
   schemeLink: `${schemeName}://`, //唤起app地址

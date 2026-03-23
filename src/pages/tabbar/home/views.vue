@@ -234,7 +234,7 @@ export default {
       } else {
         /**
          * TODO 安卓 权限已经授权了，调用api总是显示用户已永久拒绝申请。人傻了
-         * TODO 如果xdm有更好的办法请在 https://gitee.com/beijing_hongye_huicheng/maollar/issues 提下谢谢
+         * TODO 如果xdm有更好的办法请在 https://gitee.com/beijing_hongye_huicheng/maomall/issues 提下谢谢
          */
         this.scanCode();
       }

@@ -8,8 +8,8 @@ import { request, Method } from "@/api/base.js";
  */
 export async function getExchangeList(params) {
     return request({
-        url: "/api/v1/maollar/exchange-list",
-        method: Method.GET,
+        url: "/maomall/exchange-list",
+        method: "get",
         params,
     });
 }
@@ -19,8 +19,8 @@ export async function getExchangeList(params) {
  */
 export async function getTierStatus() {
     return request({
-        url: "/api/v1/maollar/tier-status",
-        method: Method.GET,
+        url: "/maomall/tier-status",
+        method: "get",
     });
 }
 
@@ -29,8 +29,8 @@ export async function getTierStatus() {
  */
 export async function getMaoMallRates() {
     return request({
-        url: "/api/v1/maollar/rates",
-        method: Method.GET,
+        url: "/maomall/rates",
+        method: "get",
     });
 }
 
@@ -39,8 +39,8 @@ export async function getMaoMallRates() {
  */
 export async function applyMaoMallExchange(data) {
     return request({
-        url: "/api/v1/maollar/exchange",
-        method: Method.POST,
+        url: "/maomall/exchange",
+        method: "post",
         params: data // 使用 params 因为后端 Controller 接收的是 String/Long 参数
     });
 }

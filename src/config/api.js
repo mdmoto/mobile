@@ -6,16 +6,14 @@
 const dev = {
   im: "https://im-api.maollar.com",
   common: "https://common-api.maollar.com",
-  buyer: "https://api.maollar.com",
-  // common: "http://192.168.0.113:8890",
-  // buyer: "http://192.168.0.113:8888",
-  // im: "http://192.168.0.113:8885",
+  buyer: "https://api.maollar.com/buyer", 
 };
+
 // 生产环境
 const prod = {
   im: "https://im-api.maollar.com",
   common: "https://common-api.maollar.com",
-  buyer: "https://api.maollar.com",
+  buyer: "https://api.maollar.com/buyer", 
 };
 
 //默认生产环境
@@ -31,9 +29,7 @@ if (process.env.NODE_ENV == "development") {
 api = prod;
 // #endif
 
-api.buyer += "/buyer";
-api.common += "/common";
-api.im += "/im";
+// 所有路径已在下方常量中通过绝对路径指定完整，不再需要动态追加
 export default {
   ...api,
 };

@@ -332,7 +332,7 @@ export default {
         "signInTips": "Nếu bạn kiên quyết đăng nhập mỗi ngày, bạn có thể nhận được nhiều phần thưởng.",
         "signInSuccess": "Đăng nhập thành công",
         "dailyRecord": "kỷ lục hàng ngày",
-        "pointsRuleContent": "1. Bạn có thể nhận được phần thưởng điểm $MAO (Khai thác) sau khi mua sắm và thanh toán\\n2. Điểm tích lũy có thể được đổi lấy mã thông báo $MAO bất kỳ lúc nào\\n3. Điểm có giá trị vĩnh viễn và sẽ không hết hạn\\n4. Để biết các quy tắc chi tiết, vui lòng kiểm tra about.maollar.com"
+        "pointsRuleContent": "1. Bạn có thể nhận được phần thưởng điểm $MAO (Khai thác) sau khi mua sắm và thanh toán\\n2. Điểm tích lũy có thể được đổi lấy mã thông báo $MAO bất kỳ lúc nào\\n3. Điểm có giá trị vĩnh viễn và sẽ không hết hạn\\n4. Để biết các quy tắc chi tiết, vui lòng kiểm tra about.maomall.com"
     },
     "deposit": {
         "title": "đặt cọc trước",

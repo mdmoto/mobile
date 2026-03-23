@@ -63,7 +63,7 @@
                     "arm64-v8a",
                     "x86"
                 ],
-                "schemes": "maollar",
+                "schemes": "maomall",
                 "permissionExternalStorage": {
                     "request": "none",
                     "prompt": "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
@@ -84,7 +84,7 @@
                     "NSLocationAlwaysAndWhenInUseUsageDescription": "MaoMall需要您的位置信息，以便在地图中为您展示周边的自提点和物流状况",
                     "NSMicrophoneUsageDescription": "MaoMall需要访问麦克风，以便您在上传视频评论时录制音频"
                 },
-                "urltypes": "maollar",
+                "urltypes": "maomall",
                 "dSYMs": false
             },
             "sdkConfigs": {
@@ -95,7 +95,7 @@
                             "android"
                         ],
                         "appid": "wx32788b91bdb614c0",
-                        "UniversalLinks": "https://m.maollar.com/app/"
+                        "UniversalLinks": "https://m.maomall.com/app/"
                     },
                     "alipay": {
                         "__platform__": [
@@ -108,14 +108,14 @@
                 "share": {
                     "weixin": {
                         "appid": "wx32788b91bdb614c0",
-                        "UniversalLinks": "https://m.maollar.com/app/"
+                        "UniversalLinks": "https://m.maomall.com/app/"
                     }
                 },
                 "oauth": {
                     "weixin": {
                         "appid": "wx32788b91bdb614c0",
                         "appsecret": "230233cef7520ee935bbecad372a370e",
-                        "UniversalLinks": "https://m.maollar.com/app/"
+                        "UniversalLinks": "https://m.maomall.com/app/"
                     },
                     "apple": {},
                     "qq": {

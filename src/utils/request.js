@@ -192,11 +192,19 @@ http.interceptors.response.use(
 
 			// 如果当前返回没登录
 		} else if (
-			(!token && !storage.getRefreshToken() && response.statusCode === 403) ||
-			response.data.code === 403
+			((!token && !storage.getRefreshToken() && response.statusCode === 403) ||
+				response.data.code === 403)
 		) {
 			console.log('没有token 以及刷新token 内容', token, storage.getRefreshToken())
-			cleanStorage();
+			// P0 Fix: 如果是公共路径（如首页数据），即便报 403 也不要强制跳转登录，允许页面降级处理
+			const publicPaths = ['/buyer/other', '/buyer/maomall/rates', '/buyer/goods', '/api/v1/other', '/api/v1/goods'];
+			const isPublic = publicPaths.some(path => response.config.url.includes(path));
+
+			if (!isPublic) {
+				cleanStorage();
+			} else {
+				console.log('公共接口 403，跳过登录跳转逻辑');
+			}
 
 			// 如果当前状态码为正常但是success为不正常时
 		} else if (

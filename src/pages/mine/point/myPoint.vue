@@ -118,7 +118,7 @@
 
 <script>
 import { getPointsData, getMemberPointSum } from "@/api/members.js";
-import { getMaoMallRates, applyMaoMallExchange } from "@/api/maollar.js";
+import { getMaoMallRates, applyMaoMallExchange } from "@/api/maomall.js";
 import { connectPhantom, disconnectPhantom } from "@/utils/solana.js";
 import storage from "@/utils/storage.js";
 
@@ -301,11 +301,11 @@ export default {
 
     openExternalRule() {
       // #ifdef H5
-      window.open('https://about.maollar.com', '_blank');
+      window.open('https://about.maomall.com', '_blank');
       // #endif
       // #ifndef H5
       uni.navigateTo({
-        url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maollar.com')
+        url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maomall.com')
       });
       // #endif
     },

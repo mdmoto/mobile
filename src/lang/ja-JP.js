@@ -337,7 +337,7 @@ export default {
         "signInTips": "毎日続けてボーナスをゲット",
         "signInSuccess": "成功",
         "dailyRecord": "日別記録",
-        "pointsRuleContent": "1. 買い物をして注文を決済し、$MAO ポイントを獲得します (マイニング) 2. 貯めたポイントはいつでも $MAO トークンと交換できます 3. ポイントは永久的であり、有効期限がありません。 4. 詳細については、about.maollar.com をご覧ください。"
+        "pointsRuleContent": "1. 買い物をして注文を決済し、$MAO ポイントを獲得します (マイニング) 2. 貯めたポイントはいつでも $MAO トークンと交換できます 3. ポイントは永久的であり、有効期限がありません。 4. 詳細については、about.maomall.com をご覧ください。"
     },
     "deposit": {
         "title": "預金",

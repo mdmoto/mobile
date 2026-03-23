@@ -111,11 +111,11 @@ export default {
     navigateTo(url) {
       if (url === "/pages/mine/help/about2") {
         // #ifdef H5
-        window.open('https://about.maollar.com', '_blank');
+        window.open('https://about.maomall.com', '_blank');
         // #endif
         // #ifndef H5
         uni.navigateTo({
-          url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maollar.com')
+          url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maomall.com')
         });
         // #endif
         return;

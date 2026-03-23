@@ -673,8 +673,8 @@ export default {
         } else if (extractedImgs.length === 0 && this.goodsDetail.thumbnail) {
           extractedImgs = [this.goodsDetail.thumbnail];
         }
-        this.imgList = extractedImgs;
-        console.log("[goods] Extracted imgList:", this.imgList, "from raw goodsGalleryList:", this.goodsDetail.goodsGalleryList);
+        this.imgList = [...new Set(extractedImgs)];
+        console.log("[goods] Extracted unique imgList:", this.imgList, "from raw goodsGalleryList:", this.goodsDetail.goodsGalleryList);
       } else {
         this.imgList = [];
         if (this.goodsDetail && this.goodsDetail.original) {

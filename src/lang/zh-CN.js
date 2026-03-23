@@ -152,6 +152,7 @@ export default {
         "currency": "货币设置",
         "currencyCurrency": "币种设置",
         "currentLanguage": "当前语言",
+        "currentCurrency": "当前币种",
         "notLoggedIn": "暂未登录",
         "clearCache": "清除缓存",
         "securityCenter": "安全中心",
@@ -339,7 +340,7 @@ export default {
         "signInTips": "坚持每天连续签到可以获得多重奖励哦",
         "signInSuccess": "签到成功",
         "dailyRecord": "每日记录",
-        "pointsRuleContent": "1. 购物结算即可获得 $MAO 积分奖励(Mining)\\n2. 累积积分可随时兑换为 $MAO 代币\\n3. 积分永久有效，不会过期\\n4. 详细规则请查阅 about.maollar.com"
+        "pointsRuleContent": "1. 购物结算即可获得 $MAO 积分奖励(Mining)\\n2. 累积积分可随时兑换为 $MAO 代币\\n3. 积分永久有效，不会过期\\n4. 详细规则请查阅 about.maomall.com"
     },
     "deposit": {
         "title": "预存款",
