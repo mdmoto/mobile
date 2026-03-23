@@ -334,7 +334,7 @@ export default {
         "signInTips": "매일 체크인하여 여러 보상을 받으세요",
         "signInSuccess": "체크인 성공",
         "dailyRecord": "일일 기록",
-        "pointsRuleContent": "1. $MAO 포인트 적립을 위한 쇼핑 및 주문 결제(채굴) 2. 적립된 포인트는 언제든지 $MAO 토큰으로 교환 가능 3. 포인트는 영구적이며 만료되지 않습니다. 4. 자세한 내용은 about.maomall.com을 참조하세요."
+        "pointsRuleContent": "1. $MAO 포인트 적립을 위한 쇼핑 및 주문 결제(채굴) 2. 적립된 포인트는 언제든지 $MAO 토큰으로 교환 가능 3. 포인트는 영구적이며 만료되지 않습니다. 4. 자세한 내용은 about.maollar.com을 참조하세요."
     },
     "deposit": {
         "title": "예치금",

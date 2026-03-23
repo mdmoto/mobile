@@ -340,7 +340,7 @@ export default {
         "signInTips": "Check in daily to earn multiple rewards",
         "signInSuccess": "Check-in Successful",
         "dailyRecord": "Daily Record",
-        "pointsRuleContent": "1. Shop and settle orders to earn $MAO points(Mining)\\n2. Accumulated points can be exchanged for $MAO tokens anytime\\n3. Points are permanent and never expire\\n4. For details, please visit about.maomall.com"
+        "pointsRuleContent": "1. Shop and settle orders to earn $MAO points(Mining)\\n2. Accumulated points can be exchanged for $MAO tokens anytime\\n3. Points are permanent and never expire\\n4. For details, please visit about.maollar.com"
     },
     "deposit": {
         "title": "Deposit",

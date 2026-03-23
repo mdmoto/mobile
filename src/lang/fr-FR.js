@@ -332,7 +332,7 @@ export default {
         "signInTips": "Si vous insistez pour vous connecter tous les jours, vous pouvez obtenir plusieurs récompenses.",
         "signInSuccess": "Connectez-vous avec succès",
         "dailyRecord": "enregistrement quotidien",
-        "pointsRuleContent": "1. Vous pouvez obtenir une récompense en points MAO $ (exploitation minière) après vos achats et votre règlement.\\n2. Les points accumulés peuvent être échangés contre des jetons $MAO à tout moment\\n3. Les points sont valables pour toujours et n'expireront pas\\n4. Pour des règles détaillées, veuillez consulter about.maomall.com"
+        "pointsRuleContent": "1. Vous pouvez obtenir une récompense en points MAO $ (exploitation minière) après vos achats et votre règlement.\\n2. Les points accumulés peuvent être échangés contre des jetons $MAO à tout moment\\n3. Les points sont valables pour toujours et n'expireront pas\\n4. Pour des règles détaillées, veuillez consulter about.maollar.com"
     },
     "deposit": {
         "title": "dépôt anticipé",

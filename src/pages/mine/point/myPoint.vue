@@ -301,13 +301,19 @@ export default {
 
     openExternalRule() {
       // #ifdef H5
-      window.open('https://about.maomall.com', '_blank');
+      window.open('https://about.maollar.com', '_blank');
       // #endif
       // #ifndef H5
       uni.navigateTo({
-        url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maomall.com')
+        url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maollar.com')
       });
       // #endif
+    },
+    //查看明细
+    pointDetail() {
+      uni.navigateTo({
+        url: '/pages/tabbar/home/web-view?url=' + encodeURIComponent('https://about.maollar.com')
+      })
     },
 
     showRegisterWelcome() {

@@ -332,7 +332,7 @@ export default {
         "signInTips": "Si insistes en iniciar sesión todos los días, puedes obtener múltiples recompensas.",
         "signInSuccess": "Iniciar sesión correctamente",
         "dailyRecord": "registro diario",
-        "pointsRuleContent": "1. Puede obtener una recompensa de $ puntos MAO (minería) después de comprar y liquidar\\n2. Los puntos acumulados se pueden canjear por tokens $MAO en cualquier momento\\n3. Los puntos son válidos para siempre y no caducan\\n4. Para conocer las reglas detalladas, consulte about.maomall.com"
+        "pointsRuleContent": "1. Puede obtener una recompensa de $ puntos MAO (minería) después de comprar y liquidar\\n2. Los puntos acumulados se pueden canjear por tokens $MAO en cualquier momento\\n3. Los puntos son válidos para siempre y no caducan\\n4. Para conocer las reglas detalladas, consulte about.maollar.com"
     },
     "deposit": {
         "title": "deposito anticipado",
