@@ -11,7 +11,7 @@ import storage from "@/utils/storage";
 import {
 	mapMutations
 } from "vuex";
-import { getMaoMallRates } from "@/api/maomall";
+import { getMaoMallRates } from "@/api/maollar";
 
 	
 	
