@@ -24,11 +24,11 @@
         </view>
         <view class="tr">
           <view class="th">メールアドレス</view>
-          <view class="td">ss@maomall.com</view>
+          <view class="td">ss@maollar.com</view>
         </view>
         <view class="tr">
-          <view class="th">ホームページ</view>
-          <view class="td">https://www.maomall.com</view>
+          <view class="th">URL</view>
+          <view class="td">https://www.maollar.com</view>
         </view>
         <view class="tr">
           <view class="th">商品の販売価格</view>

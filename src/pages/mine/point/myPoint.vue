@@ -118,7 +118,7 @@
 
 <script>
 import { getPointsData, getMemberPointSum } from "@/api/members.js";
-import { getMaoMallRates, applyMaoMallExchange } from "@/api/maomall.js";
+import { getMaoMallRates, applyMaoMallExchange } from "@/api/maollar.js";
 import { connectPhantom, disconnectPhantom } from "@/utils/solana.js";
 import storage from "@/utils/storage.js";
 
