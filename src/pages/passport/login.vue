@@ -120,9 +120,7 @@
 
 			<!-- 隐私协议（移到最底部） -->
 			<div class="flex privacy-section" v-show="current != 1">
-				<u-checkbox-group :icon-size="20" width="40rpx">
-					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00"></u-checkbox>
-				</u-checkbox-group>
+				<u-checkbox shape="circle" :value="enablePrivacy" @click.native="enablePrivacy = !enablePrivacy" :icon-size="20" :size="34" active-color="#FF5E00"></u-checkbox>
 				<div class="tips">
 					{{ $t('deposit.loginPrivacyDesc') }}<span @click="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
 				</div>
@@ -209,14 +207,14 @@
 				mobile: "", //手机号
 				code: "", //验证码
 				inputStyle: {
-					height: "104rpx",
-					"border-bottom": "1rpx solid #D8D8D8",
+					height: "100rpx",
+					"border-bottom": "1rpx solid #eee",
 					"letter-spacing": "1rpx",
-					"font-size": "40rpx",
-					"line-height": "40rpx",
+					"font-size": "36rpx",
+					"line-height": "100rpx",
 					color: "#333",
 				},
-				placeholderStyle: "font-size: 32rpx;line-height: 32rpx;color: #999999;",
+				placeholderStyle: "font-size: 28rpx;line-height: normal;color: #ccc;",
 				
 				// 邀请码相关
 				inviteCode: "",
@@ -776,6 +774,7 @@
 			},
 
 	passwordLogin() {
+		console.log('passwordLogin - enablePrivacy:', this.enablePrivacy);
 		if (!this.enablePrivacy) {
 			uni.showToast({
 				title: this.$t("deposit.pleaseAgreePrivacy"),
@@ -988,6 +987,7 @@
 				this.inviteCodeValid = true;
 				
 				// 2. 检查隐私协议
+				console.log('fetchCode - enablePrivacy:', this.enablePrivacy);
 				if (!this.enablePrivacy) {
 					uni.showToast({
 						title: "请同意用户隐私",
