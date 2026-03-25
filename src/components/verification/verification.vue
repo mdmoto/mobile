@@ -1,77 +1,55 @@
 <template>
   <view>
-    <view
-      v-if="!hid"
-      class="flex-row-center"
-      :style="{ top: scHight }"
-      style="width: 750rpx; position: fixed; z-index: 100; left: 0"
-    >
-      <view
-        class="flex-column-center"
-        style="background-color: #fcfcfc; padding: 30rpx; border-radius: 10rpx"
-      >
-	        <movable-area
-	          class="flex"
-	          style="max-width: 100%"
-	          animation="false"
-	          :style="{ height: originalHeight, width: originalWidth }"
-	        >
+    <view v-if="!hid" class="verify-overlay">
+      <view class="verify-modal">
+		        <movable-area
+		          class="verify-puzzle-area"
+		          animation="false"
+			          :style="{ height: (displayHeightPx || 150) + 'px', width: (displayWidthPx || 300) + 'px' }"
+		        >
           <movable-view
             scale-value="1"
             animation="false"
             damping="5000"
             :x="moveX"
             :style="{
-              height: sliderHeight,
-              width: sliderWidth,
-              'z-index': 101,
+	              height: sliderHeightPx + 'px',
+	              width: sliderWidthPx + 'px',
+	              'z-index': 2,
             }"
             direction="horizontal"
           >
             <image
               :src="imgbk"
-              class="image"
+	              class="verify-puzzle-piece"
               mode="aspectFit"
               :style="{
-                height: sliderHeight,
-                width: sliderWidth,
-                'margin-top': imgbKH,
+	                height: sliderHeightPx + 'px',
+	                width: sliderWidthPx + 'px',
+	                'margin-top': imgbkTopPx + 'px',
               }"
             ></image>
           </movable-view>
-          <image
-            :src="img"
-            mode="aspectFit"
-            :style="{ height: originalHeight, width: originalWidth }"
-            style="border-radius: 10rpx"
-          ></image>
+	          <image
+	            :src="img"
+	            mode="aspectFit"
+	            class="verify-puzzle-bg"
+		            :style="{ height: (displayHeightPx || 150) + 'px', width: (displayWidthPx || 300) + 'px' }"
+	          ></image>
         </movable-area>
 
-	        <movable-area
-	          class="flex-row-start"
-	          :style="{
-	            width: originalWidth,
-	            backgroundColor: '#efefef',
-	            height: '80rpx',
-	            borderRadius: '40rpx',
-	            marginTop: '30rpx',
-	          }"
-	        >
+		        <movable-area
+		          class="verify-slider-area"
+			          :style="{ width: (displayWidthPx || 300) + 'px' }"
+		        >
         <movable-view
           scale-value="1"
           animation="false"
           damping="50"
           :x="movePv"
           :inertia="false"
-          class="flex-row-center"
-          style="
-            border-radius: 50%;
-            height: 100rpx;
-            width: 100rpx;
-            background-color: #ffffff;
-            border: 2rpx solid #e3e3e3;
-            margin-top: -13rpx;
-          "
+          class="verify-slider-thumb flex-row-center"
+          style="border-radius: 50%;"
           direction="horizontal"
           @change="moveChange"
           @touchend="end"
@@ -79,22 +57,20 @@
         >
             <u-icon
               :color="mainColor"
-              size="40"
+              size="24"
               v-if="endLoad"
               name="arrow-right"
             ></u-icon>
-            <u-icon :color="mainColor" size="40" v-else name="reload"></u-icon>
+            <u-icon :color="mainColor" size="24" v-else name="reload"></u-icon>
           </movable-view>
 
-          <text style="padding-left: 140rpx" :style="{ color: col }">{{
-            hasImg
-          }}</text>
+          <text class="verify-slider-text" :style="{ color: col }">{{ hasImg }}</text>
         </movable-area>
-        <view class="flex-row-around padding-top" style="width: 100%">
+        <view class="verify-footer">
           <u-icon
             @click="hide"
             :color="mainColor"
-            size="40"
+            size="24"
             name="close"
           ></u-icon>
 
@@ -113,12 +89,9 @@ import { getSlider, validSlider } from "@/api/common.js";
 import storage from "@/utils/storage.js";
 import uuid from "@/utils/uuid.modified.js";
 const phone = uni.getSystemInfoSync();
-const l = phone.screenWidth / 750;
 export default {
   name: "verification",
   created() {
-    // 可自行调整
-    this.scHight = phone.screenHeight / 2 - 200 + "px";
     // 不在创建时获取验证码，改为在显示时按需获取
   },
   props: {
@@ -152,31 +125,29 @@ export default {
       vsr: false, //
       hid: true,
       col: "#838383",
-      movePv: 0,
-      hasImg: "拖动滑块已完成拼图",
-      spcode: "",
-      tl: 0,
-      moveCode: 0,
-      //X轴移动距离
-      moveX: 0,
-      //模版高度
-      originalHeight: "",
-      //模版宽度
-      originalWidth: "",
-      //拼图高度
-      sliderHeight: "",
-      //平涂宽度
-      sliderWidth: "",
-      scHight: 0,
-      //原图
-      img: "",
-      //拼图
-      imgbk: "",
-      endLoad: true,
-      imgbKH: "",
-      isLoadingCode: false, // 防止重复加载验证码
-    };
-  },
+	      movePv: 0,
+	      hasImg: "拖动滑块已完成拼图",
+	      spcode: "",
+	      moveCode: 0,
+	      //X轴移动距离
+	      moveX: 0,
+	      // 自适应缩放
+	      scale: 1,
+	      displayHeightPx: 0,
+	      displayWidthPx: 0,
+	      // 拼图尺寸（显示用）
+	      sliderHeightPx: 0,
+	      sliderWidthPx: 0,
+	      //原图
+	      img: "",
+	      //拼图
+	      imgbk: "",
+	      endLoad: true,
+	      // 拼图块的 Y 偏移（显示用）
+	      imgbkTopPx: 0,
+	      isLoadingCode: false, // 防止重复加载验证码
+	    };
+	  },
 	  methods: {
 	    show() {
 	      this.hid = false;
@@ -242,18 +213,19 @@ export default {
 	        // base64的图片
 	        this.img = data.backImage;
 	        this.imgbk = data.slidingImage;
-	        // 根据参数动态适应验证图片的高宽
-	        this.imgbKH = data.randomY * 1.5 + "rpx";
-	        this.originalHeight = data.originalHeight * 1.5 + "rpx";
-	        this.originalWidth = data.originalWidth * 1.5 + "rpx";
-	        this.sliderHeight = data.sliderHeight * 1.5 + "rpx";
-	        this.sliderWidth = data.sliderWidth * 1.5 + "rpx";
-
-	        // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
+	        // 自适应缩放：限制弹窗最大宽度，避免手机端显示不全
 	        const currentPhone = uni.getSystemInfoSync();
-	        const currentL = currentPhone.screenWidth / 750;
-	        this.tl = 1 / (1.5 * currentL);
-	        console.log("📏 屏幕宽度:", currentPhone.screenWidth, "tl:", this.tl);
+	        const maxWidthPx = Math.min(Math.max(280, currentPhone.screenWidth - 48), 420);
+	        const originalWidthPx = Number(data.originalWidth) || 0;
+	        const originalHeightPx = Number(data.originalHeight) || 0;
+	        const nextScale = originalWidthPx > 0 ? Math.min(1, maxWidthPx / originalWidthPx) : 1;
+	        this.scale = nextScale || 1;
+	        this.displayWidthPx = Math.round(originalWidthPx * this.scale);
+	        this.displayHeightPx = Math.round(originalHeightPx * this.scale);
+	        this.sliderHeightPx = Math.round((Number(data.sliderHeight) || 0) * this.scale);
+	        this.sliderWidthPx = Math.round((Number(data.sliderWidth) || 0) * this.scale);
+	        this.imgbkTopPx = Math.round((Number(data.randomY) || 0) * this.scale);
+	        console.log("📏 屏幕宽度:", currentPhone.screenWidth, "scale:", this.scale, "displayWidthPx:", this.displayWidthPx);
         
         // 无用信息
         this.spcode = data.capcode;
@@ -268,11 +240,12 @@ export default {
         this.isLoadingCode = false;
       }
     },
-    async end(e) {
-      console.log('🎯 滑块释放事件触发');
-      // P1: xPos 校准，直接取 moveCode (px)
-      const xPos = parseInt(this.moveCode); 
-      console.log('计算后的 xPos (px):', xPos);
+	    async end(e) {
+	      console.log('🎯 滑块释放事件触发');
+	      // 自适应缩放后，需要反算回后端使用的原始坐标(px)
+	      const safeScale = this.scale || 1;
+	      const xPos = Math.round(this.moveCode / safeScale);
+	      console.log('计算后的 xPos (px):', xPos);
   
       this.endLoad = false;
       try {
@@ -570,5 +543,69 @@ export default {
 
 .main-color {
   color: #07d188;
+}
+
+.verify-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.verify-modal {
+  background-color: #fcfcfc;
+  padding: 16px;
+  border-radius: 10px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.verify-puzzle-area {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.verify-slider-area {
+  background-color: #efefef;
+  height: 44px;
+  border-radius: 22px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.verify-slider-thumb {
+  height: 44px;
+  width: 44px;
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+}
+
+.verify-slider-text {
+  padding-left: 56px;
+  padding-right: 12px;
+  font-size: 13px;
+  line-height: 18px;
+  user-select: none;
+}
+
+.verify-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 16px;
 }
 </style>

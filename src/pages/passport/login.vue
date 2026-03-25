@@ -117,16 +117,31 @@
 					{{ !enableUserPwdBox ? $t('deposit.useAccountLogin') : $t('deposit.backToRegister') }}
 				</div>
 
-				<!-- 隐私协议 (恢复原始美观布局) -->
-				<div class="privacy-section privacy-row" @click="togglePrivacy">
-					<!-- 使用 v-model 确保状态双向绑定 -->
-					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00" class="privacy-checkbox"></u-checkbox>
-					<div class="tips privacy-text">
-						{{ $t('deposit.loginPrivacyDesc') }}
-						<span class="privacy-link" @click.stop="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>
-						和
-						<span class="privacy-link" @click.stop="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
-					</div>
+				<!-- 隐私协议：H5 固定底栏，避免点击被遮挡/双重触发 -->
+				<div :class="['privacy-section', 'privacy-row', { 'privacy-section--h5': isH5 }]">
+					<u-checkbox
+						shape="circle"
+						v-model="enablePrivacy"
+						active-color="#FF5E00"
+						class="privacy-checkbox"
+						:size="isH5 ? '18px' : ''"
+						:icon-size="isH5 ? '12px' : ''"
+					>
+						<view class="tips privacy-text">
+							{{ $t('deposit.loginPrivacyDesc') }}
+							<text
+								class="privacy-link"
+								@tap.stop="navigateToPrivacy('PRIVACY_POLICY')"
+								@click.stop="navigateToPrivacy('PRIVACY_POLICY')"
+							>{{ $t('deposit.privacyPolicy') }}</text>
+							和
+							<text
+								class="privacy-link"
+								@tap.stop="navigateToPrivacy('USER_AGREEMENT')"
+								@click.stop="navigateToPrivacy('USER_AGREEMENT')"
+							>{{ $t('deposit.userAgreement') }}</text>
+						</view>
+					</u-checkbox>
 				</div>
 				</div>
 
@@ -211,6 +226,7 @@
 				enableFetchCode: false,
 				enableUserBtnColor: false,
 				enablePrivacy: false, //隐私政策
+				isH5: false,
 				mobile: "", //手机号
 				code: "", //验证码
 				inputStyle: {
@@ -283,6 +299,7 @@
 			 */
 			//#ifdef H5
 			this.clientType = "H5";
+			this.isH5 = true;
 			//#endif
 
 			//#ifdef APP-PLUS
@@ -329,38 +346,40 @@
 				},
 			},
 
-			async flage(val) {
-				if (val) {
-					if (this.$refs.uCode && this.$refs.uCode.canGetCode) {
-						if (this.enableUserPwdBox) {
-							// 密码登录已在 verification() 回调中处理，避免重复调用
-							console.log('⚠️ flage watcher 触发，但密码登录已在 verification 回调中处理，跳过');
-							return;
-							// 执行登录
-						} else {
-								// 向后端请求验证码
-								uni.showLoading({});
-								let res = await sendMobile(this.mobile);
-								 if (this.$store.state.isShowToast){ uni.hideLoading() };
-								// 这里此提示会被this.start()方法中的提示覆盖
-								if (res.data.success) {
-									this.current = 1;
-									if (this.$refs.uCode) this.$refs.uCode.start();
-								} else {
-									uni.showToast({
-										title: res.data.message,
-										duration: 2000,
-										icon: "none",
-									});
-									this.flage = false;
-									if (this.$refs.verification) this.$refs.verification.getCode();
-								}
-							}
-						} else {
-							!this.enableUserPwdBox ? uni.$u.toast("请倒计时结束后再发送") : "";
+				async flage(val) {
+					// 验证码通过后：密码登录/邮箱注册已在 verification() 回调中处理
+					if (!val) return;
+					if (this.enableUserPwdBox || this.isRegisterMode) return;
+
+					// 仅手机号短信验证码流程才走这里（当前页面默认不开放手机注册）
+					if (!this.mobile || this.mobile.length !== 11) return;
+					if (!this.$refs.uCode || !this.$refs.uCode.canGetCode) {
+						uni.$u.toast("请倒计时结束后再发送");
+						return;
+					}
+
+					try {
+						uni.showLoading({});
+						let res = await sendMobile(this.mobile);
+						if (this.$store.state.isShowToast) {
+							uni.hideLoading();
 						}
-					} else {
-						if (this.$refs.verification) this.$refs.verification.hide();
+						if (res.data.success) {
+							this.current = 1;
+							if (this.$refs.uCode) this.$refs.uCode.start();
+						} else {
+							uni.showToast({
+								title: res.data.message,
+								duration: 2000,
+								icon: "none",
+							});
+							this.flage = false;
+							if (this.$refs.verification) this.$refs.verification.getCode();
+						}
+					} finally {
+						if (this.$store.state.isShowToast) {
+							uni.hideLoading();
+						}
 					}
 				},
 		},
@@ -370,11 +389,6 @@
 				}
 			},
 			methods: {
-				// 切换隐私协议
-				togglePrivacy() {
-					this.enablePrivacy = !this.enablePrivacy;
-					console.log('[Privacy] Toggled to:', this.enablePrivacy);
-				},
 			//联合信息返回登录
 			stateLogin(state) {
 				loginCallback(state).then((res) => {
@@ -759,14 +773,16 @@
 			},
 
 			// 点击获取验证码
-			start() {
-				this.codeColor = "#999";
-				uni.$u.toast("验证码已发送");
-				this.flage = false;
-				this.codeFlag = false;
+				start() {
+					this.codeColor = "#999";
+					uni.$u.toast("验证码已发送");
+					this.flage = false;
+					this.codeFlag = false;
 
-				this.$refs.verification.hide();
-			},
+					if (this.$refs.verification) {
+						this.$refs.verification.hide();
+					}
+				},
 			/**点击验证码*/
 			codeChange(text) {
 				if (text === "验证码已发送（x）") {
@@ -1058,12 +1074,21 @@
 						}, 100);
 					}
 					 if (this.$store.state.isShowToast){ uni.hideLoading() };
-				}
-				if (!this.flage) {
-					this.$refs.verification.error(); //发送
-
-					return false;
-				}
+					}
+					if (!this.flage) {
+						this.sliderVisible = true;
+						this.$nextTick(() => {
+							if (this.$refs.verification) {
+								// 触发展示/刷新验证码
+								if (typeof this.$refs.verification.show === 'function') {
+									this.$refs.verification.show();
+								} else if (typeof this.$refs.verification.error === 'function') {
+									this.$refs.verification.error();
+								}
+							}
+						});
+						return false;
+					}
 				},
 			
 			// 注册提交
@@ -1366,8 +1391,9 @@
 			padding: 20rpx 80rpx;
 			background: #fff;
 			border-top: 1rpx solid #f0f0f0;
-			z-index: 10000;
+			z-index: 2147483647;
 			pointer-events: auto;
+			box-sizing: border-box;
 		}
 
 		.privacy-row {
