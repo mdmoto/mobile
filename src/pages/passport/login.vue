@@ -26,13 +26,17 @@
 			</div>
 			
 			<!-- 注册模式：邮箱输入 -->
-			<div v-show="!enableUserPwdBox && isRegisterMode">
-				<div v-show="current == 0">
-					<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputEmail')"
-						class="mobile" v-model="email" type="text" />
-					<div :class="!enableFetchCode ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
-						{{ $t('deposit.getVerifyCode') }}
-					</div>
+				<div v-show="!enableUserPwdBox && isRegisterMode">
+					<div v-show="current == 0">
+						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputEmail')"
+							class="mobile" v-model="email" type="text" />
+						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputAccountPlaceholder')"
+							class="mobile" v-model="registerForm.username" type="text" />
+						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputPasswordPlaceholder')"
+							class="mobile" v-model="registerForm.password" type="password" />
+						<div :class="!enableFetchCode ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
+							{{ $t('deposit.getVerifyCode') }}
+						</div>
 					<!-- 手机号注册稍后开放提示 -->
 					<div class="mobile-register-hint">
 						<u-icon name="info-circle" size="14" color="#999" style="margin-right: 5rpx;"></u-icon>
@@ -117,30 +121,33 @@
 					{{ !enableUserPwdBox ? $t('deposit.useAccountLogin') : $t('deposit.backToRegister') }}
 				</div>
 
-				<!-- 隐私协议：H5 固定底栏，避免点击被遮挡/双重触发 -->
-				<div :class="['privacy-section', 'privacy-row', { 'privacy-section--h5': isH5 }]">
+					<!-- 隐私协议：使用 uview-plus checkbox 的 used-alone + v-model:checked -->
+					<div class="privacy-section privacy-row">
 					<u-checkbox
+						used-alone
 						shape="circle"
-						v-model="enablePrivacy"
+						v-model:checked="enablePrivacy"
 						active-color="#FF5E00"
 						class="privacy-checkbox"
-						:size="isH5 ? '18px' : ''"
-						:icon-size="isH5 ? '12px' : ''"
+						:size="18"
+						:icon-size="12"
 					>
-						<view class="tips privacy-text">
-							{{ $t('deposit.loginPrivacyDesc') }}
-							<text
-								class="privacy-link"
-								@tap.stop="navigateToPrivacy('PRIVACY_POLICY')"
-								@click.stop="navigateToPrivacy('PRIVACY_POLICY')"
-							>{{ $t('deposit.privacyPolicy') }}</text>
-							和
-							<text
-								class="privacy-link"
-								@tap.stop="navigateToPrivacy('USER_AGREEMENT')"
-								@click.stop="navigateToPrivacy('USER_AGREEMENT')"
-							>{{ $t('deposit.userAgreement') }}</text>
-						</view>
+						<template #label>
+							<view class="tips privacy-text">
+								{{ $t('deposit.loginPrivacyDesc') }}
+								<text
+									class="privacy-link"
+									@tap.stop="navigateToPrivacy('PRIVACY_POLICY')"
+									@click.stop="navigateToPrivacy('PRIVACY_POLICY')"
+								>{{ $t('deposit.privacyPolicy') }}</text>
+								和
+								<text
+									class="privacy-link"
+									@tap.stop="navigateToPrivacy('USER_AGREEMENT')"
+									@click.stop="navigateToPrivacy('USER_AGREEMENT')"
+								>{{ $t('deposit.userAgreement') }}</text>
+							</view>
+						</template>
 					</u-checkbox>
 				</div>
 				</div>
@@ -251,6 +258,10 @@
 				// 注册相关
 				email: "", // 邮箱
 				isRegisterMode: true, // 是否为注册模式
+				registerForm: {
+					username: "",
+					password: "",
+				},
 				inviteCodeInputStyle: {
 					height: "70rpx",
 					"border": "2rpx solid #E0E0E0",
@@ -340,6 +351,9 @@
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 					if (emailRegex.test(val)) {
 						this.enableFetchCode = true;
+						if (!this.registerForm.username) {
+							this.registerForm.username = val.split('@')[0] || "";
+						}
 					} else {
 						this.enableFetchCode = false;
 					}
@@ -1092,9 +1106,9 @@
 				},
 			
 			// 注册提交
-			async submitRegister() {
-				// 已取消验证要求
-				this.inviteCodeValid = true;
+				async submitRegister() {
+					// 已取消验证要求
+					this.inviteCodeValid = true;
 				
 				if (!this.code || this.code.length !== 6) {
 					uni.showToast({
@@ -1105,30 +1119,45 @@
 					return;
 				}
 				
-				if (!this.email) {
-					uni.showToast({
-						title: "请填写邮箱地址",
+					if (!this.email) {
+						uni.showToast({
+							title: "请填写邮箱地址",
 						duration: 2000,
 						icon: "none",
 					});
-					return;
-				}
+						return;
+					}
+
+					if (!this.registerForm.username) {
+						uni.showToast({
+							title: "请输入用户名",
+							duration: 2000,
+							icon: "none",
+						});
+						return;
+					}
+
+					if (!this.registerForm.password || this.registerForm.password.length < 6) {
+						uni.showToast({
+							title: "密码不能少于6位",
+							duration: 2000,
+							icon: "none",
+						});
+						return;
+					}
 				
 				// 调用注册API
 				uni.showLoading({
 					title: "注册中...",
 				});
 				
-				try {
-					// 生成默认用户名（使用邮箱前缀）
-					const username = this.email.split('@')[0] || this.email;
-					
-					const params = {
-						email: this.email,
-						code: this.code,
-						password: this.userData.password || '123456', // 默认密码，实际应该让用户输入
-						username: username
-					};
+					try {
+						const params = {
+							email: this.email,
+							code: this.code,
+							password: md5(this.registerForm.password),
+							username: this.registerForm.username
+						};
 					
 					const res = await register(params, this.clientType);
 					uni.hideLoading();
@@ -1173,6 +1202,9 @@
 <style lang="scss" scoped>
 	.wrapper {
 		padding: 0 80rpx;
+		max-width: 420px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.title {
