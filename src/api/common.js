@@ -35,10 +35,12 @@ export const upload = api.common + "/common/common/upload/file";
  * 发送邮箱验证码
  */
 export async function sendEmail(email, verificationEnums = 'REGISTER') {
+  const encodedEmail = encodeURIComponent(email);
   return request({
-    url: `${api.common}/common/common/email/${verificationEnums}/${email}`,
+    url: `${api.common}/common/common/email/${verificationEnums}/${encodedEmail}`,
     method: Method.GET,
     message: false,
+    custom: { skipHideLoading: true },
   });
 }
 

@@ -143,7 +143,10 @@ http.interceptors.response.use(
 		//   cleanStorage();
 		//   isRefreshing = false;
 		// }
-		uni.hideLoading();
+		// 避免页面自身手动控制 loading 时出现 show/hide 不配对警告
+		if (!response?.config?.custom?.skipHideLoading) {
+			uni.hideLoading();
+		}
 		let token = storage.getAccessToken();
 		if (
 			(token && response.statusCode === 403) ||
@@ -231,6 +234,10 @@ http.interceptors.response.use(
 		return response;
 	},
 	(error) => {
+		// 网络错误等不会进入 fulfilled 分支，这里兜底关闭 loading
+		if (!error?.config?.custom?.skipHideLoading) {
+			uni.hideLoading();
+		}
 		return error;
 	}
 );

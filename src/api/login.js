@@ -45,9 +45,8 @@ export async function userLogin(params, clientType) {
   return request({
     method: Method.POST,
     url: `/passport/member/userLogin`,
-    data: params,
+    params,
     header: {
-      "content-type": "application/x-www-form-urlencoded",
       clientType: clientType,
     },
   });
@@ -70,9 +69,8 @@ export async function smsLogin(params, clientType) {
   return request({
     url: `/passport/member/smsLogin`,
     method: Method.POST,
-    data: params,
+    params,
     header: {
-      "content-type": "application/x-www-form-urlencoded",
       clientType: clientType,
     },
   });
@@ -85,9 +83,8 @@ export async function register(params, clientType) {
   return request({
     url: `/passport/member/register`,
     method: Method.POST,
-    data: params,
+    params,
     header: {
-      "content-type": "application/x-www-form-urlencoded",
       clientType: clientType,
     },
   });

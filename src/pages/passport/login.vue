@@ -1,13 +1,12 @@
 <template>
 	<div class="wrapper">
 		<div v-if="!wechatLogin">
-			<u-navbar bgColor="#fff" autoBack :show-back="showBack" :border="false" fixed placeholder></u-navbar>
+			<u-navbar bgColor="#fff" :custom-back="handleNavBack" :show-back="true" :border="false" fixed placeholder></u-navbar>
 			<div>
-				<div class="title">{{ $t(loginTitleWay[current].title) }}</div>
+				<div class="title">{{ displayTitle }}</div>
 				<div :class="current == 1 ? 'desc-light' : 'desc'">
-					{{ $t(loginTitleWay[current].desc)
-          }}<span v-if="current == 1 && isRegisterMode">{{ email }}</span>
-          <span v-if="current == 1 && !isRegisterMode">{{ secrecyMobile(mobile) }}</span>
+					{{ displayDesc }}<span v-if="current == 1 && isRegisterMode"> {{ email }}</span>
+          <span v-if="current == 1 && !isRegisterMode"> {{ secrecyMobile(mobile) }}</span>
 				</div>
 			</div>
 			
@@ -30,10 +29,6 @@
 					<div v-show="current == 0">
 						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputEmail')"
 							class="mobile" v-model="email" type="text" />
-						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputAccountPlaceholder')"
-							class="mobile" v-model="registerForm.username" type="text" />
-						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputPasswordPlaceholder')"
-							class="mobile" v-model="registerForm.password" type="password" />
 						<div :class="!enableFetchCode ? 'disable' : 'fetch'" @click="fetchCode" class="btn">
 							{{ $t('deposit.getVerifyCode') }}
 						</div>
@@ -43,19 +38,30 @@
 						<span>{{ $t('deposit.mobileRegisterHint') }}</span>
 					</div>
 				</div>
-				<!-- 输入验证码 -->
-				<div v-show="current == 1" class="box-code">
-					<verifyCode type="bottom" @confirm="submitRegister" boxActiveColor="#D8D8D8" v-model="code" isFocus
-						boxNormalColor="#D8D8D8" cursorColor="#D8D8D8" />
+					<!-- 输入验证码 -->
+					<div v-show="current == 1" class="box-code">
+						<verifyCode type="bottom" @confirm="onRegisterCodeConfirm" boxActiveColor="#D8D8D8" v-model="code" isFocus
+							boxNormalColor="#D8D8D8" cursorColor="#D8D8D8" />
 
-					<div class="fetch-btn">
-						<u-code change-text="验证码已发送（x）" end-text="重新获取验证码" unique-key="page-login"
-							:seconds="seconds" @end="end" @start="start" ref="uCode" @change="codeChange">
-						</u-code>
-						<span @tap="fetchCode" :style="{ color: codeColor }">
-							{{ tips }}</span>
+						<div class="fetch-btn">
+							<u-code change-text="验证码已发送（x）" end-text="重新获取验证码" unique-key="page-login"
+								:seconds="seconds" @end="end" @start="start" ref="uCode" @change="codeChange">
+							</u-code>
+							<span @tap="fetchCode" :style="{ color: codeColor }">
+								{{ tips }}</span>
+						</div>
 					</div>
-				</div>
+
+					<!-- 完善注册信息 -->
+					<div v-show="current == 2">
+						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputAccountPlaceholder')"
+							class="mobile" v-model="registerForm.username" type="text" />
+						<u-input :custom-style="inputStyle" :placeholder-style="placeholderStyle" :placeholder="$t('deposit.inputPasswordPlaceholder')"
+							class="mobile" v-model="registerForm.password" type="password" />
+						<div :class="!enableRegisterBtnColor ? 'disable' : 'fetch'" @click="submitRegister" class="btn">
+							完成注册
+						</div>
+					</div>
 			</div>
 
 			<!-- 帐号密码登录 -->
@@ -70,8 +76,8 @@
 				</div>
 			</div>
 
-			<!-- 第三方登录区域（需要邀请码） -->
-			<div v-if="current != 1 && !enableUserPwdBox" class="third-party-section">
+				<!-- 第三方登录区域（仅注册首页展示） -->
+				<div v-if="current == 0 && !enableUserPwdBox" class="third-party-section">
 				<div class="section-divider">
 					<div class="divider-line"></div>
 					<div class="divider-text">{{ $t('deposit.thirdPartyRegister') }}</div>
@@ -108,21 +114,23 @@
 				</div>
 			</div>
 
-			<!-- 底部分隔线 + 账号密码登录 -->
-			<div v-if="current != 1" class="bottom-section">
+				<!-- 底部分隔线 + 账号密码登录（仅注册首页展示） -->
+				<div v-if="current == 0" class="bottom-section">
 				<div class="section-divider">
 					<div class="divider-line"></div>
 					<div class="divider-text">{{ $t('deposit.otherLoginWays') }}</div>
 					<div class="divider-line"></div>
 				</div>
 				
-				<div class="user-password-tips" @click="enableUserPwdBox = !enableUserPwdBox">
+				<div class="user-password-tips" @click="toggleAccountMode">
 					<u-icon name="lock-fill" size="16" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
 					{{ !enableUserPwdBox ? $t('deposit.useAccountLogin') : $t('deposit.backToRegister') }}
 				</div>
 
-					<!-- 隐私协议：使用 uview-plus checkbox 的 used-alone + v-model:checked -->
-					<div class="privacy-section privacy-row">
+					</div>
+
+				<!-- 隐私协议：注册/登录所有步骤都展示 -->
+				<div class="privacy-section privacy-row">
 					<u-checkbox
 						used-alone
 						shape="circle"
@@ -149,7 +157,6 @@
 							</view>
 						</template>
 					</u-checkbox>
-				</div>
 				</div>
 
 			<!-- 滑块验证码 (v-if 确保每次打开都是新鲜状态) -->
@@ -208,6 +215,7 @@
 				wechatLogin: false, //是否加载微信公众号登录
 				flage: false, //是否验证码验证
 				isSubmitting: false, //防止重复提交登录
+				isSubmittingRegister: false, //防止重复提交注册
 				codeFlag: true, //验证开关，用于是否展示验证码
 				sliderVisible: false, // 滑块显隐控制 (使用 v-if 确保状态刷新)
 				tips: "",
@@ -232,6 +240,7 @@
 				showBack: false,
 				enableFetchCode: false,
 				enableUserBtnColor: false,
+				enableRegisterBtnColor: false,
 				enablePrivacy: false, //隐私政策
 				isH5: false,
 				mobile: "", //手机号
@@ -290,6 +299,26 @@
 				],
 			};
 		},
+		computed: {
+			displayTitle() {
+				if (this.enableUserPwdBox) return this.$t("deposit.accountLogin");
+				if (this.isRegisterMode) {
+					if (this.current === 0) return this.$t("deposit.welcomeRegister");
+					if (this.current === 1) return this.$t("deposit.inputVerifyCode");
+					if (this.current === 2) return "完善注册信息";
+				}
+				return this.$t("deposit.welcomeRegister");
+			},
+			displayDesc() {
+				if (this.enableUserPwdBox) return this.$t("deposit.loginDesc");
+				if (this.isRegisterMode) {
+					if (this.current === 0) return this.$t("deposit.loginDesc");
+					if (this.current === 1) return this.$t("deposit.verifyCodeSentToEmail");
+					if (this.current === 2) return "设置用户名和密码以完成注册";
+				}
+				return this.$t("deposit.loginDesc");
+			},
+		},
 		onShow() {
 			console.log('[login] onShow - SelectorQuery type:', typeof uni.createSelectorQuery);
 
@@ -337,6 +366,17 @@
 			},
 			deep: true,
 
+		},
+		registerForm: {
+			handler() {
+				this.enableRegisterBtnColor = !!(
+					this.registerForm &&
+					this.registerForm.username &&
+					this.registerForm.password &&
+					this.registerForm.password.length >= 6
+				);
+			},
+			deep: true,
 		},
 			mobile: {
 				handler(val) {
@@ -403,7 +443,22 @@
 				}
 			},
 			methods: {
-			//联合信息返回登录
+				handleNavBack() {
+					if (this.current > 0) {
+						this.current = this.current - 1;
+						return;
+					}
+					uni.navigateBack();
+				},
+				toggleAccountMode() {
+					this.enableUserPwdBox = !this.enableUserPwdBox;
+					// 切换模式时回到初始步骤，避免“注册步骤/登录表单”混在一起
+					this.current = 0;
+					this.code = "";
+					this.flage = false;
+					this.sliderVisible = false;
+				},
+				//联合信息返回登录
 			stateLogin(state) {
 				loginCallback(state).then((res) => {
 					let data = res.data;
@@ -442,6 +497,10 @@
 							});
 					}
 				});
+			},
+			onRegisterCodeConfirm(code) {
+				this.code = code;
+				this.current = 2;
 			},
 			/** 根据参数显示登录模块 */
 			methodFilter(code) {
@@ -1107,8 +1166,21 @@
 			
 			// 注册提交
 				async submitRegister() {
+					if (this.isSubmittingRegister) {
+						console.log('⚠️ 正在提交注册中，忽略重复请求');
+						return;
+					}
 					// 已取消验证要求
 					this.inviteCodeValid = true;
+				
+					if (!this.enablePrivacy) {
+						uni.showToast({
+							title: this.$t("deposit.pleaseReviewAgreement"),
+							duration: 2000,
+							icon: "none",
+						});
+						return;
+					}
 				
 				if (!this.code || this.code.length !== 6) {
 					uni.showToast({
@@ -1150,6 +1222,7 @@
 				uni.showLoading({
 					title: "注册中...",
 				});
+				this.isSubmittingRegister = true;
 				
 					try {
 						const params = {
@@ -1159,8 +1232,15 @@
 							username: this.registerForm.username
 						};
 					
+					console.log('===== 开始提交注册 =====');
+					console.log('params:', params);
+					console.log('uuid:', storage.getUuid());
+
 					const res = await register(params, this.clientType);
+					console.log('注册响应:', res);
+					
 					uni.hideLoading();
+					this.isSubmittingRegister = false;
 					
 					if (res.data.success) {
 						uni.showToast({
@@ -1176,16 +1256,20 @@
 							});
 						}, 1500);
 					} else {
+						const errorMsg = res.data.message || "注册失败，请稍后重试";
+						console.log('❌ 注册失败:', errorMsg, '完整数据:', res.data);
 						uni.showToast({
-							title: res.data.message || "注册失败，请稍后重试",
+							title: errorMsg,
 							duration: 2000,
 							icon: "none",
 						});
 					}
 				} catch (error) {
+					console.error('🔥 注册请求发生系统/网络错误:', error);
 					uni.hideLoading();
+					this.isSubmittingRegister = false;
 					uni.showToast({
-						title: "注册失败，请稍后重试",
+						title: "注册请求异常，请联系客服",
 						duration: 2000,
 						icon: "none",
 					});
