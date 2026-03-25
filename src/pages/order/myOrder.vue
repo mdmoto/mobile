@@ -573,213 +573,209 @@
 </script>
 
 <style lang="scss" scoped>
-	page,
-	.content {
-		background: $page-color-base;
-		height: 100%;
-	}
+page,
+.content {
+  background: $page-color-base;
+  height: 100%;
+}
 
-	.swiper-box {
-		height: calc(100vh - 40px);
-		// #ifdef H5
-		height: calc(100vh - 40px - 44px);
-		// #endif
-	}
+.swiper-box {
+  /* ✅ App/小程序：减去顶部 tab 高度 40px */
+  height: calc(100vh - 40px);
+  /* ✅ H5：额外减去 uni-app H5 顶部导航条高度（用 CSS var，适配不同配置） */
+  // #ifdef H5
+  height: calc(100vh - 40px - 44px);
+  // #endif
+}
 
-	.list-scroll-content {
-		height: 100%;
-	}
+.list-scroll-content {
+  height: 100%;
+}
 
-	.navbar {
-		display: flex;
-		height: 40px;
-		padding: 0 5px;
-		background: #fff;
-		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
-		position: relative;
-		z-index: 10;
+.navbar {
+  display: flex;
+  height: 40px;
+  padding: 0 5px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 10;
 
-		.nav-item {
-			flex: 1;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			font-size: 26rpx;
-			color: $font-color-light;
-			position: relative;
+  .nav-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 26rpx;
+    color: $font-color-light;
+    position: relative;
 
-			&.current {
-				color: $main-color;
+    &.current {
+      color: $main-color;
 
-				&:after {
-					content: "";
-					position: absolute;
-					left: 50%;
-					bottom: 0;
-					transform: translateX(-50%);
-					width: 44px;
-					height: 0;
-					border-bottom: 2px solid $main-color;
-				}
-			}
-		}
-	}
+      &:after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 88rpx;     /* ✅ 原 44px → 88rpx */
+        height: 0;
+        border-bottom: 2px solid $main-color;
+      }
+    }
+  }
+}
 
-	.uni-swiper-item {
-		height: auto;
-	}
+.uni-swiper-item {
+  height: auto;
+}
 
-	.seller-view {
-		border-radius: 20rpx;
-		background-color: #fff;
-		margin: 20rpx 0rpx;
+.seller-view {
+  border-radius: 20rpx;
+  background-color: #fff;
+  margin: 20rpx 0;
 
-		.seller-info {
-			height: 70rpx;
-			padding: 0 20rpx;
+  .seller-info {
+    height: 70rpx;
+    padding: 0 20rpx;
 
-			.seller-name {
-				flex: 10;
-				font-size: 28rpx;
-				font-weight: 600;
-				display: flex;
-				flex-direction: row;
-					text-align: center;
-				.name {
-					margin-left: 15rpx;
-				}
-			}
+    .seller-name {
+      flex: 10;
+      font-size: 28rpx;
+      font-weight: 600;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
 
-			.order-sn {
-				flex: 2;
-				width: 120rpx;
-				text-align: center;
-				color: $aider-light-color;
-				font-size: 26rpx;
-			}
-		}
+      .name {
+        margin-left: 15rpx;
+      }
+    }
 
-		.goods-item-view {
-			display: flex;
-			flex-wrap: wrap;
-			flex-direction: row;
-			padding: 10rpx 20rpx;
+    .order-sn {
+      flex: 2;
+      width: 120rpx;
+      text-align: center;
+      color: $aider-light-color;
+      font-size: 26rpx;
+    }
+  }
 
-			.goods-img {
-				width: 131rpx;
-				height: 131rpx;
-				margin-right: 10rpx;
-				margin-bottom: 10rpx;
-			}
+  .goods-item-view {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 10rpx 20rpx;
 
-			.goods-info {
-				padding-left: 30rpx;
-				flex: 1;
+    .goods-img {
+      width: 131rpx;
+      height: 131rpx;
+      margin-right: 10rpx;
+      margin-bottom: 10rpx;
+    }
 
-				.goods-title {
-					margin-bottom: 10rpx;
-					color: #333333;
-				}
+    .goods-info {
+      padding-left: 30rpx;
+      flex: 1;
 
-				.goods-specs {
-					font-size: 24rpx;
-					margin-bottom: 10rpx;
-					color: #cccccc;
-				}
+      .goods-title {
+        margin-bottom: 10rpx;
+        color: #333333;
+      }
 
-				.goods-price {
-					font-size: 28rpx;
-					margin-bottom: 10rpx;
-					color: $aider-light-color;
-				}
-			}
+      .goods-specs {
+        font-size: 24rpx;
+        margin-bottom: 10rpx;
+        color: #cccccc;
+      }
 
-			.goods-num {
-				width: 60rpx;
-				color: $main-color;
-			}
-		}
+      .goods-price {
+        font-size: 28rpx;
+        margin-bottom: 10rpx;
+        color: $aider-light-color;
+      }
+    }
 
-		.btn-view {
-			padding: 25rpx 30rpx;
-			font-size: 26rpx;
+    .goods-num {
+      width: 60rpx;
+      color: $main-color;
+    }
+  }
 
-			.description {
-				display: flex;
-				color: #909399;
-				size: 24rpx;
-				flex: 1;
+  .btn-view {
+    padding: 25rpx 30rpx;
+    font-size: 26rpx;
 
-				.price {
-					color: $main-color;
+    .description {
+      display: flex;
+      color: #909399;
+      font-size: 24rpx;    /* ✅ 原 size: 24rpx（错误属性名）→ font-size */
+      flex: 1;
+      align-items: center;
 
-				}
-			}
-		}
-	}
+      .price {
+        color: $main-color;
+        margin-left: 8rpx;
+      }
+    }
+  }
+}
 
-	.cancel-popup {
-		.header {
-			display: flex;
-			flex-direction: row;
-			justify-content: center;
-			margin: 15rpx 0rpx;
-		}
+.cancel-popup {
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 15rpx 0;
+  }
 
-		.body {
-			padding: 30rpx;
+  .body {
+    padding: 30rpx;
+    .title { font-weight: 600; }
+    .value {
+      display: flex;
+      flex-direction: column;
+      margin: 20rpx 0;
+      .radio-view { margin: 20rpx 0; }
+    }
+  }
 
-			.title {
-				font-weight: 600;
-			}
+  .footer { text-align: center; }
+}
 
-			.value {
-				display: flex;
-				flex-direction: column;
-				margin: 20rpx 0;
+/* ✅ 按钮组：加 flex-wrap: wrap 防止多按钮在窄屏溢出 */
+.goods-btn {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10rpx;
+}
 
-				.radio-view {
-					margin: 20rpx 0rpx;
-				}
-			}
-		}
+.cancel-btn,
+.pay-btn,
+.rebuy-btn {
+  text-align: center;
+  font-size: 24rpx;
+  padding: 14rpx 20rpx;
+  border-radius: 100px;
+  /* ✅ 移除 margin-left，改用 gap 统一间距 */
+}
 
-		.footer {
-			text-align: center;
-		}
-	}
+.cancel-btn {
+  color: #333639 !important;
+  background: rgba(46, 51, 56, 0.05) !important;
+}
 
-	.goods-btn {
-		display: flex;
-	}
+.pay-btn {
+  background-color: $light-color !important;
+  color: #ffffff !important;
+}
 
-	.cancel-btn,
-	.pay-btn,
-	.rebuy-btn {
-		text-align: center;
-		margin-left: 15rpx;
-		font-size: 24rpx;
-		padding: 14rpx 20rpx;
-		border-radius: 100px;
-
-	}
-
-	.cancel-btn {
-		color: #333639 !important;
-		background: rgba(46, 51, 56, .05) !important;
-	}
-
-	.pay-btn {
-
-		background-color: $light-color !important;
-
-		color: #ffffff !important;
-	}
-
-	.rebuy-btn {
-		color: $light-color !important;
-		border-color: $light-color !important;
-		background-color: #ffffff !important;
-	}
+.rebuy-btn {
+  color: $light-color !important;
+  border: 1rpx solid $light-color !important;
+  background-color: #ffffff !important;
+}
 </style>

@@ -9,7 +9,7 @@ import api from "@/config/api.js";
  */
 export async function getRegionsById(id = 0) {
   return request({
-    url: `${api.common}/common/region/item/${id}`,
+    url: `${api.common}/common/common/region/item/${id}`,
     method: Method.GET,
     message: false,
   });
@@ -29,14 +29,14 @@ export async function getIMDetail() {
 /**
  * 文件上传地址
  */
-export const upload = api.common + "/common/upload/file";
+export const upload = api.common + "/common/common/upload/file";
 
 /**
  * 发送邮箱验证码
  */
 export async function sendEmail(email, verificationEnums = 'REGISTER') {
   return request({
-    url: `${api.common}/common/email/${verificationEnums}/${email}`,
+    url: `${api.common}/common/common/email/${verificationEnums}/${email}`,
     method: Method.GET,
     message: false,
   });
@@ -47,7 +47,7 @@ export async function sendEmail(email, verificationEnums = 'REGISTER') {
  */
 export async function getSlider(business, uuid) {
   return request({
-    url: `${api.common}/common/slider/${business}`,
+    url: `${api.common}/common/common/slider/${business}`,
     method: Method.GET,
     header: { uuid },
   });
@@ -58,7 +58,7 @@ export async function getSlider(business, uuid) {
  */
 export async function validSlider(business, uuid, xPos) {
   return request({
-    url: `${api.common}/common/slider/${business}?xPos=${xPos}`,
+    url: `${api.common}/common/common/slider/${business}?xPos=${xPos}`,
     method: Method.POST,
     header: { uuid },
   });

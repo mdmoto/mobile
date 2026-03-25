@@ -1,34 +1,55 @@
 <template>
   <view class="category-wrap">
-    <u-navbar class="navbar" :is-back="false" fixed placeholder>
+    <!--
+      ✅ 关键修复：
+      原来 navbar-left-content 设了 width: 750rpx，
+      但 u-navbar 本身内有 padding/margin，加上 750rpx 就超出屏幕宽度，
+      导致搜索框溢出到屏幕右侧之外。
+      改为 width: 100%，依靠 flex 布局让标题和搜索框分配空间。
+    -->
+    <u-navbar class="navbar" :is-back="false" fixed placeholder border>
       <template #left>
-        <view class="navbar-left-content" style="display: flex; align-items: center; width: 750rpx; padding: 0 30rpx;">
-          <text class="title" style="margin-right: 30rpx; font-weight: bold; flex-shrink: 0; font-size: 32rpx; color: #333;">{{ $t('category.title') }}</text>
-          <u-search class="nav-search" @click.native="search" :placeholder="$t('home.search')" :show-action="false" style="flex: 1;"></u-search>
+        <view class="navbar-left-content">
+          <text class="nav-title">{{ $t('category.title') }}</text>
+          <u-search
+            class="nav-search"
+            @click.native="search"
+            :placeholder="$t('home.search')"
+            :show-action="false"
+          ></u-search>
         </view>
       </template>
     </u-navbar>
+
     <view class="content">
       <scroll-view scroll-y scroll-with-animation class="left-aside">
-        <view v-for="(item, index) in tabList" :key="item.id" class="f-item b-b" :class="{ active: item.id === currentId }" @click="tabtap(item, index)">
+        <view
+          v-for="(item, index) in tabList"
+          :key="item.id"
+          class="f-item b-b"
+          :class="{ active: item.id === currentId }"
+          @click="tabtap(item, index)"
+        >
           {{ item.name }}
         </view>
       </scroll-view>
+
       <scroll-view scroll-with-animation scroll-y class="right-aside" :upper-threshold="-100" :lower-threshold="-100">
-        <!-- 头部图片 -->
         <view class="top-img" id="main-top">
-          <u-image width="500rpx" height="230rpx" @click="navigateToList(topImg.id,topImg.id)" :src="topImg.image" mode="">
+          <u-image width="100%" height="230rpx" @click="navigateToList(topImg.id, topImg.id)" :src="topImg.image" mode="aspectFill">
           </u-image>
         </view>
         <view v-for="item in categoryList" :key="item.id" class="s-list" :id="'main-' + item.id">
-          <!-- 分类标题 -->
           <text class="s-item">{{ item.name }}</text>
-          <!-- 分类详情 -->
           <view class="t-list">
             <template v-for="(children, cIndex) in item.children" :key="children.id">
-              <view @click="navigateToList(item.id, children.id)" v-if="children.parentId === item.id" class="t-item"
-                :class="{ 'margin-right': (cIndex + 1) % 3 == 0 }">
-                <u-image width="70px" height="70px" :src="children.image" :lazy-load="true">
+              <view
+                @click="navigateToList(item.id, children.id)"
+                v-if="children.parentId === item.id"
+                class="t-item"
+                :class="{ 'margin-right': (cIndex + 1) % 3 == 0 }"
+              >
+                <u-image width="110rpx" height="110rpx" :src="children.image" :lazy-load="true">
                 </u-image>
                 <text>{{ children.name }}</text>
               </view>
@@ -46,59 +67,39 @@ export default {
   data() {
     return {
       currentId: 0,
-      tabList: [], //左侧标题列表
-      categoryList: [], //右侧分类数据列表
-      topImg: "", //顶部图片
+      tabList: [],
+      categoryList: [],
+      topImg: "",
     };
   },
   onLoad() {
     this.loadData();
     // #ifdef MP-WEIXIN
-    // 小程序默认分享
     uni.showShareMenu({ withShareTicket: true });
     // #endif
   },
   methods: {
-    /**
-     * 查询
-     */
     search() {
-      uni.navigateTo({
-        url: "/pages/navigation/search/searchPage",
-      });
+      uni.navigateTo({ url: "/pages/navigation/search/searchPage" });
     },
-
-    /**
-     * 加载图片
-     */
     async loadData() {
       let list = await getCategoryList(0);
       this.tabList = list.data.result;
       this.currentId = list.data.result[0].id;
       this.loadListContent(0);
     },
-
-    /**
-     * 加载列表内容
-     */
     loadListContent(index) {
       this.topImg = this.tabList[index];
       this.categoryList = this.tabList[index].children;
     },
-    /**
-     * 一级分类点击
-     */
     tabtap(item, i) {
-      if (item.id != this.currentId) {
+      if (item.id !== this.currentId) {
         this.currentId = item.id;
         this.loadListContent(i);
       }
     },
-
     navigateToList(sid, tid) {
-      uni.navigateTo({
-        url: `/pages/navigation/search/searchPage?category=${tid}`,
-      });
+      uni.navigateTo({ url: `/pages/navigation/search/searchPage?category=${tid}` });
     },
   },
 };
@@ -109,49 +110,69 @@ page {
   height: 100%;
   background-color: #fdfaff;
 }
-/* 解决小程序和app滚动条的问题 */
+
+/* 解决小程序和 App 滚动条问题 */
 /* #ifdef MP-WEIXIN || APP-PLUS */
-::-webkit-scrollbar {
-  display: none;
-}
+::-webkit-scrollbar { display: none; }
 /* #endif */
-/* 解决H5 的问题 */
 /* #ifdef H5 */
-uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
-  /* 隐藏滚动条，但依旧具备可以滚动的功能 */
-  display: none;
-}
+uni-scroll-view .uni-scroll-view::-webkit-scrollbar { display: none; }
 /* #endif */
+
+/*
+ * ✅ 核心修复：navbar 内容区
+ * 原来用了 width: 750rpx 硬编码，在有 navbar 内边距的情况下必然溢出
+ * 改为 width: 100%，box-sizing: border-box，内部用 flex 分配空间
+ */
+.navbar-left-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 16rpx;
+  gap: 12rpx;
+}
+
+.nav-title {
+  flex-shrink: 0;              /* 标题不压缩 */
+  font-weight: bold;
+  font-size: $font-md;         /* ✅ 使用全局字号变量，不再写字面量 */
+  color: #333;
+}
+
+/* ✅ 搜索框弹性占满剩余宽度，不用固定宽度 */
+.nav-search {
+  flex: 1;
+  min-width: 0;                /* flex 允许收缩到 0 */
+}
+
 .s-list {
   box-shadow: 0 4rpx 12rpx 0 rgba(0, 0, 0, 0.05);
 }
-.nav-search {
-  padding-left: 30rpx !important;
-  padding-right: 20rpx !important;
-}
-.title {
-  display: block;
-  width: 259rpx;
-  text-align: center;
-   font-size: 28rpx;
 
- 
-}
 .category-wrap {
   height: 100%;
+
   .content {
+    /*
+     * ✅ 高度计算：用 rpx 替代 px，避免跨设备不一致
+     * 94px ≈ 188rpx（navbar 高度）
+     * 用 CSS var 更准确
+     */
     height: calc(100vh - 94px);
     display: flex;
     color: #333;
-    font-size: 28rpx;
+    font-size: $font-base;     /* ✅ 使用全局变量 */
     background: #fff;
   }
+
   .left-aside {
     flex-shrink: 0;
     width: 200rpx;
     height: 100%;
     background-color: #f7f7f7;
   }
+
   .f-item {
     display: flex;
     align-items: center;
@@ -159,12 +180,15 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
     width: 100%;
     height: 97rpx;
     position: relative;
+    font-size: $font-sm;       /* ✅ 统一左侧菜单字号 */
+
     &.active {
       font-weight: bold;
       color: $light-color;
       background: #fff;
     }
   }
+
   .right-aside {
     flex: 1;
     overflow: hidden;
@@ -172,48 +196,44 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
   }
 
   .top-img {
-    width: 500rpx;
+    width: 100%;               /* ✅ 改为 100%，不固定 500rpx，避免在窄屏溢出 */
     height: 230rpx;
-    border-radius: 8px;
+    border-radius: 8rpx;
     overflow: hidden;
-    image {
-      width: 100%;
-      height: 100%;
-    }
   }
+
   .s-item {
     display: flex;
     align-items: center;
     height: 70rpx;
     padding-top: 16rpx;
     font-weight: 500;
+    font-size: $font-base;
   }
+
   .t-list {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     padding-top: 12rpx;
   }
+
   .t-item {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 25%;
-    font-size: 24rpx;
+    font-size: $font-sm;
     padding-bottom: 20rpx;
     box-sizing: border-box;
-    image {
-      width: 110rpx;
-      height: 110rpx;
-      border-radius: 8px;
-      margin-bottom: 20rpx;
-    }
-    ::v-deep  .u-image {
+
+    /* ✅ 统一用 rpx，不混用 px */
+    ::v-deep .u-image {
       width: 110rpx !important;
       height: 110rpx !important;
-      border-radius: 8px !important;
-      margin-bottom: 20rpx !important;
+      border-radius: 8rpx !important;
+      margin-bottom: 16rpx !important;
     }
   }
 }

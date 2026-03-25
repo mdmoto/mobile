@@ -36,17 +36,24 @@ export default {
 @import "./tpl.scss";
 
 .search {
-  height: 64rpx;
-  border-radius: 10rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #ededed;
+  justify-content: flex-start;
+  background: #f1f1f1;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  color: #999;
+
+  ::v-deep .u-icon {
+    margin-right: 10rpx;
+  }
 }
 
 .layout {
   background: #fff;
-  padding: 0 16rpx;
+  padding: 10rpx 30rpx;
   position: relative;
 }
 .navbar-right{

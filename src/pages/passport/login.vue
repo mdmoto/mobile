@@ -116,17 +116,23 @@
 					<u-icon name="lock-fill" size="16" color="#ff5e00" style="margin-right: 5rpx;"></u-icon>
 					{{ !enableUserPwdBox ? $t('deposit.useAccountLogin') : $t('deposit.backToRegister') }}
 				</div>
-			</div>
 
-			<!-- 隐私协议（移到最底部） -->
-			<div class="flex privacy-section" v-show="current != 1">
-				<u-checkbox shape="circle" :value="enablePrivacy" @click.native="enablePrivacy = !enablePrivacy" :icon-size="20" :size="34" active-color="#FF5E00"></u-checkbox>
-				<div class="tips">
-					{{ $t('deposit.loginPrivacyDesc') }}<span @click="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>和<span @click="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
+				<!-- 隐私协议 (恢复原始美观布局) -->
+				<div class="privacy-section privacy-row" @click="togglePrivacy">
+					<!-- 使用 v-model 确保状态双向绑定 -->
+					<u-checkbox shape="circle" v-model="enablePrivacy" active-color="#FF5E00" class="privacy-checkbox"></u-checkbox>
+					<div class="tips privacy-text">
+						{{ $t('deposit.loginPrivacyDesc') }}
+						<span class="privacy-link" @click.stop="navigateToPrivacy('PRIVACY_POLICY')">{{ $t('deposit.privacyPolicy') }}</span>
+						和
+						<span class="privacy-link" @click.stop="navigateToPrivacy('USER_AGREEMENT')">{{ $t('deposit.userAgreement') }}</span>
+					</div>
 				</div>
-			</div>
-		<myVerification v-if="codeFlag" @send="verification" class="verification" ref="verification"
-			:business="enableUserPwdBox ? 'LOGIN' : (isRegisterMode ? 'REGISTER' : 'LOGIN')" />
+				</div>
+
+			<!-- 滑块验证码 (v-if 确保每次打开都是新鲜状态) -->
+			<my-verification v-if="sliderVisible" @send="verification" @close="sliderVisible = false" class="verification" ref="verification"
+				:business="enableUserPwdBox ? 'LOGIN' : (isRegisterMode ? 'REGISTER' : 'LOGIN')" />
 		</div>
 		<view v-else>
 			<wechatH5Login />
@@ -167,7 +173,7 @@
 		md5
 	} from "@/utils/md5.js";
 
-	export default {
+		export default {
 		components: {
 			myVerification,
 			verifyCode,
@@ -181,6 +187,7 @@
 				flage: false, //是否验证码验证
 				isSubmitting: false, //防止重复提交登录
 				codeFlag: true, //验证开关，用于是否展示验证码
+				sliderVisible: false, // 滑块显隐控制 (使用 v-if 确保状态刷新)
 				tips: "",
 				enableUserPwdBox: false, //帐号密码登录
 				current: 0,
@@ -288,7 +295,7 @@
 			// 使用统一的 Web OAuth 2.0 流程
 			this.methodFilter(["GOOGLE", "APPLE"]);
 		},
-		watch: {
+			watch: {
 		current(val) {
 			val ? (this.showBack = true) : (this.showBack = false);
 		},
@@ -322,47 +329,52 @@
 				},
 			},
 
-		async flage(val) {
-			if (val) {
-				if (this.$refs.uCode.canGetCode) {
-					if (this.enableUserPwdBox) {
-						// 密码登录已在 verification() 回调中处理，避免重复调用
-						console.log('⚠️ flage watcher 触发，但密码登录已在 verification 回调中处理，跳过');
-						return;
-						// 执行登录
-					} else {
-							// 向后端请求验证码
-							uni.showLoading({});
-							let res = await sendMobile(this.mobile);
-							 if (this.$store.state.isShowToast){ uni.hideLoading() };
-							// 这里此提示会被this.start()方法中的提示覆盖
-							if (res.data.success) {
-								this.current = 1;
-								this.$refs.uCode.start();
-							} else {
-								uni.showToast({
-									title: res.data.message,
-									duration: 2000,
-									icon: "none",
-								});
-								this.flage = false;
-								this.$refs.verification.getCode();
+			async flage(val) {
+				if (val) {
+					if (this.$refs.uCode && this.$refs.uCode.canGetCode) {
+						if (this.enableUserPwdBox) {
+							// 密码登录已在 verification() 回调中处理，避免重复调用
+							console.log('⚠️ flage watcher 触发，但密码登录已在 verification 回调中处理，跳过');
+							return;
+							// 执行登录
+						} else {
+								// 向后端请求验证码
+								uni.showLoading({});
+								let res = await sendMobile(this.mobile);
+								 if (this.$store.state.isShowToast){ uni.hideLoading() };
+								// 这里此提示会被this.start()方法中的提示覆盖
+								if (res.data.success) {
+									this.current = 1;
+									if (this.$refs.uCode) this.$refs.uCode.start();
+								} else {
+									uni.showToast({
+										title: res.data.message,
+										duration: 2000,
+										icon: "none",
+									});
+									this.flage = false;
+									if (this.$refs.verification) this.$refs.verification.getCode();
+								}
 							}
+						} else {
+							!this.enableUserPwdBox ? uni.$u.toast("请倒计时结束后再发送") : "";
 						}
 					} else {
-						!this.enableUserPwdBox ? uni.$u.toast("请倒计时结束后再发送") : "";
+						if (this.$refs.verification) this.$refs.verification.hide();
 					}
-				} else {
-					this.$refs.verification.hide();
+				},
+		},
+			onLoad(options) {
+				if (options && options.state) {
+					this.stateLogin(options.state);
 				}
 			},
-		},
-		onLoad(options) {
-			if (options && options.state) {
-				this.stateLogin(options.state);
-			}
-		},
-		methods: {
+			methods: {
+				// 切换隐私协议
+				togglePrivacy() {
+					this.enablePrivacy = !this.enablePrivacy;
+					console.log('[Privacy] Toggled to:', this.enablePrivacy);
+				},
 			//联合信息返回登录
 			stateLogin(state) {
 				loginCallback(state).then((res) => {
@@ -692,53 +704,52 @@
 				}
 			},
 
-		// 验证码验证
-		verification(val) {
-			console.log('===== 验证码验证回调 START =====');
-			console.log('接收到的 key:', val);
-			console.log('store key:', this.$store.state.verificationKey);
-			console.log('当前 uuid:', storage.getUuid());
-			console.log('时间戳:', new Date().toISOString());
-			console.log('当前 flage 状态:', this.flage);
-			console.log('当前 isSubmitting 状态:', this.isSubmitting);
-			
-			this.flage = val == this.$store.state.verificationKey ? true : false;
-			console.log('验证结果:', this.flage);
-			
-			if (!this.flage) {
-				console.log('❌ 验证失败');
-				uni.showToast({
-					title: this.$t("deposit.authFailedRetry"),
-					duration: 2000,
-					icon: "none",
+			// 验证码验证
+			verification(val) {
+				console.log('===== 验证码验证回调 START =====');
+				console.log('接收到的 key:', val);
+				console.log('store key:', this.$store.state.verificationKey);
+				console.log('当前 uuid:', storage.getUuid());
+				console.log('时间戳:', new Date().toISOString());
+				console.log('当前 flage 状态:', this.flage);
+				console.log('当前 isSubmitting 状态:', this.isSubmitting);
+
+				this.flage = val == this.$store.state.verificationKey ? true : false;
+				console.log('验证结果:', this.flage);
+
+				if (!this.flage) {
+					console.log('❌ 验证失败');
+					uni.showToast({
+						title: this.$t("deposit.authFailedRetry"),
+						duration: 2000,
+						icon: "none",
+					});
+					return;
+				}
+
+				// 验证成功 - 根据不同模式执行不同操作
+				console.log('✅ 验证成功！模式：', {
+					isRegisterMode: this.isRegisterMode,
+					enableUserPwdBox: this.enableUserPwdBox,
+					current: this.current
 				});
-				return;
-			}
-			
-			// 验证成功 - 根据不同模式执行不同操作
-			console.log('✅ 验证成功！模式：', {
-				isRegisterMode: this.isRegisterMode,
-				enableUserPwdBox: this.enableUserPwdBox,
-				current: this.current
-			});
-			
-			// 密码登录模式：立即提交登录（模仿 Web 端）
-			if (this.enableUserPwdBox) {
-				console.log('🔑 密码登录模式，立即提交登录');
-				console.log('提交前状态 - flage:', this.flage, 'isSubmitting:', this.isSubmitting);
-				console.log('提交时间:', new Date().toISOString());
-				this.submitUserLogin();
-				console.log('===== 验证码验证回调 END (已调用 submitUserLogin) =====');
-				return;
-			}
-			
-			// 注册模式：发送邮箱验证码
-			if (this.isRegisterMode && this.current === 0) {
-				console.log('📧 注册模式，发送邮箱验证码');
-				this.sendEmailCodeAfterVerification();
-			}
-			console.log('===== 验证码验证回调 END =====');
-		},
+
+				// 密码登录模式：立即提交登录（模仿 Web 端）
+				if (this.enableUserPwdBox) {
+					console.log('🔑 密码登录模式，立即提交登录');
+					this.sliderVisible = false; // 验证成功，隐藏滑块
+					this.submitUserLogin();
+					return;
+				}
+
+				// 注册模式：发送邮箱验证码
+				if (this.isRegisterMode && this.current === 0) {
+					console.log('📧 注册模式，发送邮箱验证码');
+					this.sliderVisible = false; // 验证成功，隐藏滑块
+					this.sendEmailCodeAfterVerification();
+				}
+				console.log('===== 验证码验证回调 END =====');
+			},
 			// 跳转
 			navigateToPrivacy(val) {
 				uni.navigateTo({
@@ -773,115 +784,113 @@
 				console.log(this.codeColor);
 			},
 
-	passwordLogin() {
-		console.log('passwordLogin - enablePrivacy:', this.enablePrivacy);
-		if (!this.enablePrivacy) {
-			uni.showToast({
-				title: this.$t("deposit.pleaseAgreePrivacy"),
-				duration: 2000,
-				icon: "none",
-			});
-			return false;
-		}
-
-		if (!this.userData.username) {
-			uni.showToast({
-				title: this.$t("deposit.inputAccountPlaceholder"),
-				duration: 2000,
-				icon: "none",
-			});
-			return false;
-		}
-
-		if (!this.userData.password) {
-			uni.showToast({
-				title: this.$t("deposit.inputPasswordPlaceholder"),
-				duration: 2000,
-				icon: "none",
-			});
-			return false;
-		}
-
-	// 后端强制要求验证码，恢复验证步骤
-	if (!this.flage) {
-		this.codeFlag = true;
-		this.$nextTick(() => {
-			if (this.$refs.verification) {
-				// 只调用 show()，它会自动处理是否需要加载验证码
-				this.$refs.verification.show();
-			}
-		});
-		return false;
-	}
-		
-		// 验证通过，提交登录
-		this.submitUserLogin();
-	},
-
-		// 提交用户登录
-	async submitUserLogin() {
-		// 防止重复提交
-		if (this.isSubmitting) {
-			console.log('⚠️ 正在提交中，忽略重复请求');
-			return;
-		}
-		
-		this.isSubmitting = true;
-		console.log('===== 开始提交登录 =====');
-		console.log('时间戳:', new Date().toISOString());
-		console.log('uuid:', storage.getUuid());
-		console.log('用户名:', this.userData.username);
-		console.log('flage:', this.flage);
-		
-		const params = JSON.parse(JSON.stringify(this.userData));
-		params.password = md5(params.password);
-		
-		try {
-			console.log('发送登录请求，时间:', new Date().toISOString());
-			let res = await userLogin(params,this.clientType);
-			console.log('登录响应:', res);
-			
-			if (res.data.success) {
-				console.log('✅ 登录成功');
-				this.getUserInfoMethods(res);
-			} else {
-				// 显示登录失败消息
-				const errorMsg = (res.data && (res.data.message || res.data.msg)) || "用户名或密码错误，请重试";
-				console.log('❌ 登录失败:', errorMsg, '完整响应:', res.data);
-				uni.showToast({
-					title: errorMsg,
-					duration: 2000,
-					icon: "none",
-				});
-				// 登录失败，重置验证状态并获取新验证码
-				this.flage = false;
-				this.isSubmitting = false;
-				if (this.$refs.verification) {
-					this.$refs.verification.getCode();
+			passwordLogin() {
+				if (!this.enablePrivacy) {
+					uni.showToast({
+						title: this.$t("deposit.pleaseAgreePrivacy"),
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
 				}
-			}
-		} catch (error) {
-			// 显示异常消息
-			console.log('❌ 登录异常:', error);
-			let errorMsg = "登录失败，请重试";
-			if (error.response && error.response.data) {
-				errorMsg = error.response.data.message || error.response.data.msg || errorMsg;
-			} else if (error.message) {
-				errorMsg = error.message;
-			}
-			uni.showToast({
-				title: errorMsg,
-				duration: 2000,
-				icon: "none",
-			});
-			// 登录失败，重置验证状态并获取新验证码
-			this.flage = false;
-			this.isSubmitting = false;
-			if (this.$refs.verification) {
-				this.$refs.verification.getCode();
-			}
-		}
-	},
+
+				if (!this.userData.username) {
+					uni.showToast({
+						title: this.$t("deposit.inputAccountPlaceholder"),
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+
+				if (!this.userData.password) {
+					uni.showToast({
+						title: this.$t("deposit.inputPasswordPlaceholder"),
+						duration: 2000,
+						icon: "none",
+					});
+					return false;
+				}
+
+				// 后端强制要求验证码，恢复验证步骤
+				if (!this.flage) {
+					this.sliderVisible = true;
+					this.$nextTick(() => {
+						if (this.$refs.verification) {
+							this.$refs.verification.show();
+						}
+					});
+					return false;
+				}
+
+				// 验证通过，提交登录
+				this.submitUserLogin();
+			},
+
+			// 提交用户登录
+			async submitUserLogin() {
+				// 防止重复提交
+				if (this.isSubmitting) {
+					console.log('⚠️ 正在提交中，忽略重复请求');
+					return;
+				}
+
+				this.isSubmitting = true;
+				console.log('===== 开始提交登录 =====');
+				console.log('时间戳:', new Date().toISOString());
+				console.log('uuid:', storage.getUuid());
+				console.log('用户名:', this.userData.username);
+				console.log('flage:', this.flage);
+
+				const params = JSON.parse(JSON.stringify(this.userData));
+				params.password = md5(params.password);
+
+				try {
+					console.log('发送登录请求，时间:', new Date().toISOString());
+					let res = await userLogin(params, this.clientType);
+					console.log('登录响应:', res);
+
+					if (res.data.success) {
+						console.log('✅ 登录成功');
+						this.getUserInfoMethods(res);
+					} else {
+						// 显示登录失败消息
+						const errorMsg = (res.data && (res.data.message || res.data.msg)) || "用户名或密码错误，请重试";
+						console.log('❌ 登录失败:', errorMsg, '完整响应:', res.data);
+						uni.showToast({
+							title: errorMsg,
+							duration: 2000,
+							icon: "none",
+						});
+						// 登录失败，重置验证状态并获取新验证码
+						this.flage = false;
+						this.isSubmitting = false;
+						if (this.$refs.verification) {
+							this.$refs.verification.getCode();
+						}
+					}
+				} catch (error) {
+					// 显示异常消息
+					console.log('❌ 登录异常:', error);
+					let errorMsg = "登录失败，请重试";
+					if (error.response && error.response.data) {
+						errorMsg = error.response.data.message || error.response.data.msg || errorMsg;
+					} else if (error.message) {
+						errorMsg = error.message;
+					}
+					uni.showToast({
+						title: errorMsg,
+						duration: 2000,
+						icon: "none",
+					});
+					// 登录失败，重置验证状态并获取新验证码
+					this.flage = false;
+					this.isSubmitting = false;
+					if (this.$refs.verification) {
+						this.$refs.verification.getCode();
+					}
+				}
+			},
 
 			// 发送邮箱验证码（验证码验证通过后调用）
 			async sendEmailCodeAfterVerification() {
@@ -895,7 +904,7 @@
 					});
 					return;
 				}
-				
+
 				// 检查邮箱格式
 				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!emailRegex.test(this.email)) {
@@ -907,18 +916,18 @@
 					this.flage = false;
 					return;
 				}
-				
+
 				// 发送邮箱验证码
 				uni.showLoading({
 					title: this.$t("common.loading"),
 				});
-				
+
 				try {
 					console.log('开始发送邮箱验证码:', this.email, '验证状态:', this.flage);
 					const res = await sendEmail(this.email, 'REGISTER');
 					console.log('邮箱验证码响应:', res);
 					uni.hideLoading();
-					
+
 					// 检查响应状态
 					if (res && res.data) {
 						if (res.data.success) {
@@ -929,12 +938,25 @@
 								duration: 2000,
 								icon: "success",
 							});
+						} else {
+							const errorMsg = res.data.message || res.data.msg || "发送失败，请稍后重试";
+							console.error('邮箱验证码发送失败:', errorMsg, res.data);
+							uni.showToast({
+								title: errorMsg,
+								duration: 3000,
+								icon: "none",
+							});
+							// 重置验证状态，不刷新验证码
+							if (this.$refs.verification) {
+								this.$refs.verification.error();
+							}
+							this.flage = false;
+						}
 					} else {
-						const errorMsg = res.data.message || res.data.msg || "发送失败，请稍后重试";
-						console.error('邮箱验证码发送失败:', errorMsg, res.data);
+						console.error('邮箱验证码响应格式错误:', res);
 						uni.showToast({
-							title: errorMsg,
-							duration: 3000,
+							title: "响应格式错误，请稍后重试",
+							duration: 2000,
 							icon: "none",
 						});
 						// 重置验证状态，不刷新验证码
@@ -943,11 +965,21 @@
 						}
 						this.flage = false;
 					}
-				} else {
-					console.error('邮箱验证码响应格式错误:', res);
+				} catch (err) {
+					uni.hideLoading();
+					console.error('发送邮箱验证码异常:', err);
+
+					// 提取错误信息
+					let errorMsg = "发送失败，请稍后重试";
+					if (err && err.response && err.response.data) {
+						errorMsg = err.response.data.message || err.response.data.msg || errorMsg;
+					} else if (err && err.message) {
+						errorMsg = err.message;
+					}
+
 					uni.showToast({
-						title: "响应格式错误，请稍后重试",
-						duration: 2000,
+						title: errorMsg,
+						duration: 3000,
 						icon: "none",
 					});
 					// 重置验证状态，不刷新验证码
@@ -956,38 +988,15 @@
 					}
 					this.flage = false;
 				}
-			} catch (err) {
-				uni.hideLoading();
-				console.error('发送邮箱验证码异常:', err);
-				
-				// 提取错误信息
-				let errorMsg = "发送失败，请稍后重试";
-				if (err && err.response && err.response.data) {
-					errorMsg = err.response.data.message || err.response.data.msg || errorMsg;
-				} else if (err && err.message) {
-					errorMsg = err.message;
-				}
-					
-				uni.showToast({
-					title: errorMsg,
-					duration: 3000,
-					icon: "none",
-				});
-				// 重置验证状态，不刷新验证码
-				if (this.$refs.verification) {
-					this.$refs.verification.error();
-				}
-				this.flage = false;
-			}
-		},
-			
-			// 发送验证码
-			fetchCode() {
+			},
+
+				// 发送验证码
+				fetchCode() {
 				// 1. 检查邀请码（注册需要邀请码）- 已取消验证要求
 				this.inviteCodeValid = true;
-				
+
 				// 2. 检查隐私协议
-				console.log('fetchCode - enablePrivacy:', this.enablePrivacy);
+				console.log('[Privacy] fetchCode check:', this.enablePrivacy);
 				if (!this.enablePrivacy) {
 					uni.showToast({
 						title: "请同意用户隐私",
@@ -1009,7 +1018,7 @@
 						});
 						return false;
 					}
-					
+
 					// 如果已经完成验证码验证，直接发送邮箱验证码
 					if (this.flage) {
 						this.sendEmailCodeAfterVerification();
@@ -1017,24 +1026,11 @@
 					}
 					
 					// 确保验证码组件显示
-					console.log('准备显示验证码组件, codeFlag:', this.codeFlag);
-					this.codeFlag = true;
+					this.sliderVisible = true;
 					
-					// 使用 $nextTick 确保组件已经渲染
 					this.$nextTick(() => {
-						console.log('nextTick回调, verification ref:', this.$refs.verification);
 						if (this.$refs.verification) {
-							// 只显示验证码组件，不重新获取验证码
-							// show() 方法会按需获取验证码（如果没有验证码图片）
 							this.$refs.verification.show();
-							console.log('验证码组件已显示');
-						} else {
-							console.error('验证码组件引用不存在, codeFlag:', this.codeFlag);
-							uni.showToast({
-								title: "验证码组件加载失败，请刷新页面重试",
-								duration: 2000,
-								icon: "none",
-							});
 						}
 					});
 					return;
@@ -1068,7 +1064,7 @@
 
 					return false;
 				}
-			},
+				},
 			
 			// 注册提交
 			async submitRegister() {
@@ -1214,11 +1210,13 @@
 	.tips {
 		font-size: 11px;
 		line-height: 18px;
-		margin-top: 20rpx;
 		width: 546rpx;
 
-		>span {
-			color: $light-color;
+		.privacy-link {
+			color: #ff5e00;
+			cursor: pointer;
+			display: inline-block;
+			margin: 0 4rpx;
 		}
 	}
 
@@ -1348,13 +1346,54 @@
 
 	/* 隐私协议区域 */
 	.privacy-section {
-		margin-top: 20rpx;
+		margin-top: 26rpx;
 		padding-top: 15rpx;
-		border-top: 1rpx solid #f0f0f0;
 		width: 590rpx;
 		margin-left: auto;
 		margin-right: auto;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
 	}
+
+		.privacy-section--h5 {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: auto;
+			margin: 0;
+			padding: 20rpx 80rpx;
+			background: #fff;
+			border-top: 1rpx solid #f0f0f0;
+			z-index: 10000;
+			pointer-events: auto;
+		}
+
+		.privacy-row {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			text-align: left;
+		}
+
+		/* 让外层统一处理点击，避免 checkbox 自身点击区域在 H5 上漂移 */
+		.privacy-checkbox {
+			flex: none;
+		}
+
+		.privacy-text {
+			margin-left: 12rpx;
+			flex: 1;
+			font-size: 22rpx;
+			line-height: 36rpx;
+			color: #333;
+			word-break: break-word;
+		}
+
+		.privacy-link {
+			color: #ff5e00;
+		}
 
 	.user-password-tips {
 		text-align: center;

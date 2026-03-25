@@ -10,12 +10,12 @@
         class="flex-column-center"
         style="background-color: #fcfcfc; padding: 30rpx; border-radius: 10rpx"
       >
-        <movable-area
-          class="flex"
-          style="width: 100%"
-          animation="false"
-          :style="{ height: originalHeight }"
-        >
+	        <movable-area
+	          class="flex"
+	          style="max-width: 100%"
+	          animation="false"
+	          :style="{ height: originalHeight, width: originalWidth }"
+	        >
           <movable-view
             scale-value="1"
             animation="false"
@@ -47,16 +47,16 @@
           ></image>
         </movable-area>
 
-        <movable-area
-          class="flex-row-start"
-          style="
-            width: 100%;
-            background-color: #efefef;
-            height: 80rpx;
-            border-radius: 40rpx;
-            margin-top: 30rpx;
-          "
-        >
+	        <movable-area
+	          class="flex-row-start"
+	          :style="{
+	            width: originalWidth,
+	            backgroundColor: '#efefef',
+	            height: '80rpx',
+	            borderRadius: '40rpx',
+	            marginTop: '30rpx',
+	          }"
+	        >
         <movable-view
           scale-value="1"
           animation="false"
@@ -177,21 +177,24 @@ export default {
       isLoadingCode: false, // 防止重复加载验证码
     };
   },
-  methods: {
-    show() {
-      this.hid = false;
-      // 只在没有验证码图片时才获取
-      if (!this.img) {
-        console.log('📸 滑块显示但无图片，自动获取验证码');
-        this.getCode();
-      } else {
-        console.log('📸 滑块显示，已有验证码图片，不重复加载');
-      }
-    },
+	  methods: {
+	    show() {
+	      this.hid = false;
+	      // 每次打开都刷新验证码，避免状态/图片残留导致“弹出异常”
+	      this.vsr = false;
+	      this.endLoad = true;
+	      this.movePv = 0;
+	      this.moveX = 0;
+	      this.moveCode = 0;
+	      this.img = "";
+	      this.imgbk = "";
+	      this.getCode();
+	    },
     hide() {
       if (!this.vsr) {
         // vsr判断是否验证成功，成功隐藏验证框
         this.hid = !this.hid;
+        this.$emit('close');
       }
     },
     error() {
@@ -201,7 +204,7 @@ export default {
       this.moveCode = 0;
       this.isLoadingCode = false; // 重置加载状态
     },
-    async getCode() {
+	    async getCode() {
       // 防止重复加载
       if (this.isLoadingCode) {
         console.log('⚠️ 验证码正在加载中，跳过重复请求');
@@ -218,26 +221,39 @@ export default {
         storage.setUuid(currentUuid);
       }
 
-      try {
-        const data = await getSlider(this.business, currentUuid);
-        this.col = "#838383";
-        this.hasImg = "拖动滑块以完成拼图";
+	      try {
+	        const res = await getSlider(this.business, currentUuid);
+	        if (!res || !res.data || !res.data.success) {
+	          const message = (res && res.data && (res.data.message || res.data.msg)) || "加载失败，请点击刷新";
+	          console.error("❌ 获取滑块验证码失败:", res);
+	          this.hasImg = message;
+	          return;
+	        }
 
-        // base64的图片
-        this.img = data.backImage;
-        this.imgbk = data.slidingImage;
-        // 根据参数动态适应验证图片的高宽
-        this.imgbKH = data.randomY * 1.8 + "rpx";
-        this.originalHeight = data.originalHeight * 1.8 + "rpx";
-        this.originalWidth = data.originalWidth * 1.8 + "rpx";
-        this.sliderHeight = data.sliderHeight * 1.8 + "rpx";
-        this.sliderWidth = data.sliderWidth * 1.8 + "rpx";
-        
-        // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
-        const currentPhone = uni.getSystemInfoSync();
-        const currentL = currentPhone.screenWidth / 750;
-        this.tl = 1 / (1.8 * currentL);
-        console.log('📏 屏幕宽度:', currentPhone.screenWidth, 'tl:', this.tl);
+	        const data = res.data.result;
+	        if (!data) {
+	          console.error("❌ 获取滑块验证码 result 为空:", res);
+	          this.hasImg = "加载失败，请点击刷新";
+	          return;
+	        }
+	        this.col = "#838383";
+	        this.hasImg = "拖动滑块以完成拼图";
+
+	        // base64的图片
+	        this.img = data.backImage;
+	        this.imgbk = data.slidingImage;
+	        // 根据参数动态适应验证图片的高宽
+	        this.imgbKH = data.randomY * 1.5 + "rpx";
+	        this.originalHeight = data.originalHeight * 1.5 + "rpx";
+	        this.originalWidth = data.originalWidth * 1.5 + "rpx";
+	        this.sliderHeight = data.sliderHeight * 1.5 + "rpx";
+	        this.sliderWidth = data.sliderWidth * 1.5 + "rpx";
+
+	        // 适应比率，用来适应滑动距离 - 每次重新获取屏幕宽度
+	        const currentPhone = uni.getSystemInfoSync();
+	        const currentL = currentPhone.screenWidth / 750;
+	        this.tl = 1 / (1.5 * currentL);
+	        console.log("📏 屏幕宽度:", currentPhone.screenWidth, "tl:", this.tl);
         
         // 无用信息
         this.spcode = data.capcode;
@@ -254,23 +270,28 @@ export default {
     },
     async end(e) {
       console.log('🎯 滑块释放事件触发');
-      const xPos = parseInt(this.moveCode * this.tl);
-      console.log('计算后的 xPos:', xPos);
+      // P1: xPos 校准，直接取 moveCode (px)
+      const xPos = parseInt(this.moveCode); 
+      console.log('计算后的 xPos (px):', xPos);
   
       this.endLoad = false;
       try {
         const res = await validSlider(this.business, storage.getUuid(), xPos);
         console.log('📥 滑块验证结果:', res);
         
-        // 如果是 Axios/Promise 形式，通常直接返回结果或在拦截器处理
-        // 如果是 uni.request 封装的，可能需要检查 statusCode
-        
-        console.log('✅ 滑块验证成功');
-        //验证成功后把key发送出去
-        this.$emit("send", this.key);
-        this.hide();
-        this.vsr = true;
-        this.vsrtx = "已通过验证";
+        // P0: 滑块成功条件 res.data.success && res.data.result === true
+        if (res.data.success && res.data.result === true) {
+          console.log('✅ 滑块验证成功');
+          // 验证成功后把 key 发送出去
+          this.$emit("send", this.key);
+          this.hide();
+          this.vsr = true;
+          this.flage = true; // 用户要求置 flage=true
+          this.vsrtx = "已通过验证";
+        } else {
+          // 如果后端返回 success 为 true 但 result 不为 true，也视为失败
+          throw { data: { message: "验证不匹配，请重试" } };
+        }
       } catch (err) {
         console.log('❌ 滑块验证失败:', err);
         const errorMsg = (err.data && err.data.message) || "验证失败，请重试";

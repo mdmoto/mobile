@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <u-parse :show-with-animation="true" :lazy-load="true" :selectable="true" :content="res.content" v-if="res"></u-parse>
-
+    <div v-if="res && res.content" v-html="res.content" class="article-content"></div>
+    <u-parse :show-with-animation="true" :lazy-load="true" :selectable="true" :content="res.content" v-else-if="res && res.content"></u-parse>
   </div>
 </template>
 <script>
@@ -66,7 +66,9 @@ export default {
     async init(option) {
       try {
         const result = await getArticleDetailByType(this.way[option.type].type);
-        this.res = result;
+        if (result.data.success) {
+          this.res = result.data.result;
+        }
       } catch (error) {
         console.error('Failed to load article detail:', error);
       }

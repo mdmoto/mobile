@@ -26,24 +26,29 @@
 	 * @event {Function} change 某个checkbox状态发生变化时触发，回调为一个对象
 	 * @example <u-checkbox v-model="checked" :disabled="false">天涯</u-checkbox>
 	 */
-	export default {
-		name: "u-checkbox",
-		props: {
-			// checkbox的名称
-			name: {
-				type: [String, Number],
-				default: ''
-			},
-			// 形状，square为方形，circle为原型
-			shape: {
-				type: String,
-				default: ''
-			},
-			// 是否为选中状态
-			value: {
-				type: Boolean,
-				default: false
-			},
+		export default {
+			name: "u-checkbox",
+			props: {
+				// Vue3 v-model 默认绑定字段（兼容 value/input 旧写法）
+				modelValue: {
+					type: Boolean,
+					default: undefined
+				},
+				// checkbox的名称
+				name: {
+					type: [String, Number],
+					default: ''
+				},
+				// 形状，square为方形，circle为原型
+				shape: {
+					type: String,
+					default: ''
+				},
+				// 是否为选中状态
+				value: {
+					type: Boolean,
+					default: false
+				},
 			// 是否禁用
 			disabled: {
 				type: [String, Boolean],
@@ -87,11 +92,15 @@
 			// 如果存在u-checkbox-group，将本组件的this塞进父组件的children中
 			this.parent && this.parent.children.push(this);
 		},
-		computed: {
-			// 是否禁用，如果父组件u-checkbox-group禁用的话，将会忽略子组件的配置
-			isDisabled() {
-				return this.disabled !== '' ? this.disabled : this.parent ? this.parent.disabled : false;
-			},
+			computed: {
+				// 当前勾选状态：优先使用 Vue3 v-model 的 modelValue，其次使用 value
+				checked() {
+					return this.modelValue !== undefined ? this.modelValue : this.value;
+				},
+				// 是否禁用，如果父组件u-checkbox-group禁用的话，将会忽略子组件的配置
+				isDisabled() {
+					return this.disabled !== '' ? this.disabled : this.parent ? this.parent.disabled : false;
+				},
 			// 是否禁用label点击
 			isLabelDisabled() {
 				return this.labelDisabled !== '' ? this.labelDisabled : this.parent ? this.parent.labelDisabled : false;
@@ -112,30 +121,30 @@
 			elShape() {
 				return this.shape ? this.shape : (this.parent ? this.parent.shape : 'square');
 			},
-			iconStyle() {
-				let style = {};
-				// 既要判断是否手动禁用，还要判断用户v-model绑定的值，如果绑定为false，那么也无法选中
-				if (this.elActiveColor && this.value && !this.isDisabled) {
-					style.borderColor = this.elActiveColor; 
-					style.backgroundColor = this.elActiveColor;
-				}
-				style.width = uni.$u.addUnit(this.checkboxSize);
-				style.height = uni.$u.addUnit(this.checkboxSize);
-				return style;
-			},
-			// checkbox内部的勾选图标，如果选中状态，为白色，否则为透明色即可
-			iconColor() {
-				return this.value ? '#ffffff' : 'transparent';
-			},
-			iconClass() {
-				let classes = [];
-				classes.push('u-checkbox__icon-wrap--' + this.elShape);
-				if (this.value == true) classes.push('u-checkbox__icon-wrap--checked');
-				if (this.isDisabled) classes.push('u-checkbox__icon-wrap--disabled');
-				if (this.value && this.isDisabled) classes.push('u-checkbox__icon-wrap--disabled--checked');
-				// 支付宝小程序无法动态绑定一个数组类名，否则解析出来的结果会带有","，而导致失效
-				return classes.join(' ');
-			},
+				iconStyle() {
+					let style = {};
+					// 既要判断是否手动禁用，还要判断用户v-model绑定的值，如果绑定为false，那么也无法选中
+					if (this.elActiveColor && this.checked && !this.isDisabled) {
+						style.borderColor = this.elActiveColor; 
+						style.backgroundColor = this.elActiveColor;
+					}
+					style.width = uni.$u.addUnit(this.checkboxSize);
+					style.height = uni.$u.addUnit(this.checkboxSize);
+					return style;
+				},
+				// checkbox内部的勾选图标，如果选中状态，为白色，否则为透明色即可
+				iconColor() {
+					return this.checked ? '#ffffff' : 'transparent';
+				},
+				iconClass() {
+					let classes = [];
+					classes.push('u-checkbox__icon-wrap--' + this.elShape);
+					if (this.checked == true) classes.push('u-checkbox__icon-wrap--checked');
+					if (this.isDisabled) classes.push('u-checkbox__icon-wrap--disabled');
+					if (this.checked && this.isDisabled) classes.push('u-checkbox__icon-wrap--disabled--checked');
+					// 支付宝小程序无法动态绑定一个数组类名，否则解析出来的结果会带有","，而导致失效
+					return classes.join(' ');
+				},
 			checkboxStyle() {
 				let style = {};
 				if(this.parent && this.parent.width) {
@@ -159,7 +168,7 @@
 				return style;
 			}
 		},
-		methods: {
+			methods: {
 			onClickLabel() {
 				if (!this.isLabelDisabled && !this.isDisabled) {
 					this.setValue();
@@ -170,41 +179,48 @@
 					this.setValue();
 				}
 			},
-			emitEvent() {
-				this.$emit('change', {
-					value: this.value,
-					name: this.name
-				})
-				// 执行父组件u-checkbox-group的事件方法
-				if(this.parent && this.parent.emitEvent) this.parent.emitEvent();
-			},
-			// 设置input的值，这里通过input事件，设置通过v-model绑定的组件的值
-			setValue() {
-				// 判断是否超过了可选的最大数量
-				let checkedNum = 0;
-				if(this.parent && this.parent.children) {
-					// 只要父组件的某一个子元素的value为true，就加1(已有的选中数量)
-					this.parent.children.map(val => {
-						if (val.value) checkedNum++;
+				emitEvent() {
+					this.$emit('change', {
+						value: this.checked,
+						name: this.name
 					})
-				}
-				// 如果原来为选中状态，那么可以取消
-				if (this.value == true) {
-					this.$emit('input', !this.value);
-					// 等待下一个周期再执行，因为this.$emit('input')作用于父组件，再反馈到子组件内部，需要时间
-					this.$nextTick(function() {
-						this.emitEvent();
-					})
-				} else if ((this.parent && checkedNum < this.parent.max) || !this.parent) {
-					// 如果原来为未选中状态，需要选中的数量少于父组件中设置的max值，才可以选中
-					this.$emit('input', !this.value);
-					// 等待下一个周期再执行，因为this.$emit('input')作用于父组件，再反馈到子组件内部，需要时间
-					this.$nextTick(function() {
-						this.emitEvent();
-					})
-				}
+					// 执行父组件u-checkbox-group的事件方法
+					if(this.parent && this.parent.emitEvent) this.parent.emitEvent();
+				},
+				// 设置input的值，这里通过input事件，设置通过v-model绑定的组件的值
+				setValue() {
+					// 判断是否超过了可选的最大数量
+					let checkedNum = 0;
+					if(this.parent && this.parent.children) {
+						// 只要父组件的某一个子元素的value为true，就加1(已有的选中数量)
+						this.parent.children.map(val => {
+							const v = val.modelValue !== undefined ? val.modelValue : val.value;
+							if (v) checkedNum++;
+						})
+					}
+					// 如果原来为选中状态，那么可以取消
+					if (this.checked == true) {
+						const nextVal = !this.checked;
+						// Vue3 v-model
+						this.$emit('update:modelValue', nextVal);
+						// 兼容旧写法（Vue2/部分代码仍监听 input）
+						this.$emit('input', nextVal);
+						// 等待下一个周期再执行，因为this.$emit('input')作用于父组件，再反馈到子组件内部，需要时间
+						this.$nextTick(function() {
+							this.emitEvent();
+						})
+					} else if ((this.parent && checkedNum < this.parent.max) || !this.parent) {
+						// 如果原来为未选中状态，需要选中的数量少于父组件中设置的max值，才可以选中
+						const nextVal = !this.checked;
+						this.$emit('update:modelValue', nextVal);
+						this.$emit('input', nextVal);
+						// 等待下一个周期再执行，因为this.$emit('input')作用于父组件，再反馈到子组件内部，需要时间
+						this.$nextTick(function() {
+							this.emitEvent();
+						})
+					}
 
-			}
+				}
 		}
 	};
 </script>

@@ -31,10 +31,25 @@ export function currencySymbol() {
 }
 
 /**
+ * 格式化币种符号，使前面的字母变小 (例如 NT$ -> <span class="small-symbol">NT</span>$)
+ */
+export function formatSymbol(symbol) {
+  if (!symbol) return "";
+  // 正则匹配：开头的英文字母部分
+  const match = symbol.match(/^([A-Za-z]+)(.*)$/);
+  if (match) {
+    return `<span class="small-symbol">${match[1]}</span>${match[2]}`;
+  }
+  return symbol;
+}
+
+/**
  * 获取当前币种符号 (别名，供 promotion 模板直接调用)
  */
 export function getSymbol() {
-  return currencySymbol();
+  const currency = storage.getCurrency();
+  const symbol = symbolMap[currency] || (currency === 'CNY' || currency === 'JPY' ? '¥' : '$');
+  return formatSymbol(symbol);
 }
 
 
@@ -43,13 +58,18 @@ export function getSymbol() {
  */
 export function getCurrencyList() {
   return [
-    { code: 'USD', name: 'US Dollar', symbol: '$' },
-    { code: 'CNY', name: '简体中文', symbol: '¥' },
-    { code: 'JPY', name: '日本語', symbol: '¥' },
-    { code: 'EUR', name: 'Euro', symbol: '€' },
-    { code: 'KRW', name: '한국어', symbol: '₩' },
-    { code: 'THB', name: 'ภาษาไทย', symbol: '฿' },
-    { code: 'SAR', name: 'العربية', symbol: 'SR' },
+    { code: 'CNY', name: '简体中文 (CNY)', symbol: '¥' },
+    { code: 'USD', name: 'US Dollar (USD)', symbol: '$' },
+    { code: 'JPY', name: '日本語 (JPY)', symbol: '¥' },
+    { code: 'KRW', name: '한국어 (KRW)', symbol: '₩' },
+    { code: 'EUR', name: 'Euro (EUR)', symbol: '€' },
+    { code: 'THB', name: 'ภาษาไทย (THB)', symbol: '฿' },
+    { code: 'SAR', name: 'العربية (SAR)', symbol: 'SR' },
+    { code: 'HKD', name: '繁体中文 (HKD)', symbol: '$' },
+    { code: 'TWD', name: '新台币 (TWD)', symbol: 'NT$' },
+    { code: 'SGD', name: 'Singapore (SGD)', symbol: '$' },
+    { code: 'MYR', name: 'Malaysia (MYR)', symbol: 'RM' },
+    { code: 'GBP', name: 'British (GBP)', symbol: '£' },
   ];
 }
 
@@ -82,7 +102,7 @@ export function unitPrice(val, unit, location) {
   }
 
   // 实时汇率解析逻辑 (仅针对非 CNY 币种)
-  let rates = { USD: 1.0 }; // 默认仅保留 1.0 基准，杜绝 7.24 等硬编码
+  let rates = null;
   if (rateData) {
     if (rateData.rates) rates = rateData.rates;
     else if (rateData.result && rateData.result.rates) rates = rateData.result.rates;
@@ -90,24 +110,50 @@ export function unitPrice(val, unit, location) {
     else rates = rateData;
   }
 
+  // 核心逻辑：如果没有汇率数据或获取失败，强制返回人民币价格（¥）并停止转换
+  // 这能让管理层立刻发现汇率接口出问题了
+  if (!rates || !rates.CNY) {
+    let price = Foundation.formatPrice(val);
+    if (location === "before") {
+      return "¥" + price.substr(0, price.length - 3);
+    }
+    if (location === "after") {
+      return price.substr(-2);
+    }
+    return "¥" + price;
+  }
+
+  const cnyRate = rates.CNY;
+
   // 非 CNY 币种的换算逻辑
-  const usdPrice = val / (rates.CNY || 7.23); // 如果 API 没给 CNY 汇率，使用 7.23 仅作为外币换算的最后兜底，但不影响 CNY 本身显示
+  // 假设原始数值 val 始终是 CNY
+  const usdPrice = val / cnyRate;
   let convertedPrice = usdPrice;
   
   if (currency !== 'USD') {
-    const targetRate = rates[currency] || 1.0;
+    const targetRate = rates[currency];
+    
+    // 如果该特定币种在 API 中不存在，也回退到人民币显示
+    if (!targetRate) {
+      let price = Foundation.formatPrice(val);
+      return "¥" + price;
+    }
+
     convertedPrice = usdPrice * targetRate;
   }
 
   let price = Foundation.formatPrice(convertedPrice);
   
+  // 格式化符号 (使字母变小)
+  const formattedSymbol = formatSymbol(unit || symbol);
+
   if (location === "before") {
-    return (unit || symbol) + price.substr(0, price.length - 3);
+    return formattedSymbol + price.substr(0, price.length - 3);
   }
   if (location === "after") {
     return price.substr(-2);
   }
-  return (unit || symbol) + price;
+  return formattedSymbol + price;
 }
 
 /**
@@ -127,7 +173,7 @@ export function goodsFormatPrice(val) {
   }
 
   // 非 CNY 逻辑
-  let rates = { USD: 1.0 };
+  let rates = null;
   if (rateData) {
     if (rateData.rates) rates = rateData.rates;
     else if (rateData.result && rateData.result.rates) rates = rateData.result.rates;
@@ -135,10 +181,17 @@ export function goodsFormatPrice(val) {
     else rates = rateData;
   }
 
-  const usdPrice = val / (rates.CNY || 7.23);
+  if (!rates || !rates.CNY || (currency !== 'USD' && !rates[currency])) {
+    let valNum = new Number(val);
+    return valNum.toFixed(2).split(".");
+  }
+
+  const cnyRate = rates.CNY;
+
+  const usdPrice = val / cnyRate;
   let convertedPrice = usdPrice;
   if (currency !== 'USD') {
-    const targetRate = rates[currency] || 1.0;
+    const targetRate = rates[currency];
     convertedPrice = usdPrice * targetRate;
   }
 

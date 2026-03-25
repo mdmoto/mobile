@@ -1,32 +1,31 @@
 <template>
   <!-- 轮播图 -->
-  <view class="carousel">
+  <view class="carousel" dir="ltr">
 
-    <swiper :circular="true" duration="400" @change="swiperChange" v-if="res.length > 0">
+    <swiper :circular="true" :indicator-dots="false" duration="400" @change="swiperChange" v-if="res && res.length > 0"
+      style="touch-action: pan-y;">
       <swiper-item v-if='video'>
-        <!-- #ifndef APP-PLUS -->
-        <video class="video" show-mute-btn style="width:100%; height:100%;" muted autoplay :src='video' loop
-          object-fit="cover"></video>
-        <!-- #endif -->
-        <!-- #ifdef APP-PLUS -->
-        <view style="width:100%; height:100%;">
-          <!-- <video class="video" show-mute-btn style="width:100%; height:100%;" muted autoplay :src='video' loop
-              object-fit="cover"></video> -->
+        <view class="video-container" style="width:100%; height:100%;">
+          <!-- #ifndef APP-PLUS -->
+          <video class="video" show-mute-btn style="width:100%; height:100%;" muted autoplay :src='video' loop
+            object-fit="cover"></video>
+          <!-- #endif -->
+          <!-- #ifdef APP-PLUS -->
           <view v-html="html" style="width:100%; height:100%;"></view>
+          <!-- #endif -->
         </view>
-        <!-- #endif -->
 
       </swiper-item>
       <swiper-item class="swiper-item" v-for="(item, index) in res" :key="index">
 
         <view class="image-wrapper">
-          <u-image :src="item" mode="aspectFit" class="loaded" width="100%" height="100%">
+          <u-image :src="item" mode="aspectFit" class="loaded" width="100%" height="100%" :lazy-load="true">
             <template #loading><u-loading-icon></u-loading-icon></template>
           </u-image>
         </view>
       </swiper-item>
     </swiper>
-    <view class="swiper-dots">{{ current }}/{{ video ? res.length + 1 : res.length }}</view>
+    <view class="swiper-dots" v-if="res && res.length > 0">{{ current }}/{{ video ? res.length + 1 : res.length }}</view>
   </view>
 </template>
 <script>

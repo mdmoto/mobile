@@ -89,20 +89,20 @@
 
                     <span>
                       <span v-if="wholesaleList.length">
-                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                        <span v-html="$filters.getSymbol()"></span><span class="price">{{
                           $filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[0]
                         }}</span>.{{
                           $filters.goodsFormatPrice(wholesaleList[wholesaleList.length - 1].price)[1]
                         }}
                         ~
-                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                        <span v-html="$filters.getSymbol()"></span><span class="price">{{
                           $filters.goodsFormatPrice(wholesaleList[0].price)[0]
                         }}</span>.{{
                           $filters.goodsFormatPrice(wholesaleList[0].price)[1]
                         }}
                       </span>
                       <span v-else>
-                        <span>{{ $filters.currencySymbol() }}</span><span class="price">{{
+                        <span v-html="$filters.getSymbol()"></span><span class="price">{{
                           $filters.goodsFormatPrice(goodsDetail.price)[0]
                         }}</span>.{{ $filters.goodsFormatPrice(goodsDetail.price)[1] }}
                       </span>
@@ -113,7 +113,7 @@
                       暂无报价
                     </div>
                     <span v-else>
-                    {{ $filters.currencySymbol() }}<span class="price">0 </span>.00
+                    <span v-html="$filters.getSymbol()"></span><span class="price">0 </span>.00
                     </span>
                   </view>
 
@@ -464,35 +464,15 @@ export default {
       }
     },
   },
-  mounted () {
+  onReady () {
     const { windowHeight } = uni.getSystemInfoSync();
-    let bottomHeight = 0;
-    let topHeight = 0;
-    uni.getSystemInfo({
-      success: function (res) {
-        // res - 各种参数
-        let bottom = uni.createSelectorQuery().select(".page-bottom");
-        bottom
-          .boundingClientRect(function (data) {
-            if (data && data.height) {
-              //data - 各种参数
-              bottomHeight = data.height; // 获取元素宽度
-            }
-          })
-          .exec();
-        let top = uni.createSelectorQuery().select(".header");
-        top
-          .boundingClientRect(function (data) {
-            if (data && data.height) {
-              //data - 各种参数
-              topHeight = data.height; // 获取元素宽度
-            }
-          })
-          .exec();
-      },
-    });
-
-    this.productRefHeight = windowHeight - bottomHeight + "px";
+    // #ifdef H5
+    // H5 下直接用视口高度减去固定底部高度即可
+    this.productRefHeight = (windowHeight - 50) + 'px';
+    // #endif
+    // #ifndef H5
+    this.productRefHeight = windowHeight + 'px';
+    // #endif
   },
   async onLoad (options) {
     this.routerVal = options;
@@ -559,150 +539,117 @@ export default {
         this.isGroup = false; //初始化拼团
         this.productId = id; // skuId
 
-      let response;
-      console.log('[goods] init calling getGoods with:', { id, goodsId });
-      try {
-        response = await getGoods(id, goodsId);
-        console.log('[goods] raw response:', response);
-      } catch (e) {
-        console.error('[goods] getGoods 请求异常:', e);
-        uni.showToast({ title: '请求失败，请稍后重试', icon: 'none' });
-        return;
-      }
-
-      // 空值保护：response 为 null 或 response.data 不存在
-      // 注意：新版 request 可能将 result 直接放在 response
-      if (!response) {
-        uni.showToast({ title: '网络异常，请稍后', icon: 'none' });
-        return;
-      }
-
-      const resData = response.data || response;
-
-      // 判断当前接口返回内容
-      if (!resData.success) {
-        // 商品已下架或后台崩溃 catch 到的 11001
-        if (resData.code == 11001) {
-          this.takeDownFromSale = true;
-          // 如果消息是“商品异常”，则给用户更友好的提示
-          if (resData.message === '商品异常，请稍后重试') {
-             uni.showToast({ title: '核心数据同步中，请稍后', icon: 'none' });
-          }
-        } else {
-          uni.showToast({ title: resData.message || '商品已失效', icon: 'none' });
+        let response;
+        console.log('[goods] init calling getGoods with:', { id, goodsId });
+        try {
+          response = await getGoods(id, goodsId);
+        } catch (e) {
+          console.error('[goods] getGoods 请求异常:', e);
+          uni.showToast({ title: '请求失败，请稍后重试', icon: 'none' });
+          return;
         }
-        return;
-      }
 
-      // 这里是绑定分销员
-      if ((distributionId || this.$store.state.distributionId) && this.isLogin("auth")) {
-        let disResult = await getGoodsDistribution(distributionId);
-        if (!disResult || !disResult.data || !disResult.data.success || disResult.statusCode == 403) {
-          this.$store.state.distributionId = distributionId;
+        if (!response) {
+          uni.showToast({ title: '网络异常，请稍后', icon: 'none' });
+          return;
         }
-      }
 
-      let result = resData.result;
-      console.log('[goods] raw result:', JSON.stringify(result).substring(0, 200));
-      
-      // 容错处理：如果 result 被多层包装 (例如 {success:true, result: { data: {...} }})
-      if (result && result.data && !result.id && !result.goodsName) {
-        console.log('[goods] detected nested data, unwrapping...');
-        result = result.data;
-      }
+        const resData = response.data || response;
 
-      const keys = result ? Object.keys(result) : [];
-      console.log('[goods] processing result keys:', keys);
-      if (!result || (!result.id && !result.goodsId)) {
-        console.error('[goods] Missing critical ID in result:', result);
-        uni.showToast({ title: '商品仍在同步中', icon: 'none' });
-        return;
-      }
-
-      /**商品信息以及规格信息存储 */
-      this.goodsDetail = result;
-      this.wholesaleList = result.wholesaleList || [];
-      this.goodsSpec = result.specs;
-      this.PromotionList = result.promotionMap;
-      this.goodsParams = result.goodsParamsDTOList || [];
-      console.log('[goods] data assigned. Price:', result.price, 'Gallery length:', result.goodsGalleryList ? result.goodsGalleryList.length : 0);
-
-      // 判断是否拼团活动或者猫币商品 如果有则显示拼团活动信息
-      this.PromotionList &&
-        Object.keys(this.PromotionList).forEach((item) => {
-          // 拼团商品
-          if (item.indexOf("PINTUAN") == 0) {
-            this.isGroup = true;
-          }
-          // 秒杀
-          if (item.indexOf("SECKILL") == 0) {
-            this.isSeckill = true;
-          }
-        });
-
-      // 轮播图渲染逻辑优化 - 支持三种格式：纯字符串URL、{url:...}/{original:...}对象、JSON字符串
-      if (this.goodsDetail && this.goodsDetail.goodsGalleryList) {
-        let extractedImgs = this.goodsDetail.goodsGalleryList.map(item => {
-          // 如果是对象，直接取 url 或 original 字段
-          if (item && typeof item === 'object') {
-            return item.original || item.url || item;
-          }
-          // 如果是 JSON 字符串，尝试解析出 URL
-          if (typeof item === 'string' && item.includes('"url":')) {
-            try {
-              const obj = JSON.parse(item);
-              return obj.url || item;
-            } catch (e) {
-              return item;
+        if (!resData.success) {
+          if (resData.code == 11001) {
+            this.takeDownFromSale = true;
+            if (resData.message === '商品异常，请稍后重试') {
+               uni.showToast({ title: '核心数据同步中，请稍后', icon: 'none' });
             }
+          } else {
+            uni.showToast({ title: resData.message || '商品已失效', icon: 'none' });
           }
-          if (typeof item === 'string' && item.includes('"original":')) {
-            try {
-              const obj = JSON.parse(item);
-              return obj.original || item;
-            } catch (e) {
-              return item;
+          return;
+        }
+
+        // 这里是绑定分销员
+        if ((distributionId || this.$store.state.distributionId) && this.isLogin("auth")) {
+          let disResult = await getGoodsDistribution(distributionId);
+          if (!disResult || !disResult.data || !disResult.data.success || disResult.statusCode == 403) {
+            this.$store.state.distributionId = distributionId;
+          }
+        }
+
+        let result = resData.result;
+        // 容错处理：如果 result 被多层包装 (例如 {success:true, result: { data: {...} }})
+        if (result && result.data && !result.id && !result.goodsName) {
+          result = result.data;
+        }
+
+        if (!result || (!result.id && !result.goodsId)) {
+          uni.showToast({ title: '商品仍在同步中', icon: 'none' });
+          return;
+        }
+
+        /**商品信息以及规格信息存储 */
+        this.goodsDetail = result;
+        this.wholesaleList = result.wholesaleList || [];
+        this.goodsSpec = result.specs;
+        this.PromotionList = result.promotionMap;
+        this.goodsParams = result.goodsParamsDTOList || [];
+
+        // 判断是否拼团活动或者秒杀商品
+        if (this.PromotionList) {
+          Object.keys(this.PromotionList).forEach((item) => {
+            if (item.indexOf("PINTUAN") == 0) this.isGroup = true;
+            if (item.indexOf("SECKILL") == 0) this.isSeckill = true;
+          });
+        }
+
+        // 轮播图渲染逻辑优化 - 严禁重复，严禁非URL字符串
+        let extractedImgs = [];
+        
+        // 1. 先收集 Gallery 中的图
+        if (this.goodsDetail.goodsGalleryList && this.goodsDetail.goodsGalleryList.length > 0) {
+          this.goodsDetail.goodsGalleryList.forEach(item => {
+            let url = "";
+            if (item && typeof item === 'object') {
+              url = item.original || item.url;
+            } else if (typeof item === 'string') {
+              if (item.startsWith('{')) {
+                try {
+                  const obj = JSON.parse(item);
+                  url = obj.original || obj.url;
+                } catch (e) {}
+              } else {
+                url = item;
+              }
             }
+            if (url && typeof url === 'string' && (url.startsWith('http') || url.startsWith('//'))) {
+              if (!extractedImgs.includes(url)) extractedImgs.push(url);
+            }
+          });
+        }
+
+        // 2. 兜底与主图处理：只有当主图不在列表里时才添加 (通常主图应该在第一位)
+        const mainImg = this.goodsDetail.original || this.goodsDetail.thumbnail;
+        if (mainImg && typeof mainImg === 'string' && (mainImg.startsWith('http') || mainImg.startsWith('//'))) {
+          if (!extractedImgs.includes(mainImg)) {
+            extractedImgs.unshift(mainImg); // 主图放最前
           }
-          // 纯字符串 URL 直接使用
-          return item;
-        }).filter(url => url && typeof url === 'string' && url.length > 5);
-
-        if (extractedImgs.length === 0 && this.goodsDetail.original) {
-          extractedImgs = [this.goodsDetail.original];
-        } else if (extractedImgs.length === 0 && this.goodsDetail.thumbnail) {
-          extractedImgs = [this.goodsDetail.thumbnail];
         }
-        this.imgList = [...new Set(extractedImgs)];
-        console.log("[goods] Extracted unique imgList:", this.imgList, "from raw goodsGalleryList:", this.goodsDetail.goodsGalleryList);
-      } else {
-        this.imgList = [];
-        if (this.goodsDetail && this.goodsDetail.original) {
-           this.imgList.push(this.goodsDetail.original);
-        } else if (this.goodsDetail && this.goodsDetail.thumbnail) {
-           this.imgList.push(this.goodsDetail.thumbnail);
+
+        this.imgList = extractedImgs;
+        console.log("[goods] Final unique imgList:", this.imgList);
+
+        // 获取店铺基本信息
+        this.getStoreBaseInfoFun(this.goodsDetail.storeId);
+        // 获取购物车
+        this.cartCount();
+        // 获取店铺推荐商品
+        this.getStoreRecommend();
+        // 获取商品列表
+        this.getOtherLikeGoods();
+        // 获取商品是否已被收藏 如果未登录不获取
+        if (this.isLogin("auth")) {
+          this.getGoodsCollectionFun(this.goodsDetail.id);
         }
-      }
-
-
-      // 获取店铺基本信息
-      this.getStoreBaseInfoFun(this.goodsDetail.storeId);
-
-      // 获取购物车
-      this.cartCount();
-
-      // 获取店铺推荐商品
-      this.getStoreRecommend();
-
-      // 获取商品列表
-      this.getOtherLikeGoods();
-
-      // 获取商品是否已被收藏 如果未登录不获取
-      if (this.isLogin("auth")) {
-        this.getGoodsCollectionFun(this.goodsDetail.id);
-      }
-      // 获取IM 需要的话使用
-      // this.getIMDetailMethods();
       } catch (err) {
         console.error('[goods] init failure:', err);
       } finally {

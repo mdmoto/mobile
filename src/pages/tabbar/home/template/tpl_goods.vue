@@ -71,7 +71,7 @@
             </div>
             <div class="goods-bottom">
               <div class="goods-price">
-                <span>{{ unitPrice(item.price, undefined, 'before') }}</span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
+                <span v-html="unitPrice(item.price, undefined, 'before')"></span>.<span style="font-size: 24rpx">{{ unitPrice(item.price, undefined, 'after') }}</span>
               </div>
             </div>
           </div>

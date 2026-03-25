@@ -152,21 +152,14 @@ export default {
   // 写入汇率列表
   setExchangeRates(val) {
     uni.setStorageSync('exchange_rates', val);
+    uni.setStorageSync('exchange_rates_timestamp', Date.now());
   },
   // 获取汇率列表 (方向: 1 USD -> X Target)
   getExchangeRates() {
-    return uni.getStorageSync('exchange_rates') || { 
-      rates: { 
-        CNY: 7.24, 
-        JPY: 154, 
-        USD: 1.0, 
-        EUR: 0.92, 
-        GBP: 0.79, 
-        KRW: 1320, 
-        HKD: 7.82, 
-        TWD: 31.5, 
-        SGD: 1.34 
-      } 
-    };
+    return uni.getStorageSync('exchange_rates') || null;
+  },
+  // 获取汇率更新时间
+  getExchangeRatesTimestamp() {
+    return uni.getStorageSync('exchange_rates_timestamp') || 0;
   }
 };

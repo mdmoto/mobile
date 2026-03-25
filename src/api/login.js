@@ -58,7 +58,7 @@ export async function userLogin(params, clientType) {
  */
 export async function sendMobile(mobile, type = 'LOGIN') {
   return request({
-    url: `${api.common}/common/sms/${type}/${mobile}`,
+    url: `${api.common}/common/common/sms/${type}/${mobile}`,
     method: Method.GET,
   });
 }

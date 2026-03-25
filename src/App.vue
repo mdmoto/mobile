@@ -87,11 +87,48 @@ import { getMaoMallRates } from "@/api/maollar";
 			...mapMutations(["login"]),
 			async initMaoMallRates() {
 				try {
-					const result = await getMaoMallRates();
-					storage.setExchangeRates(result);
-					console.log("MaoMall rates updated:", result);
+					const now = Date.now();
+					const lastUpdateTime = storage.getExchangeRatesTimestamp();
+					const fourHours = 4 * 60 * 60 * 1000;
+
+					// 如果缓存未过期，且已有数据，则无需重新拉取
+					if (now - lastUpdateTime < fourHours && storage.getExchangeRates()) {
+						console.log("Using cached exchange rates (updated less than 4 hours ago)");
+						return;
+					}
+
+					console.log("Exchange rates expired or missing. Fetching from external API...");
+					
+					// 使用第三方公共 API 获取实时汇率 (以 USD 为基底)
+					// exchangerate-api.com 是一个稳定的公共服务
+					uni.request({
+						url: 'https://api.exchangerate-api.com/v4/latest/USD',
+						success: (res) => {
+							if (res.data && res.data.rates) {
+								storage.setExchangeRates(res.data.rates);
+								console.log("Real-time exchange rates updated from external API:", res.data.rates);
+							} else {
+								throw new Error("Invalid API response structure");
+							}
+						},
+						fail: async (err) => {
+							console.error("External exchange rate API failed!", err);
+							try {
+								const result = await getMaoMallRates();
+								if (result) {
+									storage.setExchangeRates(result);
+									console.log("Fell back to internal API successfully.");
+								} else {
+									throw new Error("Internal API returned empty");
+								}
+							} catch (internalErr) {
+								console.error("CRITICAL: Both exchange rate APIs failed!", internalErr);
+								// 不设置 toast 避免干扰正常购物，但控制台会报错，filters.js 会回退至 CNY
+							}
+						}
+					});
 				} catch (e) {
-					console.error("Failed to fetch MaoMall rates", e);
+					console.error("Failed to fetch exchange rates", e);
 				}
 			},
 			/**
@@ -246,6 +283,12 @@ import { getMaoMallRates } from "@/api/maollar";
 
 	.flex1 {
 		flex: 1; //必须父级设置flex
+	}
+
+	.small-symbol {
+		font-size: 0.6em;
+		vertical-align: baseline;
+		margin-right: 2rpx;
 	}
 
   /* 9-Language RTL Mobile Layout Handling */

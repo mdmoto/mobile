@@ -1015,7 +1015,7 @@ page {
 
   bottom: calc(100rpx + env(safe-area-inset-bottom));
   // #ifdef H5
-  bottom: 100rpx;
+  bottom: var(--window-bottom);
   // #endif
   display: flex;
   align-items: center;

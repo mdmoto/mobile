@@ -3,10 +3,14 @@ $page-color-base: #f8f8f8;
 @import "uview-plus/theme.scss";
 
 /* 文字尺寸 */
-$font-sm: 24rpx;
-$font-base: 28rpx;
-$font-lg: 32rpx;
-$font-sl: 36rpx;
+$font-xs:   22rpx;   // 极小：角标、单位、辅助说明
+$font-sm:   24rpx;   // 小：标签、价格小数、次要信息
+$font-base: 28rpx;   // 正文：列表内容、描述
+$font-md:   30rpx;   // 中等：导航、按钮
+$font-lg:   32rpx;   // 大：卡片标题、重要数字
+$font-xl:   36rpx;   // 超大：页面标题
+$font-price:42rpx;   // 价格整数部分专用
+$font-hero: 52rpx;   // 详情页价格大字
 /*文字颜色*/
 $font-color-dark: #303133;
 $font-color-white: #ffffff;
@@ -179,4 +183,9 @@ $font-weight: 400;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
 	overflow: hidden;
+}
+
+/* 防止 Android 微信浏览器强制放大小字号 */
+html {
+  -webkit-text-size-adjust: 100%;
 }

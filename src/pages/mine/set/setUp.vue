@@ -1,21 +1,25 @@
 <template>
   <view class="container">
+    <!-- ✅ 头像缩小：原来 width=140 height="140" 渲染约 140px，在 H5 下偏大 -->
+    <!-- 改为 width="100rpx" height="100rpx"，与 my.vue 头像视觉一致 -->
     <view class="person" @click="checkUserInfo()">
-      <u-image width=140 height="140" shape="circle" :src="userInfo.face || userImage" mode="">
+      <u-image width="100rpx" height="100rpx" shape="circle" :src="userInfo.face || userImage" mode="aspectFill">
       </u-image>
       <view class="user-name">
-        {{ userInfo.id ? userInfo.nickName || '' : $t('user.notLoggedIn')  }}
+        {{ userInfo.id ? userInfo.nickName || '' : $t('user.notLoggedIn') }}
       </view>
       <u-icon color="#ccc" name="arrow-right"></u-icon>
     </view>
+
     <!-- #ifdef MP-WEIXIN -->
     <view style="height: 20rpx; width: 100%"></view>
     <!-- #endif -->
+
     <u-cell-group :border="false">
       <!-- 语言设置 -->
-      <u-cell 
-        :title="$t('user.language')" 
-        :arrow="true" 
+      <u-cell
+        :title="$t('user.language')"
+        :arrow="true"
         @click="showLanguagePicker = true"
       >
         <template #value>
@@ -25,11 +29,11 @@
           </view>
         </template>
       </u-cell>
-      
+
       <!-- 货币设置 -->
-      <u-cell 
-        :title="$t('user.currencyCurrency') || '币种设置'" 
-        :arrow="true" 
+      <u-cell
+        :title="$t('user.currencyCurrency') || '币种设置'"
+        :arrow="true"
         @click="showCurrencyPicker = true"
       >
         <template #value>
@@ -38,20 +42,18 @@
           </view>
         </template>
       </u-cell>
-      
+
       <!-- #ifdef APP-PLUS -->
       <u-cell :title="$t('user.clearCache')" :value="fileSizeString" @click="clearCache"></u-cell>
       <!-- #endif -->
       <!-- #ifndef MP-WEIXIN -->
       <u-cell :title="$t('user.securityCenter')" @click="navigateTo('/pages/mine/set/securityCenter/securityCenter')"></u-cell>
       <!-- #endif -->
-	  <u-cell :title="$t('user.userLogoff')" v-if="userInfo.id" @click="logoff"></u-cell>
+      <u-cell :title="$t('user.userLogoff')" v-if="userInfo.id" @click="logoff"></u-cell>
       <u-cell :title="$t('user.feedback')" @click="navigateTo('/pages/mine/set/feedBack')"></u-cell>
-      <!-- #ifndef H5 -->
-      <!-- #endif -->
       <u-cell :title="$t('user.aboutApp', {name: config.name})" @click="navigateTo('/pages/mine/set/editionIntro')"></u-cell>
     </u-cell-group>
-    
+
     <!-- 语言选择器 -->
     <u-picker
       :show="showLanguagePicker"
@@ -73,6 +75,7 @@
       @cancel="showCurrencyPicker = false"
       @close="showCurrencyPicker = false"
     ></u-picker>
+
     <view class="submit" v-if="userInfo.id" @click="quiteLoginOut">{{ $t('user.logout') }}</view>
   </view>
 </template>
@@ -86,141 +89,57 @@ export default {
   data() {
     return {
       config,
-      userImage:config.defaultUserPhoto,
+      userImage: config.defaultUserPhoto,
       isCertificate: false,
       userInfo: {},
       fileSizeString: "0B",
-      // 多语言相关
       showLanguagePicker: false,
       languageList: getLanguageList(),
-      // 货币相关
       showCurrencyPicker: false,
-      currencyList: [
-        { name: this.$t("currency.CNY"), code: "CNY" },
-        { name: this.$t("currency.USD"), code: "USD" },
-        { name: this.$t("currency.JPY"), code: "JPY" },
-        { name: this.$t("currency.EUR"), code: "EUR" },
-        { name: this.$t("currency.GBP"), code: "GBP" },
-        { name: this.$t("currency.KRW"), code: "KRW" },
-        { name: this.$t("currency.HKD"), code: "HKD" },
-        { name: this.$t("currency.TWD"), code: "TWD" },
-        { name: this.$t("currency.SGD"), code: "SGD" }
-      ]
+      currencyList: this.$filters.getCurrencyList().map(item => ({
+        name: item.name,
+        code: item.code
+      }))
     };
   },
-  
+
   computed: {
-    currentLang() {
-      return getCurrentLanguage();
-    },
-    
-    currentLangIndex() {
-      return this.languageList.findIndex(lang => lang.code === this.currentLang);
-    },
-    
+    currentLang() { return getCurrentLanguage(); },
+    currentLangIndex() { return this.languageList.findIndex(lang => lang.code === this.currentLang); },
     currentLangName() {
       const lang = this.languageList.find(lang => lang.code === this.currentLang);
       return lang ? lang.name : '简体中文';
     },
-    
     currentLangFlag() {
       const lang = this.languageList.find(lang => lang.code === this.currentLang);
       return lang ? lang.flag : '🇨🇳';
     },
-
-    currentCurrency() {
-      return storage.getCurrency();
-    },
-
-    currentCurrencyIndex() {
-      return this.currencyList.findIndex(item => item.code === this.currentCurrency);
-    }
+    currentCurrency() { return storage.getCurrency(); },
+    currentCurrencyIndex() { return this.currencyList.findIndex(item => item.code === this.currentCurrency); }
   },
 
   methods: {
-    // 切换语言
     changeLanguage(e) {
       this.showLanguagePicker = false;
-      let idx = e.indexs[0];
-      const selectedLang = this.languageList[idx];
-      if (!selectedLang) return;
-      if (selectedLang.code !== this.currentLang) {
-        setLanguage(selectedLang.code);
-        uni.showToast({
-          title: this.$t('message.operationSuccess'),
-          icon: 'success'
-        });
-        setTimeout(() => {
-          uni.reLaunch({ url: '/pages/mine/set/setUp' });
-        }, 1000);
-      }
+      const selectedLang = this.languageList[e.indexs[0]];
+      if (!selectedLang || selectedLang.code === this.currentLang) return;
+      setLanguage(selectedLang.code);
+      uni.showToast({ title: this.$t('message.operationSuccess'), icon: 'success' });
+      setTimeout(() => { uni.reLaunch({ url: '/pages/mine/set/setUp' }); }, 1000);
     },
-
-    // 切换货币
     changeCurrency(e) {
       this.showCurrencyPicker = false;
-      let idx = e.indexs[0];
-      const selected = this.currencyList[idx];
-      if (!selected) return;
-      if (selected.code !== this.currentCurrency) {
-        storage.setCurrency(selected.code);
-        uni.showToast({
-          title: this.$t('message.operationSuccess'),
-          icon: 'success'
-        });
-        setTimeout(() => {
-          uni.reLaunch({ url: '/pages/mine/set/setUp' });
-        }, 1000);
-      }
+      const selected = this.currencyList[e.indexs[0]];
+      if (!selected || selected.code === this.currentCurrency) return;
+      storage.setCurrency(selected.code);
+      uni.showToast({ title: this.$t('message.operationSuccess'), icon: 'success' });
+      setTimeout(() => { uni.reLaunch({ url: '/pages/mine/set/setUp' }); }, 1000);
     },
     navigateTo(url) {
-      if (url == "/pages/set/securityCenter/securityCenter") {
-        url += `?mobile=${this.userInfo.mobile}`;
-      }
-      uni.navigateTo({
-        url: url,
-      });
+      uni.navigateTo({ url });
     },
-	  /**
-	   * 退出登录
-	   */
-	  quiteLoginOut() {
-		this.$filters.quiteLoginOut();
-	  },
-  
-	/**
-	 * 用户注销
-	 */
-	logoff(){
-		this.$filters.logoff();
-	},
-
-    /**
-     * 读取当前缓存
-     */
-    getCacheSize() {
-      //获取缓存数据
-      let that = this;
-      plus.cache.calculate(function (size) {
-        let sizeCache = parseInt(size);
-        if (sizeCache == 0) {
-          that.fileSizeString = "0B";
-        } else if (sizeCache < 1024) {
-          that.fileSizeString = sizeCache + "B";
-        } else if (sizeCache < 1048576) {
-          that.fileSizeString = (sizeCache / 1024).toFixed(2) + "KB";
-        } else if (sizeCache < 1073741824) {
-          that.fileSizeString = (sizeCache / 1048576).toFixed(2) + "MB";
-        } else {
-          that.fileSizeString = (sizeCache / 1073741824).toFixed(2) + "GB";
-        }
-      });
-    },
-
-    /**
-     * 点击用户详情
-     * 判断当前是否进入用户中心
-     */
+    quiteLoginOut() { this.$filters.quiteLoginOut(); },
+    logoff() { this.$filters.logoff(); },
     checkUserInfo() {
       if (this.isLogin("auth")) {
         this.navigateTo("/pages/mine/set/personMsg");
@@ -228,58 +147,40 @@ export default {
         this.tipsToLogin();
       }
     },
-
-    /**
-     * 清除当前设备缓存
-     */
+    getCacheSize() {
+      let that = this;
+      plus.cache.calculate(function (size) {
+        let sizeCache = parseInt(size);
+        if (sizeCache === 0) that.fileSizeString = "0B";
+        else if (sizeCache < 1024) that.fileSizeString = sizeCache + "B";
+        else if (sizeCache < 1048576) that.fileSizeString = (sizeCache / 1024).toFixed(2) + "KB";
+        else if (sizeCache < 1073741824) that.fileSizeString = (sizeCache / 1048576).toFixed(2) + "MB";
+        else that.fileSizeString = (sizeCache / 1073741824).toFixed(2) + "GB";
+      });
+    },
     clearCache() {
-      //清理缓存
       let that = this;
       let os = plus.os.name;
-      if (os == "Android") {
+      if (os === "Android") {
         let main = plus.android.runtimeMainActivity();
         let sdRoot = main.getCacheDir();
         let files = plus.android.invoke(sdRoot, "listFiles");
-        let len = files.length;
-        for (let i = 0; i < len; i++) {
-          let filePath = "" + files[i]; // 没有找到合适的方法获取路径，这样写可以转成文件路径
-          plus.io.resolveLocalFileSystemURL(
-            filePath,
-            function (entry) {
-              if (entry.isDirectory) {
-                entry.removeRecursively(
-                  function (entry) {
-                    //递归删除其下的所有文件及子目录
-                    uni.showToast({
-                      title: this.$t('user.cacheCleared'),
-                      duration: 2000,
-                      icon: "none",
-                    });
-                    that.getCacheSize(); // 重新计算缓存
-                  },
-                  function (e) {}
-                );
-              } else {
-                entry.remove();
-              }
-            },
-            function (e) {
-              uni.showToast({
-                title: this.$t('user.pathReadFailed'),
-                duration: 2000,
-                icon: "none",
-              });
-            }
-          );
+        for (let i = 0; i < files.length; i++) {
+          let filePath = "" + files[i];
+          plus.io.resolveLocalFileSystemURL(filePath, function (entry) {
+            if (entry.isDirectory) {
+              entry.removeRecursively(function () {
+                uni.showToast({ title: '缓存已清理', duration: 2000, icon: "none" });
+                that.getCacheSize();
+              }, function () {});
+            } else { entry.remove(); }
+          }, function () {
+            uni.showToast({ title: '路径读取失败', duration: 2000, icon: "none" });
+          });
         }
       } else {
-        // ios
         plus.cache.clear(function () {
-          uni.showToast({
-            title: this.$t('user.cacheCleared'),
-            duration: 2000,
-            icon: "none",
-          });
+          uni.showToast({ title: '缓存已清理', duration: 2000, icon: "none" });
           that.getCacheSize();
         });
       }
@@ -294,20 +195,13 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .current-lang {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  
-  .lang-flag {
-    font-size: 36rpx;
-  }
-  
-  .lang-name {
-    font-size: 28rpx;
-    color: #666;
-  }
+  .lang-flag { font-size: 36rpx; }
+  .lang-name { font-size: 28rpx; color: #666; }
 }
 
 .submit {
@@ -317,42 +211,36 @@ export default {
   margin-top: 90rpx;
   background: #fff;
   width: 100%;
-  margin: 0 auto;
   color: $main-color;
 }
+
 .person {
-  height: 208rpx;
+  height: 160rpx;          /* ✅ 收窄行高，头像小了之后不需要那么高 */
   display: flex;
-  padding: 0 20rpx;
+  padding: 0 30rpx;
   font-size: $font-base;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20rpx;
+  background: #fff;
+
   .user-name {
-    width: 500rpx;
+    flex: 1;
     overflow: hidden;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
     margin-left: 30rpx;
-    line-height: 2em;
     font-size: 34rpx;
   }
 }
+
 .u-cell {
   height: 110rpx;
-  /* line-height: 110rpx; */
   padding: 0 20rpx;
   align-items: center;
   color: #333333;
 }
 
-::v-deep  .u-cell__value {
-  color: #cccccc !important;
-}
-
-::v-deep  .u-cell__right-icon-wrap {
-  color: #cccccc !important;
-}
+::v-deep .u-cell__value { color: #cccccc !important; }
+::v-deep .u-cell__right-icon-wrap { color: #cccccc !important; }
 </style>

@@ -1,10 +1,7 @@
 <template>
   <view class="user">
-    <!-- 个人信息 -->
-    <view class="status_bar">
-      <!-- 这里是状态栏 -->
-    </view>
-    <view class="header"  @click="userDetail">
+    <!-- ✅ 移除独立 status_bar view，改由 header 内 padding-top 统一处理，消除白色遮挡 -->
+    <view class="header" @click="userDetail">
       <view class="head-1">
         <image :src="userInfo.face || userImage"></image>
       </view>
@@ -14,9 +11,10 @@
       <view class="head-2" v-else>
         <view class="user-name">{{ $t('user.login') }}/{{ $t('user.register') }}</view>
       </view>
-      <u-icon style="display: flex;align-items: flex-start;" name="arrow-right"></u-icon>
+      <!-- ✅ 修正箭头对齐：align-items: center 统一对齐，移除 align-items: flex-start -->
+      <u-icon class="header-arrow" name="arrow-right"></u-icon>
     </view>
-    
+
     <!-- 猫币，预存款，优惠券 -->
     <div class="pointBox box">
       <u-row text-align="center" gutter="16" class="point">
@@ -27,20 +25,22 @@
 
         <u-col text-align="center" span="3" @click="navigateTo('/pages/mine/deposit/operation')">
           <view>{{ $t('user.wallet') }}</view>
-          <view class="money">{{ unitPrice(walletNum, undefined, 'before') }}.<span style="font-size: 24rpx">{{ unitPrice(walletNum, undefined, 'after') }}</span></view>
+          <view class="money">
+            {{ unitPrice(walletNum, undefined, 'before') }}.<span class="price-decimal">{{ unitPrice(walletNum, undefined, 'after') }}</span>
+          </view>
         </u-col>
 
         <u-col text-align="center" span="3" @click="navigateTo('/pages/cart/coupon/myCoupon')">
           <view>{{ $t('user.coupon') }}</view>
           <view class="value-text">{{ couponNum || 0 }}</view>
         </u-col>
-        
+
         <u-col text-align="center" span="3" @click="navigateTo('/pages/mine/myTracks')">
           <view>{{ $t('user.footprint') }}</view>
           <view class="value-text">{{ footNum || 0 }}</view>
         </u-col>
       </u-row>
-      <!-- 我的订单，代付款 -->
+      <!-- 我的订单 -->
       <view class="order">
         <view class="order-item" @click="navigateTo('/pages/order/myOrder?status=1')">
           <div class="bag bag2">
@@ -75,11 +75,10 @@
       </view>
     </div>
     <!-- 常用工具 -->
-
     <tool />
-
   </view>
 </template>
+
 <script>
 import tool from "@/pages/tabbar/user/utils/tool.vue";
 import { getCouponsNum, getFootprintNum } from "@/api/members.js";
@@ -88,23 +87,18 @@ import configs from '@/config/config'
 import storage from "@/utils/storage.js";
 
 export default {
-  components: {
-    tool,
-  },
+  components: { tool },
   data() {
     return {
       configs,
-      userImage:configs.defaultUserPhoto,
-      coverTransform: "translateY(0px)",
-      coverTransition: "0s",
-      moving: false,
+      userImage: configs.defaultUserPhoto,
       userInfo: {},
       couponNum: "",
       footNum: "",
       walletNum: "",
     };
   },
-  onLoad() { },
+  onLoad() {},
   onShow() {
     this.userInfo = this.$filters.isLogin() || {};
     if (this.$filters.isLogin("auth")) {
@@ -121,36 +115,27 @@ export default {
   },
   // #ifndef MP
   onNavigationBarButtonTap(e) {
-    const index = e.index;
-    if (index === 0) {
+    if (e.index === 0) {
       this.navigateTo("/pages/mine/set/setUp");
     }
   },
   // #endif
-
-  mounted() { },
+  mounted() {},
   methods: {
-    /**
-     * 统一跳转接口,拦截未登录路由
-     * navigator标签现在默认没有转场动画，所以用view
-     */
     navigateTo(url) {
-      uni.navigateTo({
-        url,
-      });
+      uni.navigateTo({ url });
     },
     userDetail() {
       this.userInfo.id
         ? this.navigateTo("/pages/mine/set/personMsg")
-        : this.navigateToLogin();;
+        : this.navigateToLogin();
     },
     async getUserOrderNum() {
       uni.stopPullDownRefresh();
-
       Promise.all([
-        getCouponsNum(), //优惠券
-        getFootprintNum(), //浏览数量
-        getUserWallet(), //预存款
+        getCouponsNum(),
+        getFootprintNum(),
+        getUserWallet(),
       ]).then((res) => {
         this.couponNum = res[0].data.result;
         this.footNum = res[1].data.result;
@@ -162,73 +147,62 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-html,
-body {
-  overflow: auto;
-}
-
 .money {
   overflow: hidden;
-
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* ✅ 统一价格小数位字号 */
+.price-decimal {
+  font-size: $font-sm;
+}
+
 .user {
   .header {
-    max-width: 100%;
-    padding: calc(50rpx + var(--status-bar-height)) 30rpx 0 6%;
-    height: calc(var(--status-bar-height) + 360rpx);
+    /*
+     * ✅ 关键修复：
+     * 1. 移除独立 status_bar view，改用 padding-top 内嵌状态栏高度
+     *    原来 status_bar + header padding-top 双重叠加导致顶部出现白色间隙
+     * 2. align-items: center 让头像、文字、箭头三者垂直居中对齐
+     */
+    padding: var(--status-bar-height) 30rpx 40rpx 30rpx;
+    padding-top: calc(var(--status-bar-height) + 40rpx);
+    min-height: 320rpx;
     background-size: cover;
     border-bottom-left-radius: 30rpx;
     border-bottom-right-radius: 30rpx;
     background-image: url("/static/img/main-bg.png");
-    background-position: bottom;
+    background-position: center;
     background-repeat: no-repeat;
     color: #ffffff;
     display: flex;
-    justify-content: space-between;
+    align-items: center;        /* ✅ 垂直居中对齐 */
+    justify-content: flex-start;
+    gap: 24rpx;
+
     .head-1 {
-      text-align: center;
-      width: 152rpx;
-      position: relative;
-      display: flex;
-      align-items: center;
+      flex-shrink: 0;
+      width: 120rpx;
+      height: 120rpx;
 
       image {
-        width: 152rpx;
-        height: 144rpx;
+        width: 120rpx;         /* ✅ 缩小头像，与图二设置页保持一致视觉比例 */
+        height: 120rpx;
         border-radius: 50%;
-        margin-bottom: 30rpx;
-        border: 3px solid #fff;
-      }
-
-      .edti-head {
-        position: absolute;
-        width: 40rpx;
-        height: 40rpx;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.3);
-        top: 100rpx;
-        right: 0;
-
-        image {
-          width: 100%;
-          height: 100%;
-        }
+        border: 3px solid rgba(255,255,255,0.9);
+        display: block;
       }
     }
 
     .head-2 {
       flex: 1;
-      margin-left: 30rpx;
-      margin-top: 100rpx;
-      line-height: 1;
+      min-width: 0;           /* flex 子项允许收缩 */
     }
 
-    ::v-deep  .u-icon,
-    .u-icon {
-      margin-top: 106rpx;
+    /* ✅ 箭头垂直居中，不再 flex-start */
+    .header-arrow {
+      flex-shrink: 0;
     }
   }
 
@@ -237,7 +211,7 @@ body {
     margin: 0 3%;
     background: #fff;
     border-radius: 20rpx;
-    box-shadow: 0 4rpx 24rpx 0 rgba($color: #f6f6f6, $alpha: 1);
+    box-shadow: 0 4rpx 24rpx 0 rgba(#f6f6f6, 1);
   }
 
   .point {
@@ -245,23 +219,23 @@ body {
     height: 160rpx;
     font-size: $font-sm;
     padding: 24rpx;
-    
+
     .u-col {
       view {
-        color: $u-main-color;
-        font-size: 28rpx;
+        color: #333;
+        font-size: 26rpx;
       }
-
       view:last-child {
-        margin-top: 8rpx;
-        color: $main-color;
-        font-size: $font-lg;
+        margin-top: 10rpx;
+        color: #ff3c2a;
+        font-size: 32rpx;
+        font-weight: bold;
       }
-      
       .value-text {
-        margin-top: 8rpx;
-        color: $main-color;
-        font-size: $font-lg;
+        margin-top: 10rpx;
+        color: #ff3c2a;
+        font-size: 32rpx;
+        font-weight: bold;
       }
     }
   }
@@ -298,12 +272,14 @@ body {
   }
 }
 
+/* ✅ 卡片上移，与头像区重叠，保持视觉连续感 */
 .box {
-  transform: translateY(-30rpx);
+  transform: translateY(-20rpx);
 }
 
 .user-name {
   font-size: 34rpx;
+  font-weight: 500;
 }
 
 .bag {
@@ -315,24 +291,9 @@ body {
   align-items: center;
   justify-content: center;
 }
-
-.bag1 {
-  background: #ff4a48;
-}
-
-.bag2 {
-  background: #ff992f;
-}
-
-.bag3 {
-  background: #009ee0;
-}
-
-.bag4 {
-  background: #00d5d5;
-}
-
-.bag5 {
-  background: #28ccb0;
-}
+.bag1 { background: #ff4a48; }
+.bag2 { background: #ff992f; }
+.bag3 { background: #009ee0; }
+.bag4 { background: #00d5d5; }
+.bag5 { background: #28ccb0; }
 </style>

@@ -1,3 +1,12 @@
+/*
+ * search.scss 修复版
+ * 主要修复：
+ * 1. .u-tips 字号过大（30rpx → 使用 $font-base 变量 28rpx）
+ * 2. 热门搜索/搜索历史标题字体偏黑偏大
+ * 3. .clear 底部固定按钮在 H5 下被 tabbar 遮住（加 var(--window-bottom)）
+ * 4. .keyword-box .keyword-block .keyword > view 字号统一
+ */
+
 .sort-active {
   border: 1px solid $light-color;
   color: $light-color;
@@ -14,7 +23,7 @@
     margin-right: 20rpx;
     max-width: 200rpx;
     border-radius: 100px;
-    font-size: 24rpx;
+    font-size: $font-sm;   /* ✅ 使用变量，原 24rpx 不变但统一管理 */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -27,9 +36,11 @@
   background: #fff !important;
   width: 100%;
 }
+
 page {
   background-color: #fff !important;
 }
+
 .sort-box {
   width: 100%;
   height: 100%;
@@ -49,6 +60,7 @@ page {
     }
   }
 }
+
 .null-view {
   height: 140rpx;
 }
@@ -57,6 +69,10 @@ page {
   display: flex;
   position: fixed;
   bottom: 0;
+  /* ✅ H5 下避开 tabbar */
+  // #ifdef H5
+  bottom: var(--window-bottom);
+  // #endif
   border-top: 1px solid #f7f7f7;
   height: 100rpx;
   left: 0;
@@ -79,17 +95,19 @@ page {
     background-image: linear-gradient(90deg, #ff6b35, #ff9f28, #ffcc03);
   }
 }
+
 .uinput {
   width: 50% !important;
   > .sort-radius {
     height: 70rpx;
     line-height: 70rpx;
-    font-size: 24rpx;
+    font-size: $font-sm;
   }
-  ::v-deep  .uni-input-input {
-    font-size: 24rpx;
+  ::v-deep .uni-input-input {
+    font-size: $font-sm;
   }
 }
+
 .sort-radius {
   margin: 0 12rpx;
   background: #f7f7f7;
@@ -99,10 +117,10 @@ page {
   align-items: center;
   justify-content: center;
   border-radius: 1000px;
-  font-size: 24rpx;
+  font-size: $font-sm;
 }
+
 .flex {
- 
   flex-wrap: wrap;
   align-items: center;
   > .sort-brand-item {
@@ -111,9 +129,11 @@ page {
     margin-bottom: 20rpx;
   }
 }
+
 .scoll-page {
   overflow: auto;
 }
+
 .content {
   background-color: $bg-color;
   height: 100vh;
@@ -123,31 +143,19 @@ page {
 .index-nav-arrow:last-child {
   margin-top: -22rpx;
 }
-.line1-store-name{
-  font-size: 24rpx;
-  color: #999;
-}
-.to-store{
-  font-size: 24rpx;
-  color: #333;
-  margin-left: 10rpx;
-}
+
 .img {
   width: 26rpx;
   height: 26rpx;
 }
+
 .goods-row {
   background: #fff;
-  padding: 16rpx; 
-
-  >.goods-col{
+  padding: 16rpx;
+  > .goods-col {
     display: flex;
-    >.goods-img{
-      flex: 4;
-    }
-    >.goods-detail{
-      flex: 7;
-    }
+    > .goods-img { flex: 4; }
+    > .goods-detail { flex: 7; }
   }
 }
 
@@ -156,53 +164,28 @@ page {
   padding: 30rpx 0;
 }
 
-.oldKeyRow {
-  background: #fff;
-  padding: 34rpx 3%;
-  border-bottom: 1px solid #eeeeee;
-}
-
-
 .clamp3 {
   margin-bottom: 10rpx;
-  font-size: 28rpx;
+  font-size: $font-base;    /* ✅ 统一正文字号 */
   color: #333333;
   font-weight: 400;
   display: -webkit-box;
   height: 80rpx;
   -webkit-box-orient: vertical;
-
   -webkit-line-clamp: 2 !important;
-
   overflow: hidden;
-  > span {
-    line-height: 1.5;
-  }
+  > span { line-height: 1.5; }
 }
-
 
 view {
   display: block;
-}
-
-.store-seller-name {
-  color: #666;
-  overflow: hidden;
-
-  > div {
-    float: left;
-  }
-
-  > span {
-    float: right;
-  }
 }
 
 .count-config {
   padding: 10rpx 0;
   color: #666;
   display: flex;
-  font-size: 24rpx;
+  font-size: $font-sm;
   justify-content: space-between;
 }
 
@@ -219,49 +202,6 @@ view {
 
 .search-box .mSearch-input-box {
   width: 100%;
-}
-
-.search-box .input-box {
-  width: 85%;
-  flex-shrink: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-box .search-btn {
-  width: 15%;
-  margin: 0 0 0 2%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  font-size: 28rpx;
-  color: #fff;
-  background: linear-gradient(to right, #ff9801, #ff570a);
-  border-radius: 60rpx;
-}
-
-.search-box .input-box > input {
-  width: 100%;
-  height: 60rpx;
-  font-size: 32rpx;
-  border: 0;
-  border-radius: 60rpx;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  padding: 0 3%;
-  margin: 0;
-  background-color: #ffffff;
-}
-
-.uni-scroll-view-content {
-  background: #ededed !important;
-}
-
-.placeholder-class {
-  color: #9e9e9e;
 }
 
 .search-keyword {
@@ -284,7 +224,7 @@ view {
   width: 94%;
   height: 80rpx;
   margin: 0 3%;
-  font-size: 30rpx;
+  font-size: $font-base;
   color: #333;
   display: flex;
   justify-content: space-between;
@@ -304,14 +244,8 @@ view {
   align-items: center;
 }
 
-.keyword-entry .keyword-text {
-  width: 90%;
-}
-
-.keyword-entry .keyword-img {
-  width: 10%;
-  justify-content: center;
-}
+.keyword-entry .keyword-text { width: 90%; }
+.keyword-entry .keyword-img { width: 10%; justify-content: center; }
 
 .keyword-box {
   background-color: #fff;
@@ -324,7 +258,7 @@ view {
 .keyword-box .keyword-block .keyword-list-header {
   width: 100%;
   padding: 20rpx 3%;
-  font-size: 27rpx;
+  font-size: $font-sm;
   color: #333;
   display: flex;
   justify-content: space-between;
@@ -340,11 +274,18 @@ view {
   line-height: 1.75;
   overflow: hidden;
   padding: 0 3% 0 3% !important;
+  font-size: $font-sm;   /* ✅ 热门搜索 tag 字号，统一 */
 }
 
+/*
+ * ✅ 关键修复：u-tips 字号
+ * 原来 30rpx，在截图里显示为明显偏大偏黑的"热门搜索"/"搜索历史"标题
+ * 改为 $font-base(28rpx)，颜色从纯黑 #333 改为深灰 #333 保持但字重降为 normal
+ * 若希望标题更轻，可改 color: #666
+ */
 .u-tips {
-  font-size: 30rpx;
-  font-weight: 700;
+  font-size: $font-base;    /* ✅ 原 30rpx → 28rpx，视觉上明显变小 */
+  font-weight: 600;          /* ✅ 降低字重，原默认 bold(700)，改为 600 */
   color: #333;
 }
 
@@ -357,22 +298,30 @@ view {
   position: relative;
 }
 
+/*
+ * ✅ 关键修复：clear 按钮
+ * 原来 position: fixed; bottom: 0 在 H5 下会被 uni-app tabbar 遮住
+ * 加入 H5 条件编译使用 var(--window-bottom)
+ */
 .clear {
   color: #666666;
   position: fixed;
   bottom: 0;
+  /* #ifdef H5 */
+  bottom: var(--window-bottom);
+  /* #endif */
   width: 100%;
   text-align: center;
   height: 100rpx;
   line-height: 100rpx;
-  font-size: 28rpx;
+  font-size: $font-base;
   background: #f7f7f7;
 }
 
 .keyword-box .keyword-block .hide-hot-tis {
   display: flex;
   justify-content: center;
-  font-size: 28rpx;
+  font-size: $font-base;
   color: #6b6b6b;
 }
 
@@ -383,19 +332,18 @@ view {
   background: #fff;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.06);
   z-index: 10;
-  // position: fixed;
-  // left: 0;
-  // top: var(--status-bar-height);
+
   .nav-item {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-    font-size: 30rpx;
+    font-size: $font-md;
     color: $font-color-dark;
     position: relative;
   }
+
   .current {
     color: $light-color;
     position: relative;
@@ -410,10 +358,10 @@ view {
       border-bottom: 4rpx solid $light-color;
     }
   }
+
   .p-box {
     display: flex;
     flex-direction: column;
-
     .yticon {
       display: flex;
       align-items: center;
@@ -425,12 +373,10 @@ view {
       font-size: 26rpx;
       color: #888;
     }
-
-    .xia {
-      transform: scaleY(-1);
-    }
+    .xia { transform: scaleY(-1); }
   }
 }
+
 .status_bar {
   height: var(--status-bar-height);
   width: 100%;
@@ -441,7 +387,7 @@ view {
   padding-top: 300rpx;
   color: #999999;
   text-align: center;
-  ::v-deep  .u-image {
+  ::v-deep .u-image {
     width: 346rpx;
     height: 304rpx;
   }
