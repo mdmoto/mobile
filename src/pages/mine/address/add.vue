@@ -14,16 +14,24 @@
         <u-form-item :label="$t('address.phone')" label-width="130" prop="mobile">
           <u-input v-model="form.mobile" type="number" maxlength="11" :placeholder="$t('address.inputMobile')" />
         </u-form-item>
+        <u-form-item :label="$t('address.countryCode') || '国家/地区'" label-width="130" prop="countryCode">
+          <u-input v-model="form.countryName" readonly @click="showCountryPicker = true" :placeholder="$t('user.pleaseSelect')" />
+          <u-icon slot="right" name="arrow-right" @click="showCountryPicker = true"></u-icon>
+        </u-form-item>
+
         <u-form-item :label="$t('address.region')" label-width="130" prop="___path">
-          <div  @click="showPicker" >
-            {{ form.___path || $t('address.selectRegionPlaceholder') }}
-          </div>
+          <template v-if="form.countryCode === 'CN'">
+            <div @click="showPicker">
+              {{ form.___path || $t('address.selectRegionPlaceholder') }}
+            </div>
+          </template>
+          <template v-else>
+            <u-input v-model="form.___path" :placeholder="$t('address.selectRegionPlaceholder')" />
+          </template>
         </u-form-item>
-        <u-form-item :label="$t('address.countryCode') || 'Country'" label-width="130" prop="countryCode">
-          <u-input v-model="form.countryCode" :placeholder="$t('address.inputCountryCode') || 'e.g. CN, US, JP'" />
-        </u-form-item>
-        <u-form-item :label="$t('address.postalCode') || 'Postal Code'" label-width="130" prop="postalCode">
-          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode') || 'Postal Code'" />
+
+        <u-form-item :label="$t('address.postalCode') || '邮政编码'" label-width="130" prop="postalCode">
+          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode')" />
         </u-form-item>
         <u-form-item class="detailAddress" :label="$t('address.detail')" label-width="130" prop="detail">
           <u-input type="textarea" v-model="form.detail" maxlength="100" height="150" :placeholder="$t('address.detailAddressPlaceholder')" />
@@ -32,11 +40,19 @@
           <u-input v-model="form.alias" :placeholder="$t('address.inputAddressAlias')" />
         </u-form-item>
         <u-checkbox-group shape="circle" size="30">
-          <u-checkbox :active-color="lightColor" v-model="form.isDefault">{{ $t('address.setDefaultAddress') }}</u-checkbox>
+          <u-checkbox :active-color="lightColor" v-model="form.isDefault">{{ $t('address.default') }}</u-checkbox>
         </u-checkbox-group>
 
         <div class="saveBtn" @click="save">{{ $t('common.save') }}</div>
       </u-form>
+
+      <u-picker
+        :show="showCountryPicker"
+        :columns="[countryList]"
+        keyName="name"
+        @confirm="confirmCountry"
+        @cancel="showCountryPicker = false"
+      ></u-picker>
 
       <m-city :provinceData="list" :headTitle="$t('user.regionSelection')" ref="cityPicker" @funcValue="getpickerParentValue" pickerSize="4">
       </m-city>
@@ -220,12 +236,35 @@ export default {
     showPicker() {
       this.$refs.cityPicker.show();
     },
+
+    // 确认国家选择
+    confirmCountry(e) {
+      this.showCountryPicker = false;
+      const selected = e.value[0];
+      if (this.form.countryCode !== selected.code) {
+        this.form.countryCode = selected.code;
+        this.form.countryName = selected.name;
+        // 切换国家时清空地区信息
+        this.form.___path = "";
+        this.form.consigneeAddressIdPath = [];
+        this.form.consigneeAddressPath = [];
+      }
+    },
   },
   mounted() {},
   data() {
     return {
       lightColor: this.$lightColor, //高亮颜色
       mapFlag: false, // 地图选择开
+      showCountryPicker: false, // 国家选择器开关
+      countryList: [
+        { name: '中国', code: 'CN' },
+        { name: '日本', code: 'JP' },
+        { name: '美国', code: 'US' },
+        { name: '中国香港', code: 'HK' },
+        { name: '中国台湾', code: 'TW' },
+        { name: '新加坡', code: 'SG' }
+      ],
       routerVal: "",
       form: {
         detail: "", //地址详情
@@ -236,6 +275,7 @@ export default {
         ___path: "", //所在区域
         isDefault: false, //是否默认地址
         countryCode: "CN", // 国家代码
+        countryName: "中国", // 国家名称
         postalCode: "", // 邮政编码
       },
       // 表单提交校验规则
@@ -279,7 +319,7 @@ export default {
       list: [
         {
           id: "",
-          localName: "国家/地区",
+          localName: "省/份",
           children: [],
         },
       ],
@@ -295,6 +335,16 @@ export default {
       getAddressDetail(option.id).then((res) => {
         const params = res.data.result;
         params.___path = params.consigneeAddressPath;
+        
+        // 初始化国家名称
+        const country = this.countryList.find(c => c.code === (params.countryCode || 'CN'));
+        if (country) {
+          params.countryName = country.name;
+          params.countryCode = country.code;
+        } else {
+          params.countryName = params.countryCode || '中国';
+        }
+        
         this["form"] = params;
       }).finally(() => {
         uni.hideLoading();
