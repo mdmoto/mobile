@@ -760,8 +760,11 @@ export default {
       // 如果没有商品选择地址的话 则选择 默认地址
       API_Address.getAddressDefault().then((res) => {
         if (res.data.result) {
-          res.data.result.consigneeAddressPath =
-            res.data.result.consigneeAddressPath.split(",");
+          if (res.data.result.consigneeAddressPath && typeof res.data.result.consigneeAddressPath === 'string') {
+            res.data.result.consigneeAddressPath = res.data.result.consigneeAddressPath.split(",");
+          } else if (!res.data.result.consigneeAddressPath) {
+            res.data.result.consigneeAddressPath = [];
+          }
           this.address = res.data.result;
         }
       });
@@ -860,8 +863,11 @@ export default {
           this.getUserAddress();
         } else {
           this.address = res.data.result.memberAddress;
-          res.data.result.memberAddress.consigneeAddressPath =
-            res.data.result.memberAddress.consigneeAddressPath.split(",");
+          if (res.data.result.memberAddress && res.data.result.memberAddress.consigneeAddressPath) {
+            if (typeof res.data.result.memberAddress.consigneeAddressPath === 'string') {
+              res.data.result.memberAddress.consigneeAddressPath = res.data.result.memberAddress.consigneeAddressPath.split(",");
+            }
+          }
         }
         if (res.data.result.storeAddress) {
           this.storeAddress = res.data.result.storeAddress;

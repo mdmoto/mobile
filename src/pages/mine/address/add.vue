@@ -152,24 +152,30 @@ export default {
     save() {
       this.$refs.uForm.validate((valid) => {
         if (valid) {
-          let pages = getCurrentPages(); //获取页面栈
-          let beforePage = pages[pages.length - 2]; //上个页面
+          // Prepare data for submission
+          let submitData = JSON.parse(JSON.stringify(this.form));
+          if (Array.isArray(submitData.consigneeAddressIdPath)) {
+            submitData.consigneeAddressIdPath = submitData.consigneeAddressIdPath.join(",");
+          }
+          if (Array.isArray(submitData.consigneeAddressPath)) {
+            submitData.consigneeAddressPath = submitData.consigneeAddressPath.join(",");
+          }
 
           // 如果没有id则为新增地址
-          if (!this.form.id) {
+          if (!submitData.id) {
             // 删除没有的数据
-            delete this.form.___path;
-            addAddress(this.form).then((res) => {
+            delete submitData.___path;
+            addAddress(submitData).then((res) => {
               if (res.data.success) {
                 uni.navigateBack();
               }
             });
           } else {
             // 修改地址
-            delete this.form.___path;
-            delete this.form.updateBy;
-            delete this.form.updateTime;
-            editAddress(this.form).then((res) => {
+            delete submitData.___path;
+            delete submitData.updateBy;
+            delete submitData.updateTime;
+            editAddress(submitData).then((res) => {
               if (res.data.success) {
                 uni.navigateBack();
               }
