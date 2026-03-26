@@ -96,7 +96,11 @@ export default {
         this.params.pageSize
       ).then((res) => {
         res.data.result.records.forEach((item) => {
-          item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+          if (item.consigneeAddressPath && typeof item.consigneeAddressPath === 'string') {
+            item.consigneeAddressPath = item.consigneeAddressPath.split(",");
+          } else if (!item.consigneeAddressPath) {
+            item.consigneeAddressPath = [];
+          }
         });
         this.addressList = res.data.result.records;
         console.log(this.addressList);
