@@ -124,7 +124,10 @@ export default {
       this.showPicker = true;
       if (this.tabbars[0].children.length == 0) {
         getRegionsById(0).then((res) => {
-          this.tabbars[0].children = res.data.result;
+          this.tabbars[0].children = res.data.result || [];
+        }).catch(() => {
+          this.tabbars[0].children = [];
+          uni.showToast({ title: '加载地区失败', icon: 'none' });
         });
       }
 

@@ -19,6 +19,12 @@
             {{ form.___path || $t('address.selectRegionPlaceholder') }}
           </div>
         </u-form-item>
+        <u-form-item :label="$t('address.countryCode') || 'Country'" label-width="130" prop="countryCode">
+          <u-input v-model="form.countryCode" :placeholder="$t('address.inputCountryCode') || 'e.g. CN, US, JP'" />
+        </u-form-item>
+        <u-form-item :label="$t('address.postalCode') || 'Postal Code'" label-width="130" prop="postalCode">
+          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode') || 'Postal Code'" />
+        </u-form-item>
         <u-form-item class="detailAddress" :label="$t('address.detail')" label-width="130" prop="detail">
           <u-input type="textarea" v-model="form.detail" maxlength="100" height="150" :placeholder="$t('address.detailAddressPlaceholder')" />
         </u-form-item>
@@ -124,11 +130,11 @@ export default {
     // 选择地址后数据的回调
     callBackAddress(val) {
       console.log(val)
-      uni.showLoading({
-        title: this.$t('common.loading'),
-      });
 
       if (val.regeocode && val) {
+        uni.showLoading({
+          title: this.$t('common.loading'),
+        });
         let address = val.regeocode;
         this.form.detail = address.formatted_address; //地址详情
         this.form.___path = val.data.result.name;
@@ -136,7 +142,7 @@ export default {
         this.form.consigneeAddressPath = val.data.result.name; //地址名称， '，'分割
         this.form.lat = val.latitude; //纬度
         this.form.lon = val.longitude; //经度
-         uni.hideLoading();
+        uni.hideLoading();
       }
 
       this.mapFlag = !this.mapFlag; //关闭地图
@@ -219,6 +225,8 @@ export default {
         consigneeAddressPath: [], //地址名字
         ___path: "", //所在区域
         isDefault: false, //是否默认地址
+        countryCode: "CN", // 国家代码
+        postalCode: "", // 邮政编码
       },
       // 表单提交校验规则
       rules: {
@@ -268,21 +276,20 @@ export default {
     };
   },
   onLoad(option) {
-    uni.showLoading({
-      title: this.$t('common.loading'),
-    });
     this.routerVal = option;
     // 如果当前是编辑地址,则需要查询出地址详情信息
     if (option.id) {
+      uni.showLoading({
+        title: this.$t('common.loading'),
+      });
       getAddressDetail(option.id).then((res) => {
         const params = res.data.result;
         params.___path = params.consigneeAddressPath;
         this["form"] = params;
-
-         if (this.$store.state.isShowToast){ uni.hideLoading() };
+      }).finally(() => {
+        uni.hideLoading();
       });
     }
-     uni.hideLoading();
   },
   // 初始化rules必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {

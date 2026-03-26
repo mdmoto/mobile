@@ -1020,6 +1020,7 @@
 					// 检查响应状态
 					if (res && res.data) {
 						if (res.data.success) {
+							this.code = ""; // 确保此时 code 是空的
 							this.current = 1;
 							this.$refs.uCode.start();
 							uni.showToast({
@@ -1110,11 +1111,13 @@
 
 					// 如果已经完成验证码验证，直接发送邮箱验证码
 					if (this.flage) {
+						this.code = ""; // 清空旧码，准备接收新码
 						this.sendEmailCodeAfterVerification();
 						return;
 					}
 					
 					// 确保验证码组件显示
+					this.code = ""; // 清空旧码
 					this.sliderVisible = true;
 					
 					this.$nextTick(() => {
