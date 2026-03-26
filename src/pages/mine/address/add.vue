@@ -193,15 +193,19 @@ export default {
           this.form.consigneeAddressPath.push(item.localName);
           name += item.localName;
           this.form.___path = name;
+          
+          // 如果有 countryCode，设置到 form 中
+          // 通常第一个 level 是国家
+          if (item.countryCode) {
+            this.form.countryCode = item.countryCode;
+          }
         }
         if (index == e.length - 1) {
           //如果是最后一个
-          let _town = item.children.filter((_child) => {
-            return _child.id == item.id;
-          });
-
-          this.form.lat = _town[0].center.split(",")[1];
-          this.form.lon = _town[0].center.split(",")[0];
+          if (item.center) {
+            this.form.lat = item.center.split(",")[1];
+            this.form.lon = item.center.split(",")[0];
+          }
         }
       });
     },
@@ -269,7 +273,7 @@ export default {
       list: [
         {
           id: "",
-          localName: this.$t('user.pleaseSelect'),
+          localName: "国家/地区",
           children: [],
         },
       ],

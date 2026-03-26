@@ -124,10 +124,27 @@ export default {
       this.showPicker = true;
       if (this.tabbars[0].children.length == 0) {
         getRegionsById(0).then((res) => {
-          this.tabbars[0].children = res.data.result || [];
+          let regions = res.data.result || [];
+          // If empty or targeting international, add some default countries
+          if (regions.length === 0 || !regions.find(r => r.name === '日本')) {
+             const internationalFallback = [
+               { id: '2000000001', name: '日本', level: 'country', countryCode: 'JP' },
+               { id: '2000000002', name: '美国', level: 'country', countryCode: 'US' },
+               { id: '2000000003', name: '中国香港', level: 'country', countryCode: 'HK' },
+               { id: '2000000004', name: '中国台湾', level: 'country', countryCode: 'TW' },
+               { id: '2000000005', name: '新加坡', level: 'country', countryCode: 'SG' },
+               { id: '2000000006', name: '中国', level: 'country', countryCode: 'CN' }
+             ];
+             // Combine with existing if any
+             regions = [...internationalFallback, ...regions.filter(r => r.name !== '中国')];
+          }
+          this.tabbars[0].children = regions.sort((a, b) => (a.orderNum || 999) - (b.orderNum || 999));
         }).catch(() => {
-          this.tabbars[0].children = [];
-          uni.showToast({ title: '加载地区失败', icon: 'none' });
+          this.tabbars[0].children = [
+            { id: '2000000001', name: '日本', level: 'country', countryCode: 'JP' },
+            { id: '2000000006', name: '中国', level: 'country', countryCode: 'CN' }
+          ];
+          uni.showToast({ title: '加载地区失败，使用默认列表', icon: 'none' });
         });
       }
 
