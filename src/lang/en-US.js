@@ -208,6 +208,8 @@ export default {
         "inputConsigneeName": "Enter recipient name",
         "inputMobile": "Enter mobile number",
         "selectRegionPlaceholder": "Select region",
+        "inputRegionPlaceholder": "Enter (State/Province/City)",
+        "inputPostalCode": "Enter postal code",
         "detailAddressPlaceholder": "Street, building, etc.",
         "addressAlias": "Alias",
         "inputAddressAlias": "Enter address alias",

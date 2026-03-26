@@ -26,12 +26,12 @@
             </div>
           </template>
           <template v-else>
-            <u-input v-model="form.___path" :placeholder="$t('address.selectRegionPlaceholder')" />
+            <u-input v-model="form.___path" :placeholder="$t('address.inputRegionPlaceholder') || '请输入(州/省/城市)'" />
           </template>
         </u-form-item>
 
-        <u-form-item :label="$t('address.postalCode') || '邮政编码'" label-width="130" prop="postalCode">
-          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode')" />
+        <u-form-item v-if="form.countryCode !== 'CN'" :label="$t('address.postalCode') || '邮政编码'" label-width="130" prop="postalCode">
+          <u-input v-model="form.postalCode" :placeholder="$t('address.inputPostalCode') || '请输入邮政编码'" />
         </u-form-item>
         <u-form-item class="detailAddress" :label="$t('address.detail')" label-width="130" prop="detail">
           <u-input type="textarea" v-model="form.detail" maxlength="100" height="150" :placeholder="$t('address.detailAddressPlaceholder')" />

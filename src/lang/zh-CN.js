@@ -208,6 +208,8 @@ export default {
         "inputConsigneeName": "请输入收货人姓名",
         "inputMobile": "请输入收货人手机号码",
         "selectRegionPlaceholder": "请选择所在地区",
+        "inputRegionPlaceholder": "请输入(州/省/城市)",
+        "inputPostalCode": "请输入邮政编码",
         "detailAddressPlaceholder": "街道楼牌号等",
         "addressAlias": "地址别名",
         "inputAddressAlias": "请输入地址别名",
