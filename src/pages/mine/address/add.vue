@@ -26,7 +26,14 @@
             </div>
           </template>
           <template v-else>
-            <u-input v-model="form.___path" :placeholder="$t('address.inputRegionPlaceholder') || '请输入(州/省/城市)'" />
+            <view class="intl-address-fields">
+              <u-form-item :label="$t('address.province') || '州/省'" label-width="130" prop="province">
+                <u-input v-model="form.province" :placeholder="$t('address.inputProvincePlaceholder') || '请输入州/省'" />
+              </u-form-item>
+              <u-form-item :label="$t('address.city') || '城市'" label-width="130" prop="city">
+                <u-input v-model="form.city" :placeholder="$t('address.inputCityPlaceholder') || '请输入城市'" />
+              </u-form-item>
+            </view>
           </template>
         </u-form-item>
 
@@ -277,6 +284,8 @@ export default {
         countryCode: "CN", // 国家代码
         countryName: "中国", // 国家名称
         postalCode: "", // 邮政编码
+        province: "", // 州/省
+        city: "", // 城市
       },
       // 表单提交校验规则
       rules: {
@@ -312,6 +321,30 @@ export default {
           {
             required: true,
             message: this.$t('address.detail'),
+            trigger: ["blur", "change"],
+          },
+        ],
+        province: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.form.countryCode !== 'CN' && !value) {
+                return false;
+              }
+              return true;
+            },
+            message: '请输入州/省',
+            trigger: ["blur", "change"],
+          },
+        ],
+        city: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.form.countryCode !== 'CN' && !value) {
+                return false;
+              }
+              return true;
+            },
+            message: '请输入城市',
             trigger: ["blur", "change"],
           },
         ],
