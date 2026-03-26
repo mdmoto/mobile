@@ -122,11 +122,18 @@ export default {
      */
     show() {
       this.showPicker = true;
+      this.tabCurrentIndex = 0; // 重置到第一级
       if (this.tabbars[0].children.length == 0) {
+        console.log("Loading root regions (China provinces)...");
         getRegionsById(0).then((res) => {
-          this.tabbars[0].children = res.data.result || [];
+          console.log("Root regions loaded:", res.data.result);
+          if (res.data.success && res.data.result) {
+            this.tabbars[0].children = res.data.result;
+            // 强制触发一次响应
+            this.tabbars = [...this.tabbars];
+          }
         }).catch(err => {
-          console.error("加载地区失败", err);
+          console.error("加载地区失败:", err);
           uni.showToast({ title: '加载地区失败', icon: 'none' });
         });
       }
