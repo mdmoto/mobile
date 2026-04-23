@@ -207,6 +207,19 @@ export default {
 	          this.hasImg = "加载失败，请点击刷新";
 	          return;
 	        }
+
+          // 后端关闭滑块时，直接放行（AI 友好模式）
+          if (data.disabled) {
+            this.key = data.key || "";
+            this.$store.state.verificationKey = this.key;
+            this.$emit("send", this.key);
+            this.hide();
+            this.vsr = true;
+            this.flage = true;
+            this.vsrtx = "已通过验证";
+            console.log("✅ 滑块已禁用，直接通过验证");
+            return;
+          }
 	        this.col = "#838383";
 	        this.hasImg = "拖动滑块以完成拼图";
 

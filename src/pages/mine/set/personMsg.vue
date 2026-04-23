@@ -23,9 +23,9 @@
         <div style="width: 100%;" @click="clickRegion">{{ form.___path || $t('user.pleaseSelectCity') }}</div>
       </u-form-item>
 	  
-	  <u-form-item :label="$t('user.mobile')" label-width="150">
-		<view v-if="form.mobile">
-			{{form.mobile}}
+	  <u-form-item :label="form.mobile && !form.mobile.includes('@') ? $t('user.mobile') : (form.username && form.username.includes('@') ? $t('user.email') : $t('auth.username'))" label-width="150">
+		<view v-if="form.mobile || form.username">
+			{{form.mobile || form.username}}
 		</view>
 		<view v-else>
 			<view class="submit" @click="navigateTo(form.username)">{{ $t('user.bindMobile') }}</view>
@@ -82,7 +82,7 @@ export default {
 	   * 退出登录
 	   */
 	  quiteLoginOut() {
-      this.quiteLoginOut();
+      this.$filters.quiteLoginOut();
 	  },
 	  
     /**
