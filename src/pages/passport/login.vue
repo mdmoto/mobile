@@ -889,7 +889,7 @@
 						this.getUserInfoMethods(res);
 					} else {
 						uni.showToast({
-							title: res.data.message || "登录失败",
+							title: String(res.data.message || "登录失败"),
 							icon: "none",
 						});
 						this.flage = false;

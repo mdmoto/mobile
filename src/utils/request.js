@@ -175,7 +175,7 @@ http.interceptors.response.use(
 						return http.request(response.config);
 					})
 					.catch((err) => {
-						console.log('刷新token报错' + oldRefreshToken, err)
+						console.log('刷新token报错', oldRefreshToken, err)
 						cleanStorage();
 						return Promise.reject(err);
 					})
@@ -216,7 +216,7 @@ http.interceptors.response.use(
 		) {
 			if (response.data.message) {
 				uni.showToast({
-					title: response.data.message,
+					title: String(response.data.message || "未知错误"),
 					icon: "none",
 					duration: 1500,
 					success: function () {
