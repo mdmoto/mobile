@@ -237,7 +237,8 @@ page {
     left: 0;
     z-index: 9;
     background: #fff;
-    height: 100rpx;
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(100rpx + env(safe-area-inset-bottom));
     width: 100%;
     display: flex;
     border-top: 2rpx solid #f2f2f2;

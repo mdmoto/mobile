@@ -706,7 +706,7 @@ page {
 
 .content {
   padding: 20rpx 0 20rpx 0;
-  margin-bottom: 80rpx;
+  margin-bottom: calc(100rpx + env(safe-area-inset-bottom));
 }
 
 .line {
@@ -782,7 +782,8 @@ page {
   left: 0;
   border-top: 1px solid #ededed;
   display: flex;
-  height: 100rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(100rpx + env(safe-area-inset-bottom));
   overflow: hidden;
   align-items: center;
   width: 100%;
