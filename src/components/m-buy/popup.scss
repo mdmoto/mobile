@@ -26,6 +26,7 @@
     width: 100%;
 
     margin: 0 auto;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 .goods-price-bigshow {
     font-size: 48rpx;

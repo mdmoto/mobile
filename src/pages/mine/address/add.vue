@@ -12,7 +12,7 @@
         </u-form-item>
 
         <u-form-item :label="$t('address.phone')" label-width="130" prop="mobile">
-          <u-input v-model="form.mobile" type="number" maxlength="11" :placeholder="$t('address.inputMobile')" />
+          <u-input v-model="form.mobile" type="text" maxlength="20" :placeholder="$t('address.inputMobile')" />
         </u-form-item>
         <u-form-item :label="$t('address.countryCode') || '国家/地区'" label-width="130" prop="countryCode">
           <u-input v-model="form.countryName" readonly @click="showCountryPicker = true" :placeholder="$t('user.pleaseSelect')" />
@@ -20,21 +20,9 @@
         </u-form-item>
 
         <u-form-item :label="$t('address.region')" label-width="130" prop="___path">
-          <template v-if="form.countryCode === 'CN'">
-            <div @click="showPicker">
-              {{ form.___path || $t('address.selectRegionPlaceholder') }}
-            </div>
-          </template>
-          <template v-else>
-            <view class="intl-address-fields">
-              <u-form-item :label="$t('address.province') || '州/省'" label-width="130" prop="province">
-                <u-input v-model="form.province" :placeholder="$t('address.inputProvincePlaceholder') || '请输入州/省'" />
-              </u-form-item>
-              <u-form-item :label="$t('address.city') || '城市'" label-width="130" prop="city">
-                <u-input v-model="form.city" :placeholder="$t('address.inputCityPlaceholder') || '请输入城市'" />
-              </u-form-item>
-            </view>
-          </template>
+          <div @click="showPicker">
+            {{ form.___path || $t('address.selectRegionPlaceholder') }}
+          </div>
         </u-form-item>
 
         <u-form-item v-if="form.countryCode !== 'CN'" :label="$t('address.postalCode') || '邮政编码'" label-width="130" prop="postalCode">
@@ -171,12 +159,17 @@ export default {
       this.mapFlag = !this.mapFlag; //关闭地图
     },
 
-    // 保存当前 地址
     save() {
-      this.$refs.uForm.validate((valid) => {
+      this.$refs.uForm.validate().then((valid) => {
         if (valid) {
           // Prepare data for submission
           let submitData = JSON.parse(JSON.stringify(this.form));
+          
+          // For international addresses, construct a display path if empty
+          if (submitData.countryCode !== 'CN' && !submitData.___path) {
+            submitData.___path = `${submitData.province || ''} ${submitData.city || ''}`.trim();
+          }
+
           if (Array.isArray(submitData.consigneeAddressIdPath)) {
             submitData.consigneeAddressIdPath = submitData.consigneeAddressIdPath.join(",");
           }
@@ -205,6 +198,8 @@ export default {
             });
           }
         }
+      }).catch(errors => {
+        console.error('Validation failed:', errors);
       });
     },
 
@@ -221,10 +216,16 @@ export default {
           this.form.consigneeAddressIdPath.push(item.id);
           this.form.consigneeAddressPath.push(item.localName);
           name += item.localName;
+          
+          // Map levels to province/city for non-CN addresses
+          if (this.form.countryCode !== 'CN') {
+             if (index === 0) this.form.province = item.localName;
+             if (index === 1) this.form.city = item.localName;
+          }
+
           this.form.___path = name;
           
           // 如果有 countryCode，设置到 form 中
-          // 通常第一个 level 是国家
           if (item.countryCode) {
             this.form.countryCode = item.countryCode;
           }
@@ -241,6 +242,15 @@ export default {
 
     // 显示三级地址联动
     showPicker() {
+      // Find the country ID from the list
+      const country = this.countryList.find(c => c.code === this.form.countryCode);
+      const rootId = country ? country.id : 0;
+      
+      // Update the first tab of m-city to use the country's ID
+      this.list[0].id = rootId;
+      this.list[0].localName = this.form.countryCode === 'CN' ? '省/份' : '州/省';
+      this.list[0].children = []; // Clear children to trigger reload
+      
       this.$refs.cityPicker.show();
     },
 
@@ -265,12 +275,23 @@ export default {
       mapFlag: false, // 地图选择开
       showCountryPicker: false, // 国家选择器开关
       countryList: [
-        { name: '中国', code: 'CN' },
-        { name: '日本', code: 'JP' },
-        { name: '美国', code: 'US' },
-        { name: '中国香港', code: 'HK' },
-        { name: '中国台湾', code: 'TW' },
-        { name: '新加坡', code: 'SG' }
+        { name: '中国', code: 'CN', id: 0 },
+        { name: '日本', code: 'JP', id: 2000000001 },
+        { name: '美国', code: 'US', id: 2000000002 },
+        { name: '中国香港', code: 'HK', id: 2000000003 },
+        { name: '中国台湾', code: 'TW', id: 2000000004 },
+        { name: '新加坡', code: 'SG', id: 2000000005 },
+        { name: '西班牙', code: 'ES', id: 2000000006 },
+        { name: '澳大利亚', code: 'AU', id: 2000000007 },
+        { name: '英国', code: 'GB', id: 2000000008 },
+        { name: '加拿大', code: 'CA', id: 2000000009 },
+        { name: '泰国', code: 'TH', id: 2000000010 },
+        { name: '越南', code: 'VN', id: 2000000011 },
+        { name: '印尼', code: 'ID', id: 2000000012 },
+        { name: '马来西亚', code: 'MY', id: 2000000013 },
+        { name: '韩国', code: 'KR', id: 2000000014 },
+        { name: '沙特阿拉伯', code: 'SA', id: 2000000015 },
+        { name: '阿联酋', code: 'AE', id: 2000000016 }
       ],
       routerVal: "",
       form: {
@@ -304,7 +325,11 @@ export default {
           },
           {
             validator: (rule, value, callback) => {
-              return uni.$u.test.mobile(value);
+              if (this.form.countryCode === 'CN') {
+                return uni.$u.test.mobile(value);
+              }
+              // International numbers: just check length (6-20)
+              return value && value.length >= 6 && value.length <= 20;
             },
             message: this.$t('auth.mobileError'),
             trigger: ["change", "blur"],
@@ -312,9 +337,14 @@ export default {
         ],
         ___path: [
           {
-            required: true,
+            validator: (rule, value, callback) => {
+              if (this.form.countryCode === 'CN' && !value) {
+                return false;
+              }
+              return true;
+            },
             message: this.$t('address.selectRegionPlaceholder'),
-            trigger: ["change"],
+            trigger: ["change", "blur"],
           },
         ],
         detail: [

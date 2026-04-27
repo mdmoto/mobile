@@ -219,7 +219,7 @@
 				codeFlag: true, //验证开关，用于是否展示验证码
 				sliderVisible: false, // 滑块显隐控制 (使用 v-if 确保状态刷新)
 				tips: "",
-				enableUserPwdBox: false, //帐号密码登录
+				enableUserPwdBox: true, //帐号密码登录
 				current: 0,
 				codeColor: "#999", //按钮验证码颜色
 				lightColor: this.$lightColor,

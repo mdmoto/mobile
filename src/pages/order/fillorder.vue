@@ -348,6 +348,9 @@
     <div class="box6 mp-iphonex-bottom" v-if="orderMessage.priceDetailDTO">
       <div class="tabbar-left">
         <div v-if="!orderMessage.priceDetailDTO.payPoint" class="number">
+          <div style="font-size: 24rpx; color: #999; line-height: 1.2;">
+            运费: {{ unitPrice(orderMessage.priceDetailDTO.freightPrice || 0, undefined, 'before') }}.{{ unitPrice(orderMessage.priceDetailDTO.freightPrice || 0, undefined, 'after') }}
+          </div>
           <span class="price">{{
             unitPrice(
               orderMessage.priceDetailDTO.flowPrice, undefined, 'before'

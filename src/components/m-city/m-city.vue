@@ -124,9 +124,10 @@ export default {
       this.showPicker = true;
       this.tabCurrentIndex = 0; // 重置到第一级
       if (this.tabbars[0].children.length == 0) {
-        console.log("Loading root regions (China provinces)...");
-        getRegionsById(0).then((res) => {
-          console.log("Root regions loaded:", res.data.result);
+        const rootId = this.tabbars[0].id || 0;
+        console.log(`Loading root regions for ID: ${rootId}...`);
+        getRegionsById(rootId).then((res) => {
+          console.log("Regions loaded:", res.data.result);
           if (res.data.success && res.data.result) {
             this.tabbars[0].children = res.data.result;
             // 强制触发一次响应
