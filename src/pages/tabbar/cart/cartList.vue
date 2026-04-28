@@ -784,12 +784,12 @@ page {
   display: flex;
   padding-bottom: env(safe-area-inset-bottom);
   height: calc(100rpx + env(safe-area-inset-bottom));
-  overflow: hidden;
+  overflow: visible;
   align-items: center;
   width: 100%;
   background: rgba(255, 255, 255, 1);
   color: #333;
-  z-index: 99;
+  z-index: 999;
   > .navL {
     padding: 0 32rpx;
     display: flex;

@@ -222,7 +222,7 @@
         </div>
         <!-- 正常结算页面 -->
         <view class="detail-btn" v-if="!isGroup && !takeDownFromSale">
-          <view class="to-store-car to-store-btn" v-if="goodsDetail.goodsType != 'VIRTUAL_GOODS'" @click="shutMask(4)">
+          <view class="to-store-car to-store-btn" v-if="goodsDetail.goodsType !== 'VIRTUAL_GOODS'" @click="shutMask(4)">
             加入购物车</view>
           <view class="to-buy to-store-btn" @click="shutMask(4, 'buy')">立即购买</view>
           <view class="to-store-car to-store-btn" v-if="startTimer">暂未开始</view>
@@ -589,6 +589,9 @@ export default {
 
         /**商品信息以及规格信息存储 */
         this.goodsDetail = result;
+        if (!this.goodsDetail.goodsType) {
+          this.goodsDetail.goodsType = 'PHYSICAL_GOODS';
+        }
         this.wholesaleList = result.wholesaleList || [];
         this.goodsSpec = result.specs;
         this.PromotionList = result.promotionMap;
